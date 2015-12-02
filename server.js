@@ -25,8 +25,8 @@ function startBot(api) {
         }
 
         if (event.type === 'message') {
-            console.log('Message received in thread ' + event.threadID + ':');
-            console.log(event.body);
+            console.log('Message received:');
+            console.log('   ', event.body, '\n');
 
             // Simply echo back the message.
             api.sendMessage(event.body, event.threadID);
