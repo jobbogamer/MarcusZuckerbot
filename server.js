@@ -7,12 +7,21 @@ var login = require('facebook-chat-api');
 var Firebase = require('firebase');
 
 
-// Make Azure actually do things maybe
+// Create a web endpoint so that the server can be pinged to keep it alive.
 var http = require('http');
-http.createServer(function(req, res) {
+http.createServer(function server(req, res) {
+    console.log('Ping!');
     res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end('Hello World\n');
+    res.end('');
 }).listen(process.env.PORT || 5000);
+
+// Ping the server randomly between 10 and 15 minutes to keep it alive.
+setInterval(function ping() {
+    console.log('Sending ping to keep the server alive...');
+    http.get("http://zuckerbot.azurewebsites.net", function pingFinished(res) {
+        console.log('Done.', '\n');
+    });
+}, 900000 * Math.random() + 600000);
 
 
 // Functions
