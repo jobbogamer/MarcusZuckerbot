@@ -65,6 +65,9 @@ console.log('Connecting to Facebook chat...');
 login({
     email: process.env.FB_EMAIL,
     password: process.env.FB_PASSWORD
+},
+{
+    logLevel: "warn"
 }, function loggedIn(err, api) {
     if (err) {
         return console.error(err);
