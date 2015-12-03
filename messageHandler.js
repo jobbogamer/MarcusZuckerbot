@@ -14,7 +14,7 @@ var docstrings = {};
 
 // Commands
 
-commands.help = function(arguments, api, reply) {
+commands.help = function(arguments, threadID, chat, api, reply) {
     if (arguments.length == 0) {
         // Create a list of all commands.
         var list = '';
@@ -69,7 +69,7 @@ docstrings.help.details = [
 ];
 
 
-commands.countMessages = function(arguments, api, reply) {
+commands.countMessages = function(arguments, threadID, chat, api, reply) {
     api.getThreadList(0, 0, function(err, arr) {
         if (err) {
             reply({
@@ -88,6 +88,38 @@ docstrings.countMessages.usage = [
 ];
 docstrings.countMessages.details = [
     'Display the total number of messages in the conversation.'
+];
+
+
+commands.setValue = function(arguments, threadID, chat, api, reply) {
+    if (arguments.length != 2) {
+        reply({
+            body: 'Error: setValue() takes 2 arguments (' + arguments.length + ' given).'
+        });
+    }
+    else {
+        // Convert argument 2 into a number.
+        var value = parseFloat(arguments[1]);
+        if (isNaN(value)) {
+            reply({
+                body: 'Error: argument 2 of setValue() should be a number'
+            });
+        }
+        else {
+            chat[arguments[0]] = value;
+            reply({
+                body: '\'' + arguments[0] + '\' has been set to ' + value + '.'
+            },
+            chat);
+        }
+    }
+}
+docstrings.setValue = {};
+docstrings.setValue.usage = [
+    'setValue(variable, value)'
+];
+docstrings.setValue.details = [
+    'Set the value of the given variable, and display confirmation.'
 ];
 
 
@@ -159,15 +191,15 @@ var handle = function(message, threadID, chat, api, reply) {
         console.log('Matched command ' + commandName + '.');
 
         // Send typing indicator to show that the message is being processed.
-        api.sendTypingIndicator(threadID, function(err, end) {
-            // Callback for the command function to call when it's done.
-            function callback(message) {
-                reply(message);
-            }
+        api.sendTypingIndicator(threadID, function(err, end) {});
 
-            // Actually call the command function.
-            commands[commandName](arguments, api, callback);
-        });        
+        // Callback for the command function to call when it's done.
+        function callback(message, chat) {
+            reply(message, chat);
+        }
+
+        // Actually call the command function.
+        commands[commandName](arguments, threadID, chat, api, callback);
     }
     else {
         // A command wasn't matched

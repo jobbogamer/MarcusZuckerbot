@@ -11,55 +11,6 @@ var messageHandler = require('./messageHandler');
 
 
 
-
-
-// Functions
-
-// Start listening to incoming events.
-function startBot(api, chats) {
-    // Set a default value for chats in case it doesn't already exist.
-    // Firebase won't save an empty object to the database.
-    chats = chats || {};
-
-    var stopListening = api.listen(function receive(err, event) {
-        if (err) {
-            return console.error(err);
-        }
-
-        if (event.type === 'message') {
-            console.log('Message received:');
-            console.log('   ', event.body);
-
-            // Load the chat's data from the database.
-            var chat = chats[event.threadID];
-
-            var callback = function(message) {
-                // If the messageHandler sent back a reply, send it to the chat.
-                if (message) {
-                    console.log('Sending reply:');
-                    console.log('   ', message);
-                    api.sendMessage(message, event.threadID);
-                }
-                else {
-                    console.log('No reply required.')
-                }
-
-                console.log('Finished processing message.', '\n');
-            }
-
-            // Send the received message to the message handler.
-            messageHandler.handle(event.body, event.threadID, chat, api, callback);
-        }
-    });
-    console.log('Zuckerbot is now listening for messages.\n');
-}
-
-
-
-
-
-// "Main program"
-
 // Print current version of the app.
 var pkg = require('./package.json');
 console.log('Zuckerbot v' + pkg.version + '\n');
@@ -82,6 +33,61 @@ console.log('Done.\n');
 
 // Load sub-databases.
 var chatsDB = db.child('chats');
+
+
+
+
+// Functions
+
+// Start listening to incoming events.
+function startBot(api, chats) {
+    // Set a default value for chats in case it doesn't already exist.
+    // Firebase won't save an empty object to the database.
+    chats = chats || {};
+
+    var stopListening = api.listen(function receive(err, event) {
+        if (err) {
+            return console.error(err);
+        }
+
+        if (event.type === 'message') {
+            console.log('Message received:');
+            console.log('   ', event.body);
+
+            // Load the chat's data from the database.
+            var chat = chats[event.threadID] || {};
+
+            var callback = function(message, chat) {
+                // If the messageHandler sent back a reply, send it to the chat.
+                if (message) {
+                    console.log('Sending reply:');
+                    console.log('   ', message);
+                    api.sendMessage(message, event.threadID);
+                }
+                else {
+                    console.log('No reply required.')
+                }
+
+                if (chat) {
+                    chats[event.threadID] = chat;
+                    chatsDB.set(chats);
+                }
+
+                console.log('Finished processing message.', '\n');
+            }
+
+            // Send the received message to the message handler.
+            messageHandler.handle(event.body, event.threadID, chat, api, callback);
+        }
+    });
+    console.log('Zuckerbot is now listening for messages.\n');
+}
+
+
+
+
+
+// "Main program"
 
 // Load data from the database and log in to facebook when it's done.
 console.log('Loading data from the database...');
