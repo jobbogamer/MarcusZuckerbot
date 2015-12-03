@@ -69,7 +69,7 @@ docstrings.help.details = [
 ];
 
 
-commands.countMessages = function(arguments, threadID, chat, api, reply) {
+commands.countmessages = function(arguments, threadID, chat, api, reply) {
     api.getThreadList(0, 0, function(err, arr) {
         if (err) {
             reply({
@@ -82,16 +82,16 @@ commands.countMessages = function(arguments, threadID, chat, api, reply) {
         });
     });
 }
-docstrings.countMessages = {};
-docstrings.countMessages.usage = [
+docstrings.countmessages = {};
+docstrings.countmessages.usage = [
     'countMessages()'
 ];
-docstrings.countMessages.details = [
+docstrings.countmessages.details = [
     'Display the total number of messages in the conversation.'
 ];
 
 
-commands.setValue = function(arguments, threadID, chat, api, reply) {
+commands.setvalue = function(arguments, threadID, chat, api, reply) {
     if (arguments.length != 2) {
         reply({
             body: 'Error: setValue() takes 2 arguments (' + arguments.length + ' given).'
@@ -114,16 +114,16 @@ commands.setValue = function(arguments, threadID, chat, api, reply) {
         }
     }
 }
-docstrings.setValue = {};
-docstrings.setValue.usage = [
+docstrings.setvalue = {};
+docstrings.setvalue.usage = [
     'setValue(variable, value)'
 ];
-docstrings.setValue.details = [
+docstrings.setvalue.details = [
     'Set the value of the given variable, and display confirmation.'
 ];
 
 
-commands.getValue = function(arguments, threadID, chat, api, reply) {
+commands.getvalue = function(arguments, threadID, chat, api, reply) {
     if (arguments.length != 1) {
         reply({
             body: 'Error: getValue() takes 1 argument (' + arguments.length + ' given).'
@@ -142,11 +142,11 @@ commands.getValue = function(arguments, threadID, chat, api, reply) {
         }
     }
 }
-docstrings.getValue = {};
-docstrings.getValue.usage = [
+docstrings.getvalue = {};
+docstrings.getvalue.usage = [
     'getValue(variable)'
 ];
-docstrings.getValue.details = [
+docstrings.getvalue.details = [
     'Display the current value of the given variable.'
 ];
 
@@ -224,7 +224,7 @@ function parse(message) {
     var commandStart = message.indexOf('zb.') + 3;
     var commandEnd = message.indexOf('(');
     var commandLength = commandEnd - commandStart;
-    var commandName = message.substr(commandStart, commandLength);
+    var commandName = message.substr(commandStart, commandLength).toLowerCase();
 
     // Create a regular expression which can match arguments. String arguments
     // must be enclosed in quotes, but numerical arguments do not.
@@ -261,7 +261,8 @@ var handle = function(message, threadID, chat, api, reply) {
     // Ignore any messages which don't start with 'zb.' as they aren't commands.
     if (body.indexOf('zb.') !== 0 || body.indexOf('(') === -1 || body.indexOf(')') === -1) {
         console.log('Message does not contain a command.');
-        return null;
+        reply(null);
+        return;
     }
 
     // Parse the command name and arguments.
@@ -283,7 +284,7 @@ var handle = function(message, threadID, chat, api, reply) {
         console.log('Matched command ' + commandName + '.');
 
         // Send typing indicator to show that the message is being processed.
-        api.sendTypingIndicator(threadID);
+        api.sendTypingIndicator(threadID, function(err, end){});
 
         // Callback for the command function to call when it's done.
         function callback(message, chat) {
@@ -296,7 +297,10 @@ var handle = function(message, threadID, chat, api, reply) {
     else {
         // A command wasn't matched
         console.log('No matching command exists.');
-        reply(null);
+        
+        reply({
+            body: 'No command matching \'' + commandName + '\'.'
+        });
     }
 }
 
