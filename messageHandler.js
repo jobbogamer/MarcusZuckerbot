@@ -18,24 +18,22 @@ function createProgressBar(value) {
     var rightEdge = '▏';
     var characters = ['', '▏', '▎', '▍', '▌', '▋', '▊', '▉', '█'];
 
-    // Re-assess the value as a fraction of 96 rather than 100, so it
-    // can be expressed in eigths.
-    var newValue = (value / 100.0) * 96;
-
     // Marker for left edge.
     var bar = leftEdge;
 
     // Count how many full blocks are required and add them.
-    var fullBlocks = Math.floor(newValue / 8);
+    var fullBlocks = Math.floor(value / 10);
     for (var i = 0; i < fullBlocks; i++) {
         bar += characters[8];
     }
 
-    // Add the partial segment at the end.
-    bar += characters[Math.floor(newValue % 8)];
+    // Add the partial segment at the end. The unicode blocks go down to eigths
+    // so split the partial block into (10 ÷ 8) pieces, each size 1.25.
+    var partial = Math.floor((value - (fullBlocks * 10)) / 1.25);
+    bar += characters[partial];
 
     // Add empty spaces where there are no blocks.
-    while (bar.length < 13) {
+    while (bar.length < 11) {
         bar += rightEdge;
     }
 
