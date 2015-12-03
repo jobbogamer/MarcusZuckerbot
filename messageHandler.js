@@ -36,14 +36,15 @@ commands.help = function(arguments, threadID, chat, api, reply) {
     else {
         // Find the usage instructions for the named command.
         var commandName = arguments[0];
+        var commandNameLowercase = commandName.toLowerCase();
 
         // Return help for the command, if it exists.
-        if (docstrings[commandName]) {
-            var messageBody = 'Help for ' + commandName + ':';
-            for (var i = 0; i < docstrings[commandName].usage.length; i++) {
+        if (docstrings[commandNameLowercase]) {
+            var messageBody = 'Help for ' + commandNameLowercase + ':';
+            for (var i = 0; i < docstrings[commandNameLowercase].usage.length; i++) {
                 messageBody += '\n\n';
-                messageBody += docstrings[commandName].usage[i] + '\n';
-                messageBody += docstrings[commandName].details[i];
+                messageBody += docstrings[commandNameLowercase].usage[i] + '\n';
+                messageBody += docstrings[commandNameLowercase].details[i];
             }
 
             reply({
