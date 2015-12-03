@@ -282,6 +282,13 @@ commands.updateprogress = function(arguments, threadID, chat, api, reply) {
         }
     }
 }
+docstrings.updateprogress = {};
+docstrings.updateprogress.usage = [
+    'updateProgress(name, percentage)'
+];
+docstrings.updateprogress.details = [
+    'Update the progress of the named task to the given percentage, and display a progress bar. Percentage must be a number between 0 and 100 inclusive.'
+]
 
 
 
