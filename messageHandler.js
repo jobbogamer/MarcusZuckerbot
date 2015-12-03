@@ -183,6 +183,39 @@ docstrings.increment.details = [
 ];
 
 
+commands.decrement = function(arguments, threadID, chat, api, reply) {
+    if (arguments.length != 1) {
+        reply({
+            body: 'Error: decrement() takes 1 argument (' + arguments.length + ' given).'
+        });
+    }
+    else {
+        if (chat[arguments[0]]) {
+            var newValue = chat[arguments[0]] - 1;
+            chat[arguments[0]] = newValue;
+
+            reply({
+                body: '\'' + arguments[0] + '\' is now set to ' + newValue + '.'
+            },
+            chat);
+        }
+        else {
+            reply({
+                body: '\'' + arguments[0] + '\' is not defined.'
+            });
+        }
+    }
+}
+docstrings.decrement = {};
+docstrings.decrement.usage = [
+    'decrement(variable)'
+];
+docstrings.decrement.details = [
+    'Decrement the value of the given variable by one, and display the new value.'
+];
+
+
+
 
 
 // Extract the command name and arguments from a message.
