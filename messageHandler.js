@@ -151,6 +151,37 @@ docstrings.getValue.details = [
 ];
 
 
+commands.increment = function(arguments, threadID, chat, api, reply) {
+    if (arguments.length != 1) {
+        reply({
+            body: 'Error: increment() takes 1 argument (' + arguments.length + ' given).'
+        });
+    }
+    else {
+        if (chat[arguments[0]]) {
+            var newValue = chat[arguments[0]] + 1;
+            chat[arguments[0]] = newValue;
+
+            reply({
+                body: '\'' + arguments[0] + '\' is now set to ' + newValue + '.'
+            },
+            chat);
+        }
+        else {
+            reply({
+                body: '\'' + arguments[0] + '\' is not defined.'
+            });
+        }
+    }
+}
+docstrings.increment = {};
+docstrings.increment.usage = [
+    'increment(variable)'
+];
+docstrings.increment.details = [
+    'Increment the value of the given variable by one, and display the new value.'
+];
+
 
 
 
