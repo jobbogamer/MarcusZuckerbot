@@ -58,7 +58,9 @@ function startBot(api, chats) {
             api.markAsRead(event.threadID);
 
             // Load the chat's data from the database.
-            var chat = chats[event.threadID] || {};
+            var chat = chats[event.threadID] || {
+                variables: {}
+            };
 
             var callback = function(message, chat) {
                 // If the messageHandler sent back a reply, send it to the chat.

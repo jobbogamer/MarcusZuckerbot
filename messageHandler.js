@@ -107,7 +107,7 @@ commands.setvalue = function(arguments, threadID, chat, api, reply) {
             });
         }
         else {
-            chat[arguments[0]] = value;
+            chat.variables[arguments[0]] = value;
             reply({
                 body: '\'' + arguments[0] + '\' has been set to ' + value + '.'
             },
@@ -131,9 +131,9 @@ commands.getvalue = function(arguments, threadID, chat, api, reply) {
         });
     }
     else {
-        if (chat[arguments[0]]) {
+        if (chat.variables[arguments[0]]) {
             reply({
-                body: '\'' + arguments[0] + '\' is currently set to ' + chat[arguments[0]] + '.'
+                body: '\'' + arguments[0] + '\' is currently set to ' + chat.variables[arguments[0]] + '.'
             });
         }
         else {
@@ -159,9 +159,9 @@ commands.increment = function(arguments, threadID, chat, api, reply) {
         });
     }
     else {
-        if (chat[arguments[0]]) {
-            var newValue = chat[arguments[0]] + 1;
-            chat[arguments[0]] = newValue;
+        if (chat.variables[arguments[0]]) {
+            var newValue = chat.variables[arguments[0]] + 1;
+            chat.variables[arguments[0]] = newValue;
 
             reply({
                 body: '\'' + arguments[0] + '\' is now set to ' + newValue + '.'
@@ -191,9 +191,9 @@ commands.decrement = function(arguments, threadID, chat, api, reply) {
         });
     }
     else {
-        if (chat[arguments[0]]) {
-            var newValue = chat[arguments[0]] - 1;
-            chat[arguments[0]] = newValue;
+        if (chat.variables[arguments[0]]) {
+            var newValue = chat.variables[arguments[0]] - 1;
+            chat.variables[arguments[0]] = newValue;
 
             reply({
                 body: '\'' + arguments[0] + '\' is now set to ' + newValue + '.'
