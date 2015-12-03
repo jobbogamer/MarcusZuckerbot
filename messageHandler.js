@@ -192,6 +192,36 @@ docstrings.getvalue.details = [
 ];
 
 
+commands.showvariables = function(arguments, threadID, chat, api, reply) {
+    // Default to an empty object if no variables exist.
+    chat.variables = chat.variables || {};
+
+    if (Object.keys(chat.variables).length == 0) {
+        reply({
+            body: 'No variables are defined.'
+        });
+    }
+    else {
+        messageBody = '';
+
+        Object.keys(chat.variables).forEach(function(key) {
+            messageBody += key + ' = ' + chat.variables[key] + '\n';
+        });
+
+        reply({
+            body: messageBody
+        });
+    }
+}
+docstrings.showvariables = {};
+docstrings.showvariables.usage = [
+    'showVariables()'
+];
+docstrings.showvariables.details = [
+    'List every defined variable and its current value.'
+];
+
+
 commands.increment = function(arguments, threadID, chat, api, reply) {
     if (arguments.length != 1) {
         reply({
