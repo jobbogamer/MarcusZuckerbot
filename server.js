@@ -54,6 +54,9 @@ function startBot(api, chats) {
             console.log('Message received:');
             console.log('   ', event.body);
 
+            // Mark the message as read.
+            api.markAsRead(event.threadID);
+
             // Load the chat's data from the database.
             var chat = chats[event.threadID] || {};
 
