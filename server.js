@@ -59,7 +59,8 @@ function startBot(api, chats) {
 
             // Load the chat's data from the database.
             var chat = chats[event.threadID] || {
-                variables: {}
+                variables: {},
+                progress: {}
             };
 
             var callback = function(message, chat) {

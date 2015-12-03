@@ -12,6 +12,43 @@ var docstrings = {};
 
 
 
+// Create a progress bar out of unicode block characters.
+function createProgressBar(value) {
+    var leftEdge = '▕';
+    var rightEdge = '▏';
+    var characters = ['', '▏', '▎', '▍', '▌', '▋', '▊', '▉', '█'];
+
+    // Re-assess the value as a fraction of 96 rather than 100, so it
+    // can be expressed in eigths.
+    var newValue = (value / 100.0) * 96;
+
+    // Marker for left edge.
+    var bar = leftEdge;
+
+    // Count how many full blocks are required and add them.
+    var fullBlocks = Math.floor(newValue / 8);
+    for (var i = 0; i < fullBlocks; i++) {
+        bar += characters[8];
+    }
+
+    // Add the partial segment at the end.
+    bar += characters[Math.floor(newValue % 8)];
+
+    // Add empty spaces where there are no blocks.
+    while (bar.length < 13) {
+        bar += rightEdge;
+    }
+
+    // Add the marker for the right edge.
+    bar += rightEdge;
+
+    return bar;
+}
+
+
+
+
+
 // Commands
 
 commands.help = function(arguments, threadID, chat, api, reply) {
@@ -214,6 +251,34 @@ docstrings.decrement.usage = [
 docstrings.decrement.details = [
     'Decrement the value of the given variable by one, and display the new value.'
 ];
+
+
+commands.updateprogress = function(arguments, threadID, chat, api, reply) {
+    if (arguments.length != 2) {
+        reply({
+            body: 'Error: updateProgress() takes 2 arguments (' + arguments.length + ' given).'
+        });
+    }
+    else {
+        // Convert argument 2 into a number.
+        var value = parseFloat(arguments[1]);
+        if (isNaN(value) || value < 0 || value > 100) {
+            reply({
+                body: 'Error: argument 2 of updateProgress() should be a number between 0 and 100.'
+            });
+        }
+        else {
+            // Default to empty if no progress values are stored.
+            chat.progress = chat.progress || {};
+
+            chat.progress[arguments[0]] = value;
+            reply({
+                body: 'Progress of \'' + arguments[0] + '\':\n\n' + createProgressBar(value) + '\n\n' + value + '%'
+            },
+            chat);
+        }
+    }
+}
 
 
 
