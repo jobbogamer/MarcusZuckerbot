@@ -130,7 +130,7 @@ function parse(message) {
 
 
 // Handle a received message by calling the appropriate command function.
-var handle = function(message, chat, api, reply) {
+var handle = function(message, threadID, chat, api, reply) {
     // Whitespace before and after the text should be ignored.
     var body = message.trim();
 
@@ -152,14 +152,22 @@ var handle = function(message, chat, api, reply) {
         console.log('No arguments given.');
     }
 
-    function callback(message) {
-        reply(message);
-    }
+    
 
     // If the given command matches an existing command, call it.
     if (commands[commandName]) {
         console.log('Matched command ' + commandName + '.');
-        commands[commandName](arguments, api, callback);
+
+        // Send typing indicator to show that the message is being processed.
+        api.sendTypingIndicator(threadID, function(err, end) {
+            // Callback for the command function to call when it's done.
+            function callback(message) {
+                reply(message);
+            }
+
+            // Actually call the command function.
+            commands[commandName](arguments, api, callback);
+        });        
     }
     else {
         // A command wasn't matched
