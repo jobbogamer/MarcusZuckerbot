@@ -33,20 +33,22 @@ function startBot(api, chats) {
             // Load the chat's data from the database.
             var chat = chats[event.threadID];
 
+            var callback = function(message) {
+                // If the messageHandler sent back a reply, send it to the chat.
+                if (message) {
+                    console.log('Sending reply:');
+                    console.log('   ', message);
+                    api.sendMessage(message, event.threadID);
+                }
+                else {
+                    console.log('No reply required.')
+                }
+
+                console.log('Finished processing message.', '\n');
+            }
+
             // Send the received message to the message handler.
-            var reply = messageHandler.handle(event.body, chat);
-
-            // If the messageHandler sent back a reply, send it to the chat.
-            if (reply) {
-                console.log('Sending reply:');
-                console.log('   ', reply);
-                api.sendMessage(reply, event.threadID);
-            }
-            else {
-                console.log('No reply required.')
-            }
-
-            console.log('Finished processing message.', '\n');
+            messageHandler.handle(event.body, chat, api, callback);
         }
     });
     console.log('Zuckerbot is now listening for messages.\n');

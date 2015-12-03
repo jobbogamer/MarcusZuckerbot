@@ -14,7 +14,7 @@ var docstrings = {};
 
 // Commands
 
-commands.help = function(arguments) {
+commands.help = function(arguments, api, reply) {
     if (arguments.length == 0) {
         // Create a list of all commands.
         var list = '';
@@ -29,10 +29,9 @@ commands.help = function(arguments) {
         messageBody += list;
 
         // Build and return the reply.
-        var reply = {
+        reply({
             body: messageBody
-        };
-        return reply;
+        });
     }
     else {
         // Find the usage instructions for the named command.
@@ -47,18 +46,16 @@ commands.help = function(arguments) {
                 messageBody += docstrings[commandName].details[i];
             }
 
-            var reply = {
+            reply({
                 body: messageBody
-            };
-            return reply;
+            });
         }
-        
-        // No command matching the argument.
-        var messageBody = 'No command called \'' + commandName + '\'.';
-        var reply = {
-            body: messageBody
-        };
-        return reply;
+        else {
+            // No command matching the argument.
+            reply({
+                body: 'No command called \'' + commandName + '\'.'
+            });
+        }
     }
 };
 docstrings.help = {};
@@ -69,6 +66,28 @@ docstrings.help.usage = [
 docstrings.help.details = [
     'Display a list of available commands.',
     'Display usage instructions for the given command.'
+];
+
+
+commands.countMessages = function(arguments, api, reply) {
+    api.getThreadList(0, 0, function(err, arr) {
+        if (err) {
+            reply({
+                body: err
+            });
+        }
+
+        reply({
+            body: 'The conversation has ' + arr[0].messageCount + ' messages.'
+        });
+    });
+}
+docstrings.countMessages = {};
+docstrings.countMessages.usage = [
+    'countMessages()'
+];
+docstrings.countMessages.details = [
+    'Display the total number of messages in the conversation.'
 ];
 
 
@@ -111,7 +130,7 @@ function parse(message) {
 
 
 // Handle a received message by calling the appropriate command function.
-var handle = function(message, chat) {
+var handle = function(message, chat, api, reply) {
     // Whitespace before and after the text should be ignored.
     var body = message.trim();
 
@@ -126,17 +145,27 @@ var handle = function(message, chat) {
     var commandName = parsed.command;
     var arguments = parsed.arguments;
     console.log('Command name is \'' + commandName + '\'.');
-    console.log('Arguments are ' + arguments.join(', ') + '.');
+    if (arguments.length > 0) {
+        console.log('Arguments are ' + arguments.join(', ') + '.');
+    }
+    else {
+        console.log('No arguments given.');
+    }
+
+    function callback(message) {
+        reply(message);
+    }
 
     // If the given command matches an existing command, call it.
     if (commands[commandName]) {
         console.log('Matched command ' + commandName + '.');
-        return commands[commandName](arguments);
+        commands[commandName](arguments, api, callback);
     }
-
-    // A command wasn't matched
-    console.log('No matching command exists.');
-    return null;
+    else {
+        // A command wasn't matched
+        console.log('No matching command exists.');
+        reply(null);
+    }
 }
 
 
