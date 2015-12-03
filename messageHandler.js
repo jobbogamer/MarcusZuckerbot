@@ -144,6 +144,9 @@ commands.setvalue = function(arguments, threadID, chat, api, reply) {
             });
         }
         else {
+            // Default to empty if no variables are stored.
+            chat.variables = chat.variables || {};
+
             chat.variables[arguments[0]] = value;
             reply({
                 body: '\'' + arguments[0] + '\' has been set to ' + value + '.'
