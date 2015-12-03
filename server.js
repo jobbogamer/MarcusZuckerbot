@@ -116,6 +116,6 @@ db.once('value', function dataReceived(snapshot) {
         }
 
         console.log('Done.\n');
-        startBot(api, data);
+        startBot(api, data.chats);
     });
 });

@@ -123,6 +123,34 @@ docstrings.setValue.details = [
 ];
 
 
+commands.getValue = function(arguments, threadID, chat, api, reply) {
+    if (arguments.length != 1) {
+        reply({
+            body: 'Error: getValue() takes 1 argument (' + arguments.length + ' given).'
+        });
+    }
+    else {
+        if (chat[arguments[0]]) {
+            reply({
+                body: '\'' + arguments[0] + '\' is currently set to ' + chat[arguments[0]] + '.'
+            });
+        }
+        else {
+            reply({
+                body: '\'' + arguments[0] + '\' is not defined.'
+            });
+        }
+    }
+}
+docstrings.getValue = {};
+docstrings.getValue.usage = [
+    'getValue(variable)'
+];
+docstrings.getValue.details = [
+    'Display the current value of the given variable.'
+];
+
+
 
 
 
