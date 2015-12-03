@@ -283,7 +283,7 @@ var handle = function(message, threadID, chat, api, reply) {
         console.log('Matched command ' + commandName + '.');
 
         // Send typing indicator to show that the message is being processed.
-        api.sendTypingIndicator(threadID, function(err, end) {});
+        api.sendTypingIndicator(threadID);
 
         // Callback for the command function to call when it's done.
         function callback(message, chat) {
