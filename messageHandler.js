@@ -144,24 +144,35 @@ commands.setvalue = function(arguments, threadID, chat, api, reply) {
     if (!checkArguments('setValue', arguments, 2, reply)) {
         return;
     }
+
+    // Default to empty if no variables are stored.
+    chat.variables = chat.variables || {};
     
     // Convert argument 2 into a number.
     var value = parseFloat(arguments[1]);
     if (isNaN(value)) {
-        reply({
-            body: 'Error: argument 2 of setValue() should be a number.'
-        });
+        // See if they're trying to set a variable to the value of another variable.
+        if (chat.variables[arguments[1]]) {
+            var newValue = chat.variables[arguments[1]];
+            chat.variables[arguments[0]] = newValue;
+            reply({
+                body: '\'' + arguments[0] + '\' has been set to ' + newValue + '.'
+            },
+            chat);
+        }
+        else {
+            reply({
+                body: 'Error: argument 2 of setValue() should be a number or existing variable name.'
+            });
+        }
     }
     else {
-        // Default to empty if no variables are stored.
-        chat.variables = chat.variables || {};
-
         chat.variables[arguments[0]] = value;
         reply({
             body: '\'' + arguments[0] + '\' has been set to ' + value + '.'
         },
         chat);
-        }
+    }
 }
 docstrings.setvalue = {};
 docstrings.setvalue.usage = [
