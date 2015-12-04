@@ -240,6 +240,32 @@ docstrings.showvariables.details = [
 ];
 
 
+commands.deletevariable = function(arguments, threadID, chat, api, reply) {
+    // Default to an empty object if no variables exist.
+    chat.variables = chat.variables || {};
+
+    if (chat.variables[arguments[0]]) {
+        chat.variables[arguments[0]] = null;
+        reply({
+            body: '\'' + arguments[0] + '\' has been deleted.'
+        },
+        chat);
+    }
+    else {
+        reply({
+            body: '\'' + arguments[0] + '\' is not defined.'
+        });
+    }
+}
+docstrings.deletevariable = {};
+docstrings.deletevariable.usage = [
+    'deleteVariable(variable)'
+];
+docstrings.deletevariable.details = [
+    'Unset the given variable and delete it from the conversation.'
+];
+
+
 commands.increment = function(arguments, threadID, chat, api, reply) {
     // One argument is required.
     if (!checkArguments('increment', arguments, 1, reply)) {
