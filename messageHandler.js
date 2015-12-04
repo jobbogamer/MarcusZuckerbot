@@ -12,6 +12,18 @@ var docstrings = {};
 
 
 
+// Enforce the number of arguments required for a function.
+function checkArguments(functionName, arguments, requiredNumber, reply) {
+    if (arguments.length != requiredNumber) {
+        reply({
+            body: 'Error: ' + functionName + '() takes ' + requiredNumber + ' arguments (' + arguments.length + ' given).'
+        });
+        return false;
+    }
+    return true;
+}
+
+
 // Create a progress bar out of unicode block characters.
 function createProgressBar(value) {
     var leftEdge = '▕';
@@ -128,30 +140,28 @@ docstrings.countmessages.details = [
 
 
 commands.setvalue = function(arguments, threadID, chat, api, reply) {
-    if (arguments.length != 2) {
+    // Two arguments are required.
+    if (!checkArguments('setValue', arguments, 2, reply)) {
+        return;
+    }
+    
+    // Convert argument 2 into a number.
+    var value = parseFloat(arguments[1]);
+    if (isNaN(value)) {
         reply({
-            body: 'Error: setValue() takes 2 arguments (' + arguments.length + ' given).'
+            body: 'Error: argument 2 of setValue() should be a number'
         });
     }
     else {
-        // Convert argument 2 into a number.
-        var value = parseFloat(arguments[1]);
-        if (isNaN(value)) {
-            reply({
-                body: 'Error: argument 2 of setValue() should be a number'
-            });
-        }
-        else {
-            // Default to empty if no variables are stored.
-            chat.variables = chat.variables || {};
+        // Default to empty if no variables are stored.
+        chat.variables = chat.variables || {};
 
-            chat.variables[arguments[0]] = value;
-            reply({
-                body: '\'' + arguments[0] + '\' has been set to ' + value + '.'
-            },
-            chat);
+        chat.variables[arguments[0]] = value;
+        reply({
+            body: '\'' + arguments[0] + '\' has been set to ' + value + '.'
+        },
+        chat);
         }
-    }
 }
 docstrings.setvalue = {};
 docstrings.setvalue.usage = [
@@ -163,23 +173,22 @@ docstrings.setvalue.details = [
 
 
 commands.getvalue = function(arguments, threadID, chat, api, reply) {
-    if (arguments.length != 1) {
+    // One argument is required.
+    if (!checkArguments('getValue', arguments, 1, reply)) {
+        return;
+    }
+
+    if (chat.variables[arguments[0]]) {
         reply({
-            body: 'Error: getValue() takes 1 argument (' + arguments.length + ' given).'
+            body: '\'' + arguments[0] + '\' is currently set to ' + chat.variables[arguments[0]] + '.'
         });
     }
     else {
-        if (chat.variables[arguments[0]]) {
-            reply({
-                body: '\'' + arguments[0] + '\' is currently set to ' + chat.variables[arguments[0]] + '.'
-            });
-        }
-        else {
-            reply({
-                body: '\'' + arguments[0] + '\' is not defined.'
-            });
-        }
+        reply({
+            body: '\'' + arguments[0] + '\' is not defined.'
+        });
     }
+
 }
 docstrings.getvalue = {};
 docstrings.getvalue.usage = [
@@ -221,26 +230,24 @@ docstrings.showvariables.details = [
 
 
 commands.increment = function(arguments, threadID, chat, api, reply) {
-    if (arguments.length != 1) {
+    // One argument is required.
+    if (!checkArguments('increment', arguments, 1, reply)) {
+        return;
+    }
+
+    if (chat.variables[arguments[0]]) {
+        var newValue = chat.variables[arguments[0]] + 1;
+        chat.variables[arguments[0]] = newValue;
+
         reply({
-            body: 'Error: increment() takes 1 argument (' + arguments.length + ' given).'
-        });
+            body: '\'' + arguments[0] + '\' is now set to ' + newValue + '.'
+        },
+        chat);
     }
     else {
-        if (chat.variables[arguments[0]]) {
-            var newValue = chat.variables[arguments[0]] + 1;
-            chat.variables[arguments[0]] = newValue;
-
-            reply({
-                body: '\'' + arguments[0] + '\' is now set to ' + newValue + '.'
-            },
-            chat);
-        }
-        else {
-            reply({
-                body: '\'' + arguments[0] + '\' is not defined.'
-            });
-        }
+        reply({
+            body: '\'' + arguments[0] + '\' is not defined.'
+        });
     }
 }
 docstrings.increment = {};
@@ -253,26 +260,24 @@ docstrings.increment.details = [
 
 
 commands.decrement = function(arguments, threadID, chat, api, reply) {
-    if (arguments.length != 1) {
+    // One argument is required.
+    if (!checkArguments('decrement', arguments, 1, reply)) {
+        return;
+    }
+
+    if (chat.variables[arguments[0]]) {
+        var newValue = chat.variables[arguments[0]] - 1;
+        chat.variables[arguments[0]] = newValue;
+
         reply({
-            body: 'Error: decrement() takes 1 argument (' + arguments.length + ' given).'
-        });
+            body: '\'' + arguments[0] + '\' is now set to ' + newValue + '.'
+        },
+        chat);
     }
     else {
-        if (chat.variables[arguments[0]]) {
-            var newValue = chat.variables[arguments[0]] - 1;
-            chat.variables[arguments[0]] = newValue;
-
-            reply({
-                body: '\'' + arguments[0] + '\' is now set to ' + newValue + '.'
-            },
-            chat);
-        }
-        else {
-            reply({
-                body: '\'' + arguments[0] + '\' is not defined.'
-            });
-        }
+        reply({
+            body: '\'' + arguments[0] + '\' is not defined.'
+        });
     }
 }
 docstrings.decrement = {};
@@ -285,29 +290,27 @@ docstrings.decrement.details = [
 
 
 commands.updateprogress = function(arguments, threadID, chat, api, reply) {
-    if (arguments.length != 2) {
+    // Two arguments are required.
+    if (!checkArguments('updateProgress', arguments, 2, reply)) {
+        return;
+    }
+
+    // Convert argument 2 into a number.
+    var value = parseFloat(arguments[1]);
+    if (isNaN(value) || value < 0 || value > 100) {
         reply({
-            body: 'Error: updateProgress() takes 2 arguments (' + arguments.length + ' given).'
+            body: 'Error: argument 2 of updateProgress() should be a number between 0 and 100.'
         });
     }
     else {
-        // Convert argument 2 into a number.
-        var value = parseFloat(arguments[1]);
-        if (isNaN(value) || value < 0 || value > 100) {
-            reply({
-                body: 'Error: argument 2 of updateProgress() should be a number between 0 and 100.'
-            });
-        }
-        else {
-            // Default to empty if no progress values are stored.
-            chat.progress = chat.progress || {};
+        // Default to empty if no progress values are stored.
+        chat.progress = chat.progress || {};
 
-            chat.progress[arguments[0]] = value;
-            reply({
-                body: 'Progress of \'' + arguments[0] + '\':\n\n' + createProgressBar(value) + '\n\n' + value + '%'
-            },
-            chat);
-        }
+        chat.progress[arguments[0]] = value;
+        reply({
+            body: 'Progress of \'' + arguments[0] + '\':\n\n' + createProgressBar(value) + '\n\n' + value + '%'
+        },
+        chat);
     }
 }
 docstrings.updateprogress = {};
@@ -320,23 +323,21 @@ docstrings.updateprogress.details = [
 
 
 commands.showprogress = function(arguments, threadID, chat, api, reply) {
-    if (arguments.length != 1) {
+    // One argument is required.
+    if (!checkArguments('showProgress', arguments, 1, reply)) {
+        return;
+    }
+
+    if (chat.progress[arguments[0]]) {
         reply({
-            body: 'Error: updateProgress() takes 1 argument (' + arguments.length + ' given).'
-        });
+            body: 'Progress of \'' + arguments[0] + '\':\n\n' + createProgressBar(chat.progress[arguments[0]]) + '\n\n' + chat.progress[arguments[0]] + '%'
+        },
+        chat);
     }
     else {
-        if (chat.progress[arguments[0]]) {
-            reply({
-                body: 'Progress of \'' + arguments[0] + '\':\n\n' + createProgressBar(chat.progress[arguments[0]]) + '\n\n' + chat.progress[arguments[0]] + '%'
-            },
-            chat);
-        }
-        else {
-            reply({
-                body: '\'' + arguments[0] + '\' is not defined.'
-            });
-        }
+        reply({
+            body: '\'' + arguments[0] + '\' is not defined.'
+        });
     }
 }
 docstrings.showprogress = {};
