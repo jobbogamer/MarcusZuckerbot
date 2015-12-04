@@ -398,7 +398,7 @@ commands.showprogress = function(arguments, threadID, chat, api, reply) {
 
     if (chat.progress[arguments[0]] != null) {
         reply({
-            body: 'Progress of ' + arguments[0] + ':\n\n' + createProgressBar(chat.progress[arguments[0]]) + '\n\n' + chat.progress[arguments[0]] + '%'
+            body: 'Progress of ' + arguments[0] + ':\n\n' + createProgressBar(chat.progress[arguments[0]]) + '\n\n' + chat.progress[arguments[0]].toFixed(3) + '%'
         },
         chat);
     }
