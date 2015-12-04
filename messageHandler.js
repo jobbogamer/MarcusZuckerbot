@@ -156,7 +156,7 @@ commands.setvalue = function(arguments, threadID, chat, api, reply) {
             var newValue = chat.variables[arguments[1]];
             chat.variables[arguments[0]] = newValue;
             reply({
-                body: '\'' + arguments[0] + '\' has been set to ' + newValue + '.'
+                body: arguments[0] + ' has been set to ' + newValue + '.'
             },
             chat);
         }
@@ -169,7 +169,7 @@ commands.setvalue = function(arguments, threadID, chat, api, reply) {
     else {
         chat.variables[arguments[0]] = value;
         reply({
-            body: '\'' + arguments[0] + '\' has been set to ' + value + '.'
+            body: arguments[0] + ' has been set to ' + value + '.'
         },
         chat);
     }
@@ -191,7 +191,7 @@ commands.getvalue = function(arguments, threadID, chat, api, reply) {
 
     if (chat.variables[arguments[0]] != null) {
         reply({
-            body: '\'' + arguments[0] + '\' is currently set to ' + chat.variables[arguments[0]] + '.'
+            body: arguments[0] + ' is currently set to ' + chat.variables[arguments[0]] + '.'
         });
     }
     else {
@@ -249,7 +249,7 @@ commands.deletevariable = function(arguments, threadID, chat, api, reply) {
     if (chat.variables[arguments[0]] != null) {
         chat.variables[arguments[0]] = null;
         reply({
-            body: '\'' + arguments[0] + '\' has been deleted.'
+            body: arguments[0] + ' has been deleted.'
         },
         chat);
     }
@@ -279,7 +279,7 @@ commands.increment = function(arguments, threadID, chat, api, reply) {
         chat.variables[arguments[0]] = newValue;
 
         reply({
-            body: '\'' + arguments[0] + '\' is now set to ' + newValue + '.'
+            body: arguments[0] + ' is now set to ' + newValue + '.'
         },
         chat);
     }
@@ -309,7 +309,7 @@ commands.decrement = function(arguments, threadID, chat, api, reply) {
         chat.variables[arguments[0]] = newValue;
 
         reply({
-            body: '\'' + arguments[0] + '\' is now set to ' + newValue + '.'
+            body: arguments[0] + ' is now set to ' + newValue + '.'
         },
         chat);
     }
@@ -375,7 +375,7 @@ commands.updateprogress = function(arguments, threadID, chat, api, reply) {
 
     chat.progress[arguments[0]] = progress;
     reply({
-        body: 'Progress of \'' + arguments[0] + '\':\n\n' + createProgressBar(progress) + '\n\n' + display + '%'
+        body: 'Progress of ' + arguments[0] + ':\n\n' + createProgressBar(progress) + '\n\n' + display + '%'
     },
     chat);
 }
@@ -398,7 +398,7 @@ commands.showprogress = function(arguments, threadID, chat, api, reply) {
 
     if (chat.progress[arguments[0]] != null) {
         reply({
-            body: 'Progress of \'' + arguments[0] + '\':\n\n' + createProgressBar(chat.progress[arguments[0]]) + '\n\n' + chat.progress[arguments[0]] + '%'
+            body: 'Progress of ' + arguments[0] + ':\n\n' + createProgressBar(chat.progress[arguments[0]]) + '\n\n' + chat.progress[arguments[0]] + '%'
         },
         chat);
     }
