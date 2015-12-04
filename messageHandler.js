@@ -149,7 +149,7 @@ commands.setvalue = function(arguments, threadID, chat, api, reply) {
     var value = parseFloat(arguments[1]);
     if (isNaN(value)) {
         reply({
-            body: 'Error: argument 2 of setValue() should be a number'
+            body: 'Error: argument 2 of setValue() should be a number.'
         });
     }
     else {
