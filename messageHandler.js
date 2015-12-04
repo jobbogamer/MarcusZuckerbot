@@ -152,7 +152,7 @@ commands.setvalue = function(arguments, threadID, chat, api, reply) {
     var value = parseFloat(arguments[1]);
     if (isNaN(value)) {
         // See if they're trying to set a variable to the value of another variable.
-        if (chat.variables[arguments[1]]) {
+        if (chat.variables[arguments[1]] != null) {
             var newValue = chat.variables[arguments[1]];
             chat.variables[arguments[0]] = newValue;
             reply({
@@ -189,7 +189,7 @@ commands.getvalue = function(arguments, threadID, chat, api, reply) {
         return;
     }
 
-    if (chat.variables[arguments[0]]) {
+    if (chat.variables[arguments[0]] != null) {
         reply({
             body: '\'' + arguments[0] + '\' is currently set to ' + chat.variables[arguments[0]] + '.'
         });
@@ -223,7 +223,9 @@ commands.showvariables = function(arguments, threadID, chat, api, reply) {
         messageBody = '';
 
         Object.keys(chat.variables).forEach(function(key) {
-            messageBody += key + ' = ' + chat.variables[key] + '\n';
+            if (chat.variables[key] != null) {
+                messageBody += key + ' = ' + chat.variables[key] + '\n';
+            }
         });
 
         reply({
@@ -244,7 +246,7 @@ commands.deletevariable = function(arguments, threadID, chat, api, reply) {
     // Default to an empty object if no variables exist.
     chat.variables = chat.variables || {};
 
-    if (chat.variables[arguments[0]]) {
+    if (chat.variables[arguments[0]] != null) {
         chat.variables[arguments[0]] = null;
         reply({
             body: '\'' + arguments[0] + '\' has been deleted.'
@@ -272,7 +274,7 @@ commands.increment = function(arguments, threadID, chat, api, reply) {
         return;
     }
 
-    if (chat.variables[arguments[0]]) {
+    if (chat.variables[arguments[0]] != null) {
         var newValue = chat.variables[arguments[0]] + 1;
         chat.variables[arguments[0]] = newValue;
 
@@ -302,7 +304,7 @@ commands.decrement = function(arguments, threadID, chat, api, reply) {
         return;
     }
 
-    if (chat.variables[arguments[0]]) {
+    if (chat.variables[arguments[0]] != null) {
         var newValue = chat.variables[arguments[0]] - 1;
         chat.variables[arguments[0]] = newValue;
 
@@ -365,7 +367,7 @@ commands.showprogress = function(arguments, threadID, chat, api, reply) {
         return;
     }
 
-    if (chat.progress[arguments[0]]) {
+    if (chat.progress[arguments[0]] != null) {
         reply({
             body: 'Progress of \'' + arguments[0] + '\':\n\n' + createProgressBar(chat.progress[arguments[0]]) + '\n\n' + chat.progress[arguments[0]] + '%'
         },
