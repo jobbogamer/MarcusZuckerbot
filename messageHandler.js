@@ -573,9 +573,9 @@ function stringifyAlternativesList(items) {
 
 
 // Handle a received message by calling the appropriate command function.
-var handle = function(message, threadID, sender, chat, api, reply) {
+var handle = function(message, chatData, facebookAPI, reply) {
     // Whitespace before and after the text should be ignored.
-    var body = message.trim();
+    var body = message.body.trim();
 
     // Ignore any messages which don't start with 'zb.' as they aren't commands.
     if (body.indexOf('zb.') !== 0 || body.indexOf('(') === -1 || body.indexOf(')') === -1) {
@@ -599,18 +599,25 @@ var handle = function(message, threadID, sender, chat, api, reply) {
     if (commandName.charAt(commandName.length - 1) === '2') {
         var name = commandName.substr(0, commandName.length - 1);
 
+        // Data to pass to the command function.
         var options = {
-            arguments: arguments
+            arguments: arguments,
+            threadID: message.threadID,
+            sender: message.senderName,
+            chatData: chatData,
+            facebookAPI: facebookAPI
         };
 
         var command = commands__private[name];
         if (command) {
+            // List all the numbers of arguments that the command takes by
+            // looking in the usage for the command.
             var argumentLengths = [];
-
             command.usage.map(function (usage) {
                 argumentLengths.push(usage.arguments.length);
             });
 
+            // Check that the right number of arguments have been given.
             if (argumentLengths.indexOf(arguments.length) == -1) {
                 var error = 'Error: ' + command.name + ' takes ' + stringifyAlternativesList(argumentLengths) + ' arguments (' + arguments.length + ' given).';
                 reply({
@@ -619,6 +626,7 @@ var handle = function(message, threadID, sender, chat, api, reply) {
                 return;
             }
 
+            // Execute the command.
             command.func(options,  function(message, chat){
                 reply(message, chat);
             });
@@ -632,7 +640,7 @@ var handle = function(message, threadID, sender, chat, api, reply) {
         console.log('Matched command ' + commandName + '.');
 
         // Send typing indicator to show that the message is being processed.
-        var endTypingIndicator = api.sendTypingIndicator(threadID, function(err, end){});
+        var endTypingIndicator = facebookAPI.sendTypingIndicator(message.threadID, function(err, end){});
 
         // Callback for the command function to call when it's done.
         function callback(message, chat) {
@@ -641,7 +649,7 @@ var handle = function(message, threadID, sender, chat, api, reply) {
         }
 
         // Actually call the command function.
-        commands[commandName](arguments, threadID, sender, chat, api, callback);
+        commands[commandName](arguments, message.threadID, message.senderName, chatData, facebookAPI, callback);
     }
     else {
         // A command wasn't matched
