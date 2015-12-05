@@ -1,28 +1,29 @@
 {
-    "name": "marcuszuckerbot",
-    "version": "1.0.0",
-    "description": "Chatbot for Facebook chat",
-    "main": "server.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "node server.js"
-    },
-    "author": "Josh Asch",
-    "license": "MIT",
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/jobbogamer/MarcusZuckerbot.git"
-    },
-    "dependencies": {
-        "facebook-chat-api": "^1.0.3",
-        "firebase": "^2.3.2"
-    },
-    "engines": {
-        "node": "4.x"
-    },
-    "bugs": {
-        "url": "https://github.com/jobbogamer/MarcusZuckerbot/issues"
-    },
-    "homepage": "https://github.com/bsansouci/MarcusZuckerbot",
-    "devDependencies": {}
+  "name": "marcuszuckerbot",
+  "version": "1.0.0",
+  "description": "Chatbot for Facebook chat",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Josh Asch",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jobbogamer/MarcusZuckerbot.git"
+  },
+  "dependencies": {
+    "facebook-chat-api": "^1.0.3",
+    "firebase": "^2.3.2",
+    "github": "^0.2.4"
+  },
+  "engines": {
+    "node": "4.x"
+  },
+  "bugs": {
+    "url": "https://github.com/jobbogamer/MarcusZuckerbot/issues"
+  },
+  "homepage": "https://github.com/bsansouci/MarcusZuckerbot",
+  "devDependencies": {}
 }

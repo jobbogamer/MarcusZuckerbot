@@ -1,6 +1,8 @@
 // Handles received messages and calls the appropriate command functions to 
 // generate replies.
 
+githubIssues = require('./githubIssues');
+
 
 // List of commands which can be called.
 var commands = {};
@@ -61,7 +63,7 @@ function createProgressBar(value) {
 
 // Commands
 
-commands.help = function(arguments, threadID, chat, api, reply) {
+commands.help = function(arguments, threadID, sender, chat, api, reply) {
     if (arguments.length == 0) {
         // Create a list of all commands.
         var list = '';
@@ -117,7 +119,7 @@ docstrings.help.details = [
 ];
 
 
-commands.countmessages = function(arguments, threadID, chat, api, reply) {
+commands.countmessages = function(arguments, threadID, sender, chat, api, reply) {
     api.getThreadList(0, 0, function(err, arr) {
         if (err) {
             reply({
@@ -139,7 +141,7 @@ docstrings.countmessages.details = [
 ];
 
 
-commands.setvalue = function(arguments, threadID, chat, api, reply) {
+commands.setvalue = function(arguments, threadID, sender, chat, api, reply) {
     // Two arguments are required.
     if (!checkArguments('setValue', arguments, 2, reply)) {
         return;
@@ -183,7 +185,7 @@ docstrings.setvalue.details = [
 ];
 
 
-commands.getvalue = function(arguments, threadID, chat, api, reply) {
+commands.getvalue = function(arguments, threadID, sender, chat, api, reply) {
     // One argument is required.
     if (!checkArguments('getValue', arguments, 1, reply)) {
         return;
@@ -210,7 +212,7 @@ docstrings.getvalue.details = [
 ];
 
 
-commands.showvariables = function(arguments, threadID, chat, api, reply) {
+commands.showvariables = function(arguments, threadID, sender, chat, api, reply) {
     // Default to an empty object if no variables exist.
     chat.variables = chat.variables || {};
 
@@ -242,7 +244,7 @@ docstrings.showvariables.details = [
 ];
 
 
-commands.deletevariable = function(arguments, threadID, chat, api, reply) {
+commands.deletevariable = function(arguments, threadID, sender, chat, api, reply) {
     // Default to an empty object if no variables exist.
     chat.variables = chat.variables || {};
 
@@ -268,7 +270,7 @@ docstrings.deletevariable.details = [
 ];
 
 
-commands.increment = function(arguments, threadID, chat, api, reply) {
+commands.increment = function(arguments, threadID, sender, chat, api, reply) {
     // One argument is required.
     if (!checkArguments('increment', arguments, 1, reply)) {
         return;
@@ -298,7 +300,7 @@ docstrings.increment.details = [
 ];
 
 
-commands.decrement = function(arguments, threadID, chat, api, reply) {
+commands.decrement = function(arguments, threadID, sender, chat, api, reply) {
     // One argument is required.
     if (!checkArguments('decrement', arguments, 1, reply)) {
         return;
@@ -328,7 +330,7 @@ docstrings.decrement.details = [
 ];
 
 
-commands.updateprogress = function(arguments, threadID, chat, api, reply) {
+commands.updateprogress = function(arguments, threadID, sender, chat, api, reply) {
     if (arguments.length < 2 || arguments.length > 3) {
         reply({
             body: 'Error: updateProgress() takes 2 or 3 arguments (' + arguments.length + 'given).'
@@ -390,7 +392,7 @@ docstrings.updateprogress.details = [
 ]
 
 
-commands.showprogress = function(arguments, threadID, chat, api, reply) {
+commands.showprogress = function(arguments, threadID, sender, chat, api, reply) {
     // One argument is required.
     if (!checkArguments('showProgress', arguments, 1, reply)) {
         return;
@@ -414,6 +416,39 @@ docstrings.showprogress.usage = [
 ];
 docstrings.showprogress.details = [
     'Display a progress bar showing the current progress of the named task.'
+];
+
+
+commands.suggestcommand = function(arguments, threadID, sender, chat, api, reply) {
+    if (!checkArguments('suggestCommand', arguments, 2, reply)) {
+        return;
+    }
+
+    var title = arguments[0] + '()';
+    var body = arguments[1] + '\n\n' + 'Suggested by ' + sender + '.';
+
+    githubIssues.createIssue(title, body, function(err, res) {
+        if (err) {
+            reply({
+                body: 'An error occurred when trying to submit the suggestion.'
+            });
+            return;
+        }
+
+        var url = res.html_url;
+        var name = res.title;
+
+        reply({
+            body: 'Command \'' + name + '\' has been suggested.\n\n' + url
+        });
+    });
+}
+docstrings.suggestcommand = {};
+docstrings.suggestcommand.usage = [
+    'suggestCommand(name, description)'
+];
+docstrings.suggestcommand.details = [
+    'Open a GitHub issue in the Zuckerbot repo suggesting a new command with the given name and description.'
 ];
 
 
@@ -457,7 +492,7 @@ function parse(message) {
 
 
 // Handle a received message by calling the appropriate command function.
-var handle = function(message, threadID, chat, api, reply) {
+var handle = function(message, threadID, sender, chat, api, reply) {
     // Whitespace before and after the text should be ignored.
     var body = message.trim();
 
@@ -495,7 +530,7 @@ var handle = function(message, threadID, chat, api, reply) {
         }
 
         // Actually call the command function.
-        commands[commandName](arguments, threadID, chat, api, callback);
+        commands[commandName](arguments, threadID, sender, chat, api, callback);
     }
     else {
         // A command wasn't matched

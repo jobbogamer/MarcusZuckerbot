@@ -83,7 +83,7 @@ function startBot(api, chats) {
             }
 
             // Send the received message to the message handler.
-            messageHandler.handle(event.body, event.threadID, chat, api, callback);
+            messageHandler.handle(event.body, event.threadID, event.senderName, chat, api, callback);
         }
     });
     console.log('Zuckerbot is now listening for messages.\n');
