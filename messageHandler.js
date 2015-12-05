@@ -436,7 +436,7 @@ commands.suggestcommand = function(arguments, threadID, sender, chat, api, reply
         }
 
         var url = res.html_url;
-        var name = res.title;
+        var name = res.title.substr(0, res.title.length - 2);
 
         reply({
             body: 'Command \'' + name + '\' has been suggested.\n\n' + url
