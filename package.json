@@ -16,7 +16,8 @@
   "dependencies": {
     "facebook-chat-api": "^1.0.3",
     "firebase": "^2.3.2",
-    "github": "^0.2.4"
+    "github": "^0.2.4",
+    "require-all": "^2.0.0"
   },
   "engines": {
     "node": "4.x"

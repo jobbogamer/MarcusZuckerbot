@@ -1,7 +1,78 @@
 // Handles received messages and calls the appropriate command functions to 
 // generate replies.
 
-githubIssues = require('./ThirdPartyAPIs/githubIssues');
+githubIssues = require('./third_party_apis/githubIssues');
+
+
+// Build an 'API' of commands by importing all modules in the commands
+// directory. The resulting object will map each module's exports to the
+// name of the file.
+var commands__private = require('require-all')({
+    dirname:  __dirname + '/commands',
+    map: function(name, path) {
+        return name.toLowerCase();
+    }
+});
+
+
+// The help command is a special case which must be handled here rather than in
+// its own file because it needs access to the API object.
+var help = function(options, replyCallback) {
+    var reply = '';
+
+    var args = options.arguments;
+
+    // If no arguments are given, list all available commands.
+    if (args.length == 0) {
+        reply = 'Available commands:';
+        for (var key in commands__private) {
+            var command = commands__private[key];
+            reply += '\n' + '• ' + command.name;
+        }
+    }
+
+    // If one argument is given, display usage help for the requested command.
+    else if (args.length == 1) {
+        needle = args[0].toLowerCase();
+        command = commands__private[needle];
+
+        if (command) {
+            reply = 'Help for ' + command.name + ':';
+            command.usage.map(function (usage) {
+                // commandName(arg1, arg2, ...)
+                reply += '\n\n' + command.name + '(' + usage.arguments.join(', ') + ')';
+                reply += '\n' + usage.description;
+            });
+        }
+        else {
+            reply = 'No command matching \'' + args[0] + '\'.';
+        }
+    }
+
+    replyCallback({
+        body: reply
+    });
+}
+
+var helpUsage = [
+    {
+        arguments: [],
+        description: 'Display a list of available commands.'
+    },
+    {
+        arguments: ['command'],
+        description: 'Display usage instructions for the given command.'
+    }
+];
+
+commands__private.help = {
+    name: 'help',
+    func: help,
+    usage: helpUsage
+};
+
+console.log(commands__private);
+
 
 
 // List of commands which can be called.
@@ -515,7 +586,18 @@ var handle = function(message, threadID, sender, chat, api, reply) {
         console.log('No arguments given.');
     }
 
-    
+    if (commandName.charAt(commandName.length - 1) === '2') {
+        var name = commandName.substr(0, commandName.length - 1);
+
+        var options = {
+            arguments: arguments
+        };
+
+        commands__private[name].func(options, function(message, chat){
+            reply(message, chat);
+        });
+        return;
+    }
 
     // If the given command matches an existing command, call it.
     if (commands[commandName]) {
