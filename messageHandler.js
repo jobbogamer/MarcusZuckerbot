@@ -1,7 +1,7 @@
 // Handles received messages and calls the appropriate command functions to 
 // generate replies.
 
-githubIssues = require('./githubIssues');
+githubIssues = require('./ThirdPartyAPIs/GithubIssues');
 
 
 // List of commands which can be called.
