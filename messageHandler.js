@@ -558,7 +558,17 @@ function parse(message) {
 }
 
 
+function stringifyAlternativesList(items) {
+    if (items.length === 1) {
+        return items[0];
+    }
 
+    if (items.length === 2) {
+        return items[0] + ' or ' + items[1];
+    }
+
+    return items.slice(0, items.length - 1).join(', ') + ', or ' + items[items.length - 1];
+}
 
 
 
@@ -580,7 +590,7 @@ var handle = function(message, threadID, sender, chat, api, reply) {
     var arguments = parsed.arguments;
     console.log('Command name is \'' + commandName + '\'.');
     if (arguments.length > 0) {
-        console.log('Arguments are ' + arguments.join(', ') + '.');
+        console.log('Arguments are \'' + arguments.join('\', \'') + '\'.');
     }
     else {
         console.log('No arguments given.');
@@ -593,10 +603,28 @@ var handle = function(message, threadID, sender, chat, api, reply) {
             arguments: arguments
         };
 
-        commands__private[name].func(options, function(message, chat){
-            reply(message, chat);
-        });
-        return;
+        var command = commands__private[name];
+        if (command) {
+            var argumentLengths = [];
+
+            command.usage.map(function (usage) {
+                argumentLengths.push(usage.arguments.length);
+            });
+
+            if (argumentLengths.indexOf(arguments.length) == -1) {
+                var error = 'Error: ' + command.name + ' takes ' + stringifyAlternativesList(argumentLengths) + ' arguments (' + arguments.length + ' given).';
+                reply({
+                    body: error
+                });
+                return;
+            }
+
+            command.func(options,  function(message, chat){
+                reply(message, chat);
+            });
+
+            return;
+        }
     }
 
     // If the given command matches an existing command, call it.
