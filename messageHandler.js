@@ -69,9 +69,9 @@ commands.help = function(arguments, threadID, sender, chat, api, reply) {
         var list = '';
 
         // Just add each command to the end of the list.
-        for (var command in commands) {
-            list += '• ' + command + '\n';
-        }
+        Object.keys(commands).sort().forEach(function(name) {
+            list += '• ' + name + '\n';
+        });
 
         // Add some explanation to the message.
         var messageBody = 'Available commands:\n';
