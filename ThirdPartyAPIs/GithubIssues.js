@@ -2,7 +2,7 @@
 
 var GitHub = require('github');
 
-// Repo name
+
 var user = 'jobbogamer';
 var repo = 'MarcusZuckerbot';
 var labels = ['command'];
