@@ -34,8 +34,8 @@ var diagonalise = function(arguments, info, replyCallback) {
 var usage = [
     {
         arguments: ['text'],
-        description: 'Resend a message with a character on each line, spaced to create a diagonal' +
-                     'line effect.'
+        description: 'Resend a message with one character on each line, spaced to create a ' +
+                     'diagonal line effect.'
     }
 ];
 
