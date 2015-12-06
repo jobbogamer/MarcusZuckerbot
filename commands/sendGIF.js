@@ -34,8 +34,16 @@ var usage = [
 ];
 
 
-module.exports = {
-    name: 'sendGIF',
-    func: sendGIF,
-    usage: usage
-};
+module.exports = function init() {
+    if (!process.env.GIPHY_API_KEY) {
+        return {
+            error: 'GIPHY_API_KEY environment variable is not set.'
+        };
+    }
+
+    return {
+        name: 'sendGIF',
+        func: sendGIF,
+        usage: usage
+    };
+}

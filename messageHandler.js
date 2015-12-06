@@ -1,21 +1,48 @@
 // Handles received messages and calls the appropriate command functions to 
 // generate replies.
 
-githubIssues = require('./third_party_apis/githubIssues');
+var githubIssues = require('./third_party_apis/githubIssues');
+var log = require('npmlog');
 
 
 // Build an 'API' of commands by importing all modules in the commands
 // directory. The resulting object will map each module's exports to the
 // name of the file.
 console.log('Loading command plugins...');
-var commands__private = require('require-all')({
-    dirname:  __dirname + '/commands',
-    map: function(name, path) {
-        console.log(name);
-        return name.toLowerCase();
+var commandInitialisers = require('require-all')(__dirname + '/commands');
+
+var commands__private = {};
+for (var key in commandInitialisers) {
+    var command = commandInitialisers[key]();
+    
+    // If the command initialiser returned an error, or did not return a
+    // command, log it to the console.
+    if (!command) {
+        log.error(key, 'No command object returned.');
     }
-});
+    else if (command.error) {
+        log.error(key, command.error);
+    }
+    else if (!command.name) {
+        log.error(key, 'Command object has no name field.');
+    }
+    else if (!command.func) {
+        log.error(key, 'Command object has no func field.');
+    }
+    else if (!command.usage) {
+        log.error(key, 'Command object has no usage field.');
+    }
+
+    // A command was returned and it has the required fields.
+    else {
+        commands__private[command.name.toLowerCase()] = command;
+        console.log(command.name);
+    }
+}
+
 console.log('Done.\n');
+
+
 
 
 // The help command is a special case which must be handled here rather than in
