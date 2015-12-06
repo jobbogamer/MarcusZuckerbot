@@ -627,16 +627,6 @@ var handle = function(message, chatData, facebookAPI, reply) {
     if (commandName.charAt(0) === '_') {
         var name = commandName.substr(1, commandName.length - 1);
 
-        // Data to pass to the command function.
-        var options = {
-            arguments: arguments,
-            threadID: message.threadID,
-            sender: message.senderName,
-            attachments: message.attachments,
-            chatData: chatData,
-            facebookAPI: facebookAPI
-        };
-
         var command = commands__private[name];
         if (command) {
             // List all the numbers of arguments that the command takes by
@@ -647,7 +637,8 @@ var handle = function(message, chatData, facebookAPI, reply) {
             });
 
             // Check that the right number of arguments have been given.
-            if (argumentLengths.indexOf(arguments.length) == -1) {
+            var matchedUsageIndex = argumentLengths.indexOf(arguments.length);            
+            if (matchedUsageIndex == -1) {
                 var error = 'Error: ' + command.name + ' takes ' + stringifyAlternativesList(argumentLengths) + ' arguments (' + arguments.length + ' given).';
                 reply({
                     body: error
@@ -655,11 +646,28 @@ var handle = function(message, chatData, facebookAPI, reply) {
                 return;
             }
 
+            // Map the given arguments to named arguments as specified in the
+            // usage for the command.
+            var namedArguments = {};
+            var matchedUsage = command.usage[matchedUsageIndex];
+            for (var index in arguments) {
+                namedArguments[matchedUsage.arguments[index]] = arguments[index];
+            }
+
+            // Data to pass to the command function.
+            var info = {
+                threadID: message.threadID,
+                sender: message.senderName,
+                attachments: message.attachments,
+                chatData: chatData,
+                facebookAPI: facebookAPI
+            };
+
             // Send typing indicator to show that the message is being processed.
             var endTypingIndicator = facebookAPI.sendTypingIndicator(message.threadID, function(err, end){});
 
             // Execute the command.
-            command.func(options, function(message, chat) {
+            command.func(namedArguments, info, function(message, chat) {
                 reply(message, chat);
             });
 

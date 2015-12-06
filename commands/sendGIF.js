@@ -5,9 +5,8 @@ var giphy = require('../third_party_apis/giphy');
 var http = require('http');
 
 
-var sendGIF = function(options, replyCallback) {
-    var searchTerm = options.arguments[0];
-    giphy.search(searchTerm, function(err, url) {
+var sendGIF = function(arguments, info, replyCallback) {
+    giphy.search(arguments.searchTerm, function(err, url) {
         if (err) {
             replyCallback({
                 body: 'An error occurred when searching for the GIF.'
