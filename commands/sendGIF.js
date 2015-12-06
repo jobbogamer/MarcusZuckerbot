@@ -14,14 +14,21 @@ var sendGIF = function(arguments, info, replyCallback) {
             return;
         }
 
-        // To send a GIF as a message, it has to be sent as an attachment, which
-        // means it has to be passed as a stream.
-        http.get(url, function(res) {
-            replyCallback({
-                body: '',
-                attachment: res
+        if (url) {
+            // To send a GIF as a message, it has to be sent as an attachment, which
+            // means it has to be passed as a stream.
+            http.get(url, function(res) {
+                replyCallback({
+                    body: '',
+                    attachment: res
+                });
             });
-        });        
+        }
+        else {
+            replyCallback({
+                body: 'No matching GIFs found.'
+            });
+        }
     });
 }
 

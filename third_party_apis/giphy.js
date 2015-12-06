@@ -4,7 +4,7 @@ var Giphy = require('giphy')(process.env.GIPHY_API_KEY);
 
 
 var search = function(searchTerm, callback) {
-    var encodedSearchTerm = searchTerm.replace(' ', '+');
+    var encodedSearchTerm = searchTerm.replace(/\s/g, '+');
 
     var options = {
         tag: encodedSearchTerm
