@@ -20,9 +20,10 @@ var suggestCommand = function(arguments, info, replyCallback) {
 
         var url = res.html_url;
         var name = res.title.substr(0, res.title.length - 2);
+        var number = res.number;
 
         replyCallback({
-            body: 'Command \'' + name + '\' has been suggested.\n\n' + url
+            body: 'Command \'' + name + '\' has been suggested as issue #' + number + '.'
         });
     });
 }
