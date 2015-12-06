@@ -7,12 +7,15 @@ githubIssues = require('./third_party_apis/githubIssues');
 // Build an 'API' of commands by importing all modules in the commands
 // directory. The resulting object will map each module's exports to the
 // name of the file.
+console.log('Loading command plugins...');
 var commands__private = require('require-all')({
     dirname:  __dirname + '/commands',
     map: function(name, path) {
+        console.log(name);
         return name.toLowerCase();
     }
 });
+console.log('Done.\n');
 
 
 // The help command is a special case which must be handled here rather than in
@@ -70,8 +73,6 @@ commands__private.help = {
     func: help,
     usage: helpUsage
 };
-
-console.log(commands__private);
 
 
 
