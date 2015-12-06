@@ -67,7 +67,13 @@ function startBot(api, chats) {
                 // If the messageHandler sent back a reply, send it to the chat.
                 if (message) {
                     console.log('Sending reply:');
-                    console.log('   ', message);
+                    if (message.body.length > 0) {
+                        console.log('   ', message.body.replace(/\n/g, '\n    '));
+                    }
+                    if (message.attachment) {
+                        console.log('    [Attachment]');
+                    }
+
                     api.sendMessage(message, event.threadID);
                 }
                 else {
