@@ -64,11 +64,10 @@ var help = function(arguments, info, replyCallback) {
         command = commands__private[needle];
 
         if (command) {
-            reply = 'Help for ' + command.name + ':';
             command.usage.map(function (usage) {
                 // commandName(arg1, arg2, ...)
-                reply += '\n\n' + command.name + '(' + usage.arguments.join(', ') + ')';
-                reply += '\n' + usage.description;
+                reply += command.name + '(' + usage.arguments.join(', ') + ')';
+                reply += '\n' + usage.description + '\n\n';
             });
         }
         else {
