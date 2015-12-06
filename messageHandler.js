@@ -604,6 +604,7 @@ var handle = function(message, chatData, facebookAPI, reply) {
             arguments: arguments,
             threadID: message.threadID,
             sender: message.senderName,
+            attachments: message.attachments,
             chatData: chatData,
             facebookAPI: facebookAPI
         };
