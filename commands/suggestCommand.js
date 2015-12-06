@@ -6,9 +6,9 @@
 var githubIssues = require('../third_party_apis/githubIssues.js');
 
 
-var suggestCommand = function(options, replyCallback) {
+var suggestCommand = function(arguments, info, replyCallback) {
     replyCallback({
-        body: 'Hi, everybody!\n\nHi, Dr Nick!'
+        body: 'name = ' + arguments.name + '\n' + 'description = ' + arguments.description
     });
 }
 

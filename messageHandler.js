@@ -47,13 +47,11 @@ console.log('Done.\n');
 
 // The help command is a special case which must be handled here rather than in
 // its own file because it needs access to the API object.
-var help = function(options, replyCallback) {
+var help = function(arguments, info, replyCallback) {
     var reply = '';
 
-    var args = options.arguments;
-
     // If no arguments are given, list all available commands.
-    if (args.length == 0) {
+    if (!arguments.command) {
         reply = 'Available commands:';
         for (var key in commands__private) {
             var command = commands__private[key];
@@ -62,8 +60,8 @@ var help = function(options, replyCallback) {
     }
 
     // If one argument is given, display usage help for the requested command.
-    else if (args.length == 1) {
-        needle = args[0].toLowerCase();
+    else {
+        needle = arguments.command.toLowerCase();
         command = commands__private[needle];
 
         if (command) {
