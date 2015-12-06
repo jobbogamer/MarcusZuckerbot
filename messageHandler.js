@@ -215,72 +215,6 @@ docstrings.help.details = [
 ];
 
 
-commands.countmessages = function(arguments, threadID, sender, chat, api, reply) {
-    api.getThreadList(0, 0, function(err, arr) {
-        if (err) {
-            reply({
-                body: err
-            });
-        }
-
-        reply({
-            body: 'The conversation has ' + arr[0].messageCount + ' messages.'
-        });
-    });
-}
-docstrings.countmessages = {};
-docstrings.countmessages.usage = [
-    'countMessages()'
-];
-docstrings.countmessages.details = [
-    'Display the total number of messages in the conversation.'
-];
-
-
-commands.setvalue = function(arguments, threadID, sender, chat, api, reply) {
-    // Two arguments are required.
-    if (!checkArguments('setValue', arguments, 2, reply)) {
-        return;
-    }
-
-    // Default to empty if no variables are stored.
-    chat.variables = chat.variables || {};
-    
-    // Convert argument 2 into a number.
-    var value = parseFloat(arguments[1]);
-    if (isNaN(value)) {
-        // See if they're trying to set a variable to the value of another variable.
-        if (chat.variables[arguments[1]] != null) {
-            var newValue = chat.variables[arguments[1]];
-            chat.variables[arguments[0]] = newValue;
-            reply({
-                body: arguments[0] + ' has been set to ' + newValue + '.'
-            },
-            chat);
-        }
-        else {
-            reply({
-                body: 'Error: argument 2 of setValue() should be a number or existing variable name.'
-            });
-        }
-    }
-    else {
-        chat.variables[arguments[0]] = value;
-        reply({
-            body: arguments[0] + ' has been set to ' + value + '.'
-        },
-        chat);
-    }
-}
-docstrings.setvalue = {};
-docstrings.setvalue.usage = [
-    'setValue(variable, value)'
-];
-docstrings.setvalue.details = [
-    'Set the value of the given variable, and display confirmation.'
-];
-
-
 commands.getvalue = function(arguments, threadID, sender, chat, api, reply) {
     // One argument is required.
     if (!checkArguments('getValue', arguments, 1, reply)) {
@@ -512,39 +446,6 @@ docstrings.showprogress.usage = [
 ];
 docstrings.showprogress.details = [
     'Display a progress bar showing the current progress of the named task.'
-];
-
-
-commands.suggestcommand = function(arguments, threadID, sender, chat, api, reply) {
-    if (!checkArguments('suggestCommand', arguments, 2, reply)) {
-        return;
-    }
-
-    var title = arguments[0] + '()';
-    var body = arguments[1] + '\n\n' + 'Suggested by ' + sender + '.';
-
-    githubIssues.createIssue(title, body, function(err, res) {
-        if (err) {
-            reply({
-                body: 'An error occurred when trying to submit the suggestion.'
-            });
-            return;
-        }
-
-        var url = res.html_url;
-        var name = res.title.substr(0, res.title.length - 2);
-
-        reply({
-            body: 'Command \'' + name + '\' has been suggested.\n\n' + url
-        });
-    });
-}
-docstrings.suggestcommand = {};
-docstrings.suggestcommand.usage = [
-    'suggestCommand(name, description)'
-];
-docstrings.suggestcommand.details = [
-    'Open a GitHub issue in the Zuckerbot repo suggesting a new command with the given name and description.'
 ];
 
 
