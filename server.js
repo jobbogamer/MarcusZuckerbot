@@ -52,7 +52,12 @@ function startBot(api, chats) {
 
         if (event.type === 'message') {
             console.log('Message received:');
-            console.log('   ', event.body);
+            if (event.body.length > 0) {
+                console.log('   ', event.body);
+            }
+            if (event.attachments && event.attachments.length > 0) {
+                console.log('    [Attachment]');
+            }
 
             // Mark the message as read.
             api.markAsRead(event.threadID);

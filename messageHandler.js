@@ -39,7 +39,6 @@ for (var key in commandInitialisers) {
         console.log(command.name);
     }
 }
-
 console.log('Done.\n');
 
 
@@ -614,19 +613,14 @@ var handle = function(message, chatData, facebookAPI, reply) {
     var parsed = parse(body);
     var commandName = parsed.command;
     var arguments = parsed.arguments;
-    console.log('Command name is \'' + commandName + '\'.');
-    if (arguments.length > 0) {
-        console.log('Arguments are \'' + arguments.join('\', \'') + '\'.');
-    }
-    else {
-        console.log('No arguments given.');
-    }
 
     if (commandName.charAt(0) === '_') {
         var name = commandName.substr(1, commandName.length - 1);
 
         var command = commands__private[name];
         if (command) {
+            console.log('Matched command ' + command.name + '.');
+
             // List all the numbers of arguments that the command takes by
             // looking in the usage for the command.
             var argumentLengths = [];
@@ -637,6 +631,7 @@ var handle = function(message, chatData, facebookAPI, reply) {
             // Check that the right number of arguments have been given.
             var matchedUsageIndex = argumentLengths.indexOf(arguments.length);            
             if (matchedUsageIndex == -1) {
+                console.log('Wrong number of arguments given.');
                 var error = 'Error: ' + command.name + ' takes ' + stringifyAlternativesList(argumentLengths) + ' arguments (' + arguments.length + ' given).';
                 reply({
                     body: error
@@ -651,6 +646,8 @@ var handle = function(message, chatData, facebookAPI, reply) {
             for (var index in arguments) {
                 namedArguments[matchedUsage.arguments[index]] = arguments[index];
             }
+            console.log('Arguments:');
+            console.log(namedArguments);
 
             // Data to pass to the command function.
             var info = {
