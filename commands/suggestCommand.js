@@ -7,8 +7,23 @@ var githubIssues = require('../third_party_apis/githubIssues.js');
 
 
 var suggestCommand = function(arguments, info, replyCallback) {
-    replyCallback({
-        body: 'name = ' + arguments.name + '\n' + 'description = ' + arguments.description
+    var title = arguments.name + '()';
+    var body = arguments.description + '\n\n' + 'Suggested by ' + info.sender + '.';
+
+    githubIssues.createIssue(title, body, function(err, res) {
+        if (err) {
+            reply({
+                body: 'An error occurred when trying to submit the suggestion.'
+            });
+            return;
+        }
+
+        var url = res.html_url;
+        var name = res.title.substr(0, res.title.length - 2);
+
+        replyCallback({
+            body: 'Command \'' + name + '\' has been suggested.\n\n' + url
+        });
     });
 }
 
