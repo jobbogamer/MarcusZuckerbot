@@ -533,7 +533,10 @@ var handle = function(message, chatData, facebookAPI, reply) {
             var matchedUsageIndex = argumentLengths.indexOf(arguments.length);            
             if (matchedUsageIndex == -1) {
                 console.log('Wrong number of arguments given.');
-                var error = 'Error: ' + command.name + ' takes ' + stringifyAlternativesList(argumentLengths) + ' arguments (' + arguments.length + ' given).';
+                var error = 'Error: ' + command.name + ' takes ' +
+                            stringifyAlternativesList(argumentLengths) + ' ' +
+                            (argumentLengths[0] == 1 ? 'argument' : 'arguments') +
+                            ' (' + arguments.length + ' given).';
                 reply({
                     body: error
                 });
