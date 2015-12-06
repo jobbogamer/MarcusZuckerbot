@@ -646,8 +646,8 @@ var handle = function(message, chatData, facebookAPI, reply) {
             for (var index in arguments) {
                 namedArguments[matchedUsage.arguments[index]] = arguments[index];
             }
-            console.log('Arguments:');
-            console.log(namedArguments);
+            console.log('Arguments:\n   ', namedArguments);
+            
 
             // Data to pass to the command function.
             var info = {
