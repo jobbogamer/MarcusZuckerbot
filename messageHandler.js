@@ -627,8 +627,11 @@ var handle = function(message, chatData, facebookAPI, reply) {
                 return;
             }
 
+            // Send typing indicator to show that the message is being processed.
+            var endTypingIndicator = facebookAPI.sendTypingIndicator(message.threadID, function(err, end){});
+
             // Execute the command.
-            command.func(options,  function(message, chat){
+            command.func(options, function(message, chat) {
                 reply(message, chat);
             });
 
