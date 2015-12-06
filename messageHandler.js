@@ -597,8 +597,8 @@ var handle = function(message, chatData, facebookAPI, reply) {
         console.log('No arguments given.');
     }
 
-    if (commandName.charAt(commandName.length - 1) === '2') {
-        var name = commandName.substr(0, commandName.length - 1);
+    if (commandName.charAt(0) === '_') {
+        var name = commandName.substr(1, commandName.length - 1);
 
         // Data to pass to the command function.
         var options = {

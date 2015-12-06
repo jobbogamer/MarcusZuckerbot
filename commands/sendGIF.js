@@ -1,4 +1,5 @@
 // Uses the Giphy API to send a random GIF matching a search term.
+// Requires GIPHY_API_KEY to be set in the environment variables.
 
 var giphy = require('../third_party_apis/giphy');
 var http = require('http');
