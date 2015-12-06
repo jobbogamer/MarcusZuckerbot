@@ -662,8 +662,8 @@ var handle = function(message, chatData, facebookAPI, reply) {
             var endTypingIndicator = facebookAPI.sendTypingIndicator(message.threadID, function(err, end){});
 
             // Execute the command.
-            command.func(namedArguments, info, function(message, chat) {
-                reply(message, chat);
+            command.func(namedArguments, info, function(message, chatData) {
+                reply(message, chatData);
             });
 
             return;
