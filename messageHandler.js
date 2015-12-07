@@ -102,7 +102,7 @@ commands.help = {
 // Extract the command name and arguments from a message.
 function parse(message) {
     // Find the name of the command.
-    var commandStart = message.indexOf('zb.') + 3;
+    var commandStart = message.toLowerCase().indexOf('zb.') + 3;
     var commandEnd = message.indexOf('(');
     var commandLength = commandEnd - commandStart;
     var commandName = message.substr(commandStart, commandLength).toLowerCase();
@@ -150,7 +150,8 @@ var handle = function(message, chatData, facebookAPI, reply) {
     var body = message.body.trim();
 
     // Ignore any messages which don't start with 'zb.' as they aren't commands.
-    if (body.indexOf('zb.') !== 0 || body.indexOf('(') === -1 || body.indexOf(')') === -1) {
+    if (body.toLowerCase().indexOf('zb.') !== 0 ||
+        body.indexOf('(') === -1 || body.indexOf(')') === -1) {
         console.log('Message does not contain a command.');
         reply(null);
         return;
