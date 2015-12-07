@@ -11,7 +11,12 @@ var translate = function(searchTerm, callback) {
     };
 
     Giphy.translate(options, function giphyCallback(err, data, res) {
-        callback(err, data.data.images.downsized.url);
+        if (data.data.images != null) {
+            callback(err, data.data.images.downsized.url);
+        }
+        else {
+            callback(err, null);
+        }
     });
 }
 
