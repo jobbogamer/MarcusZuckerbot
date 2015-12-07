@@ -214,33 +214,6 @@ docstrings.help.details = [
 ];
 
 
-commands.showprogress = function(arguments, threadID, sender, chat, api, reply) {
-    // One argument is required.
-    if (!checkArguments('showProgress', arguments, 1, reply)) {
-        return;
-    }
-
-    if (chat.progress[arguments[0]] != null) {
-        reply({
-            body: 'Progress of ' + arguments[0] + ':\n\n' + createProgressBar(chat.progress[arguments[0]]) + '\n\n' + chat.progress[arguments[0]].toFixed(3) + '%'
-        },
-        chat);
-    }
-    else {
-        reply({
-            body: '\'' + arguments[0] + '\' is not defined.'
-        });
-    }
-}
-docstrings.showprogress = {};
-docstrings.showprogress.usage = [
-    'showProgress(name)'
-];
-docstrings.showprogress.details = [
-    'Display a progress bar showing the current progress of the named task.'
-];
-
-
 
 
 
