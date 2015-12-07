@@ -3,19 +3,19 @@
 var Giphy = require('giphy')(process.env.GIPHY_API_KEY);
 
 
-var search = function(searchTerm, callback) {
+var translate = function(searchTerm, callback) {
     var encodedSearchTerm = searchTerm.replace(/\s/g, '+');
 
     var options = {
-        tag: encodedSearchTerm
+        s: encodedSearchTerm
     };
 
-    Giphy.random(options, function giphyCallback(err, data, res) {
-        callback(err, data.data.image_url);
+    Giphy.translate(options, function giphyCallback(err, data, res) {
+        callback(err, data.data.images.downsized.url);
     });
 }
 
 
 module.exports = {
-    search: search
+    translate: translate
 };

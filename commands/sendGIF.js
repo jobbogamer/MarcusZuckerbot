@@ -6,7 +6,7 @@ var http = require('http');
 
 
 var sendGIF = function(arguments, info, replyCallback) {
-    giphy.search(arguments.searchTerm, function(err, url) {
+    giphy.translate(arguments.searchTerm, function(err, url) {
         if (err) {
             replyCallback({
                 body: 'An error occurred when searching for the GIF.'
