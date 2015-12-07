@@ -214,36 +214,6 @@ docstrings.help.details = [
 ];
 
 
-commands.increment = function(arguments, threadID, sender, chat, api, reply) {
-    // One argument is required.
-    if (!checkArguments('increment', arguments, 1, reply)) {
-        return;
-    }
-
-    if (chat.variables[arguments[0]] != null) {
-        var newValue = chat.variables[arguments[0]] + 1;
-        chat.variables[arguments[0]] = newValue;
-
-        reply({
-            body: arguments[0] + ' is now set to ' + newValue + '.'
-        },
-        chat);
-    }
-    else {
-        reply({
-            body: '\'' + arguments[0] + '\' is not defined.'
-        });
-    }
-}
-docstrings.increment = {};
-docstrings.increment.usage = [
-    'increment(variable)'
-];
-docstrings.increment.details = [
-    'Increment the value of the given variable by one, and display the new value.'
-];
-
-
 commands.decrement = function(arguments, threadID, sender, chat, api, reply) {
     // One argument is required.
     if (!checkArguments('decrement', arguments, 1, reply)) {
