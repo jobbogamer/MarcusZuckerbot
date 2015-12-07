@@ -214,68 +214,6 @@ docstrings.help.details = [
 ];
 
 
-commands.updateprogress = function(arguments, threadID, sender, chat, api, reply) {
-    if (arguments.length < 2 || arguments.length > 3) {
-        reply({
-            body: 'Error: updateProgress() takes 2 or 3 arguments (' + arguments.length + 'given).'
-        });
-        return;
-    }
-
-    var progress = null;
-
-    // The three argument version performs a division between arguments 2
-    // and 3, and uses that as the progress value.
-    if (arguments.length === 3) {
-        // Convert arguments 2 and 3 into numbers.
-        var value1 = parseFloat(arguments[1]);
-        var value2 = parseFloat(arguments[2]);
-        if (isNaN(value1) || isNaN(value2)) {
-            reply({
-                body: 'Error: arguments 2 and 3 of updateProgress() should be numbers.'
-            });
-            return;
-        }
-
-        progress = (value1 / value2) * 100;
-    }
-
-    if (arguments.length === 2) {
-        // Convert argument 2 into a number.
-        var value = parseFloat(arguments[1]);
-        if (isNaN(value) || value < 0 || value > 100) {
-            reply({
-                body: 'Error: argument 2 of updateProgress() should be a number between 0 and 100.'
-            });
-            return
-        }
-
-        progress = value;
-    }
-
-    // Default to empty if no progress values are stored.
-    chat.progress = chat.progress || {};
-
-    // Round to 3 decimal places for display.
-    var display = +progress.toFixed(3);
-
-    chat.progress[arguments[0]] = progress;
-    reply({
-        body: 'Progress of ' + arguments[0] + ':\n\n' + createProgressBar(progress) + '\n\n' + display + '%'
-    },
-    chat);
-}
-docstrings.updateprogress = {};
-docstrings.updateprogress.usage = [
-    'updateProgress(name, percentage)',
-    'updateProgress(name, x, y)'
-];
-docstrings.updateprogress.details = [
-    'Update the progress of the named task to the given percentage, and display a progress bar. Percentage must be a number between 0 and 100 inclusive.',
-    'Update the progress of the named task by calculating x÷y as a percentage, and display a progress bar.'
-]
-
-
 commands.showprogress = function(arguments, threadID, sender, chat, api, reply) {
     // One argument is required.
     if (!checkArguments('showProgress', arguments, 1, reply)) {
