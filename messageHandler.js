@@ -11,7 +11,7 @@ var log = require('npmlog');
 console.log('Loading command plugins...');
 var commandInitialisers = require('require-all')(__dirname + '/commands');
 
-var commands__private = {};
+var commands = {};
 for (var key in commandInitialisers) {
     var command = commandInitialisers[key]();
     
@@ -35,7 +35,7 @@ for (var key in commandInitialisers) {
 
     // A command was returned and it has the required fields.
     else {
-        commands__private[command.name.toLowerCase()] = command;
+        commands[command.name.toLowerCase()] = command;
         console.log(command.name);
     }
 }
@@ -52,8 +52,8 @@ var help = function(arguments, info, replyCallback) {
     // If no arguments are given, list all available commands.
     if (!arguments.command) {
         reply = 'Available commands:';
-        for (var key in commands__private) {
-            var command = commands__private[key];
+        for (var key in commands) {
+            var command = commands[key];
             reply += '\n' + '• ' + command.name;
         }
     }
@@ -61,7 +61,7 @@ var help = function(arguments, info, replyCallback) {
     // If one argument is given, display usage help for the requested command.
     else {
         needle = arguments.command.toLowerCase();
-        command = commands__private[needle];
+        command = commands[needle];
 
         if (command) {
             command.usage.map(function (usage) {
@@ -91,130 +91,11 @@ var helpUsage = [
     }
 ];
 
-commands__private.help = {
+commands.help = {
     name: 'help',
     func: help,
     usage: helpUsage
 };
-
-
-
-// List of commands which can be called.
-var commands = {};
-
-// Usage string for each command.
-var docstrings = {};
-
-
-
-
-
-// Enforce the number of arguments required for a function.
-function checkArguments(functionName, arguments, requiredNumber, reply) {
-    if (arguments.length != requiredNumber) {
-        reply({
-            body: 'Error: ' + functionName + '() takes ' + requiredNumber + ' arguments (' + arguments.length + ' given).'
-        });
-        return false;
-    }
-    return true;
-}
-
-
-// Create a progress bar out of unicode block characters.
-function createProgressBar(value) {
-    var leftEdge = '▕';
-    var rightEdge = '▏';
-    var characters = ['', '▏', '▎', '▍', '▌', '▋', '▊', '▉', '█'];
-
-    // Marker for left edge.
-    var bar = leftEdge;
-
-    // Count how many full blocks are required and add them.
-    var fullBlocks = Math.floor(value / 10);
-    for (var i = 0; i < fullBlocks; i++) {
-        bar += characters[8];
-    }
-
-    // Add the partial segment at the end. The unicode blocks go down to eigths
-    // so split the partial block into (10 ÷ 8) pieces, each size 1.25.
-    var partial = Math.floor((value - (fullBlocks * 10)) / 1.25);
-    bar += characters[partial];
-
-    // Add empty spaces where there are no blocks.
-    while (bar.length < 11) {
-        bar += rightEdge;
-    }
-
-    // Add the marker for the right edge.
-    bar += rightEdge;
-
-    return bar;
-}
-
-
-
-
-
-// Commands
-
-commands.help = function(arguments, threadID, sender, chat, api, reply) {
-    if (arguments.length == 0) {
-        // Create a list of all commands.
-        var list = '';
-
-        // Just add each command to the end of the list.
-        Object.keys(commands).sort().forEach(function(name) {
-            list += '• ' + name + '\n';
-        });
-
-        // Add some explanation to the message.
-        var messageBody = 'Available commands:\n';
-        messageBody += list;
-
-        // Build and return the reply.
-        reply({
-            body: messageBody
-        });
-    }
-    else {
-        // Find the usage instructions for the named command.
-        var commandName = arguments[0];
-        var commandNameLowercase = commandName.toLowerCase();
-
-        // Return help for the command, if it exists.
-        if (docstrings[commandNameLowercase]) {
-            var messageBody = 'Help for ' + commandNameLowercase + ':';
-            for (var i = 0; i < docstrings[commandNameLowercase].usage.length; i++) {
-                messageBody += '\n\n';
-                messageBody += docstrings[commandNameLowercase].usage[i] + '\n';
-                messageBody += docstrings[commandNameLowercase].details[i];
-            }
-
-            reply({
-                body: messageBody
-            });
-        }
-        else {
-            // No command matching the argument.
-            reply({
-                body: 'No command called \'' + commandName + '\'.'
-            });
-        }
-    }
-};
-docstrings.help = {};
-docstrings.help.usage = [
-    'help()',
-    'help(command)'
-];
-docstrings.help.details = [
-    'Display a list of available commands.',
-    'Display usage instructions for the given command.'
-];
-
-
-
 
 
 
@@ -277,90 +158,71 @@ var handle = function(message, chatData, facebookAPI, reply) {
 
     // Parse the command name and arguments.
     var parsed = parse(body);
-    var commandName = parsed.command;
+    var name = parsed.command;
     var arguments = parsed.arguments;
 
-    if (commandName.charAt(0) === '_') {
-        var name = commandName.substr(1, commandName.length - 1);
+    // Find the command.
+    var command = commands[name];
+    if (command) {
+        console.log('Matched command ' + command.name + '.');
 
-        var command = commands__private[name];
-        if (command) {
-            console.log('Matched command ' + command.name + '.');
+        // List all the numbers of arguments that the command takes by
+        // looking in the usage for the command.
+        var argumentLengths = [];
+        command.usage.map(function (usage) {
+            argumentLengths.push(usage.arguments.length);
+        });
 
-            // List all the numbers of arguments that the command takes by
-            // looking in the usage for the command.
-            var argumentLengths = [];
-            command.usage.map(function (usage) {
-                argumentLengths.push(usage.arguments.length);
+        // Check that the right number of arguments have been given.
+        var matchedUsageIndex = argumentLengths.indexOf(arguments.length);            
+        if (matchedUsageIndex == -1) {
+            console.log('Wrong number of arguments given.');
+            var error = 'Error: ' + command.name + ' takes ' +
+                        stringifyAlternativesList(argumentLengths) + ' ' +
+                        (argumentLengths[0] == 1 ? 'argument' : 'arguments') +
+                        ' (' + arguments.length + ' given).';
+            reply({
+                body: error
             });
-
-            // Check that the right number of arguments have been given.
-            var matchedUsageIndex = argumentLengths.indexOf(arguments.length);            
-            if (matchedUsageIndex == -1) {
-                console.log('Wrong number of arguments given.');
-                var error = 'Error: ' + command.name + ' takes ' +
-                            stringifyAlternativesList(argumentLengths) + ' ' +
-                            (argumentLengths[0] == 1 ? 'argument' : 'arguments') +
-                            ' (' + arguments.length + ' given).';
-                reply({
-                    body: error
-                });
-                return;
-            }
-
-            // Map the given arguments to named arguments as specified in the
-            // usage for the command.
-            var namedArguments = {};
-            var matchedUsage = command.usage[matchedUsageIndex];
-            for (var index in arguments) {
-                namedArguments[matchedUsage.arguments[index]] = arguments[index];
-            }
-            console.log('Arguments:\n   ', namedArguments);
-            
-
-            // Data to pass to the command function.
-            var info = {
-                threadID: message.threadID,
-                sender: message.senderName,
-                attachments: message.attachments,
-                chatData: chatData,
-                facebookAPI: facebookAPI
-            };
-
-            // Send typing indicator to show that the message is being processed.
-            var endTypingIndicator = facebookAPI.sendTypingIndicator(message.threadID, function(err, end){});
-
-            // Execute the command.
-            command.func(namedArguments, info, function(message, chatData) {
-                reply(message, chatData);
-            });
-
             return;
         }
-    }
 
-    // If the given command matches an existing command, call it.
-    if (commands[commandName]) {
-        console.log('Matched command ' + commandName + '.');
+        // Map the given arguments to named arguments as specified in the
+        // usage for the command.
+        var namedArguments = {};
+        var matchedUsage = command.usage[matchedUsageIndex];
+        for (var index in arguments) {
+            namedArguments[matchedUsage.arguments[index]] = arguments[index];
+        }
+        console.log('Arguments:\n   ', namedArguments);
+        
+
+        // Data to pass to the command function.
+        var info = {
+            threadID: message.threadID,
+            sender: message.senderName,
+            attachments: message.attachments,
+            chatData: chatData,
+            facebookAPI: facebookAPI
+        };
 
         // Send typing indicator to show that the message is being processed.
         var endTypingIndicator = facebookAPI.sendTypingIndicator(message.threadID, function(err, end){});
 
-        // Callback for the command function to call when it's done.
-        function callback(message, chat) {
-            endTypingIndicator();
-            reply(message, chat);
-        }
+        // Execute the command.
+        command.func(namedArguments, info, function(message, chatData) {
+            reply(message, chatData);
+        });
 
-        // Actually call the command function.
-        commands[commandName](arguments, message.threadID, message.senderName, chatData, facebookAPI, callback);
+        return;
     }
+
+    // A command wasn't matched.
     else {
-        // A command wasn't matched
         console.log('No matching command exists.');
         
         reply({
-            body: 'No command matching \'' + commandName + '\'.'
+            body: 'No command matching \'' + name + '\'.'
         });
     }
 }
