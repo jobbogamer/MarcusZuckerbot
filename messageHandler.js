@@ -214,36 +214,6 @@ docstrings.help.details = [
 ];
 
 
-commands.decrement = function(arguments, threadID, sender, chat, api, reply) {
-    // One argument is required.
-    if (!checkArguments('decrement', arguments, 1, reply)) {
-        return;
-    }
-
-    if (chat.variables[arguments[0]] != null) {
-        var newValue = chat.variables[arguments[0]] - 1;
-        chat.variables[arguments[0]] = newValue;
-
-        reply({
-            body: arguments[0] + ' is now set to ' + newValue + '.'
-        },
-        chat);
-    }
-    else {
-        reply({
-            body: '\'' + arguments[0] + '\' is not defined.'
-        });
-    }
-}
-docstrings.decrement = {};
-docstrings.decrement.usage = [
-    'decrement(variable)'
-];
-docstrings.decrement.details = [
-    'Decrement the value of the given variable by one, and display the new value.'
-];
-
-
 commands.updateprogress = function(arguments, threadID, sender, chat, api, reply) {
     if (arguments.length < 2 || arguments.length > 3) {
         reply({
