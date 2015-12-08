@@ -18,6 +18,7 @@
     "firebase": "^2.3.2",
     "giphy": "0.0.4",
     "github": "^0.2.4",
+    "mocha": "^2.3.4",
     "require-all": "^2.0.0"
   },
   "engines": {
@@ -27,5 +28,8 @@
     "url": "https://github.com/jobbogamer/MarcusZuckerbot/issues"
   },
   "homepage": "https://github.com/bsansouci/MarcusZuckerbot",
-  "devDependencies": {}
+  "devDependencies": {
+    "mocha": "^2.3.4",
+    "should": "^8.0.0"
+  }
 }
