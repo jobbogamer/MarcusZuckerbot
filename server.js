@@ -17,6 +17,7 @@ var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
 var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 
 http.createServer(function (req, res) {
+    console.log('Hi');
     res.writeHead(200, {'Content-Type': 'text/plain'});
     res.end("");
 }).listen(port, ipaddress);
