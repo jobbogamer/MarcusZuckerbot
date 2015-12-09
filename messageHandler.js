@@ -71,7 +71,7 @@ var help = function(arguments, info, replyCallback) {
             });
         }
         else {
-            reply = 'No command matching \'' + arguments[0] + '\'.';
+            reply = 'No command matches \'' + arguments[0] + '\'.';
         }
     }
 
