@@ -1,4 +1,13 @@
 language: node_js
 node_js:
-  - "5.2"
-  - "4.2"
+    - '5.2'
+    - '4.2'
+deploy:
+    provider: openshift
+    user: josh.asch@gmail.com
+    password:
+        secure: dOhSmGdPf+le4dbqXzp2aZITSONdjmvcb5BtAyTxQOktm91H4IDWzpOZ1EBCGg9KeKoYjRbokEb848bS7S++Z4Et4KZgyhGNeMXcotaGII/ig7nFKt9Hn3nr+hfTrD3Y5BhufCP5jz1Saomo371cZw4VR/jtoAc0FtpkpfWjGKOCP4Tu9hmVFV+xj7UxrtdQocPTjYJX7a5Dv/A4ltYv+ruqeB0bUSpMRQvG5KPQkF79gWpUqQF03jDtqBK/wQQDJYWz9CL+Iqjdd66uCYUtzc2O6z4nQMdLgMTZWVcha31OwG6bNgUQU2dnj4Nlo+0hvnzWzy7xe9MMLd5sVo3+3gcM4I9JuLlmOXhhUeYwf35RUStoII6k4HXZQpBPj8dp8ocTjd2ak/RumgYXos4Ls/MSHxVXzz/8K/1RPt50S7u8EZl/LO3d6Yz2jip15dgi45kmeaYuZahbsUEESjVo5p8RpO2JRhEW1hHtScVBFZbO4f7b/pbr9oUrxnSqwAI3qUvcXIkQogRLIVoapOlS3QFgunB6ORdBYdr4fzLNz71tOR8ccRUW78sd1hG1+aVRJAL7j0+rTiQVgGVOOQQd+IHZawOLyCtNRX2/GhWF1R1IRE9ichS46ujHXcS0cIvsgmupCdE2fftCh2k0LebEBr/ogYqj6QBwZXZVf5V4PZs=
+    app: MarcusZuckerbot
+    domain: jobbogamer
+    on:
+        repo: jobbogamer/MarcusZuckerbot
