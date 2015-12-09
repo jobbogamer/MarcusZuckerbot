@@ -10,6 +10,14 @@ var Firebase = require('firebase');
 var messageHandler = require('./messageHandler');
 
 
+// Web server to keep openshift quiet
+var http = include('http');
+http.createServer(function (req, res) {
+    res.writeHead(200, {'Content-Type': 'text/plain'});
+    res.end("");
+}).listen(process.env.PORT || 8080);
+
+
 
 // Print current version of the app.
 var pkg = require('./package.json');
