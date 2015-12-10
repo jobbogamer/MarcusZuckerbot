@@ -36,12 +36,13 @@ app.get('/', function (req, res) {
 });
 
 app.post('/notify', function(req, res) {
-    console.log('Received notification of a deployment.');
+    console.log('Received a deployment notification.');
     
     // Send an empty response.
     res.send('');
     res.end();
 
+    // Notify any conversations about the deployment status.
     notifyAboutDeployment(req.body);
 });
 
