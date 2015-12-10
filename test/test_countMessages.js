@@ -37,6 +37,37 @@ describe('countMessages', function() {
         });
 
 
+        it('should add thousands separators', function(done) {
+            var command = init();
+
+            var facebookApiMock = {
+                getThreadList: function(start, end, callback) {
+                    callback(null, [{
+                        messageCount: 4242424                            
+                    }]);
+                }
+            };
+
+            // The command takes no arguments.
+            var arguments = {};
+
+            // Pass in the mock facebook API.
+            var info = {
+                facebookAPI: facebookApiMock
+            };
+
+            command.func(arguments, info, function replyCallback(reply, chat) {
+                reply.should.be.Object();
+                reply.should.have.property('body');
+
+                // Make sure the message contains the count.
+                reply.body.should.match(/4,242,424/g);
+
+                done();
+            });
+        });
+
+
         it('should handle errors gracefully', function(done) {
             var command = init();
 

@@ -1,16 +1,19 @@
 // Count the number of messages in the history of the current conversation.
 
+var helpers = require('../helpers');
+
 var countMessages = function(arguments, info, replyCallback) {
     info.facebookAPI.getThreadList(0, 0, function(err, conversations) {
         if (err) {
-            console.log(err);
             replyCallback({
                 body: 'An error occurred when counting the messages.'
             });
         }
         else {
+            var count = conversations[0].messageCount;
+
             replyCallback({
-                body: 'There are ' + conversations[0].messageCount +
+                body: 'There are ' + helpers.addThousandsSeparators(count) +
                       ' messages in the conversation.'
             });
         }
