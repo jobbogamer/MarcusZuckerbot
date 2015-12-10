@@ -3,7 +3,7 @@
 // Requires GITHUB_USER and GITHUB_PASSWORD to be set in the environment variables.
 
 // Includes the createIssue() function used to create a new GitHub issue.
-var githubIssues = require('../third_party_apis/githubIssues.js');
+var githubIssues = require('../third_party_apis/githubIssues');
 
 
 var suggestCommand = function(arguments, info, replyCallback) {
@@ -12,7 +12,7 @@ var suggestCommand = function(arguments, info, replyCallback) {
 
     githubIssues.createIssue(title, body, function(err, res) {
         if (err) {
-            reply({
+            replyCallback({
                 body: 'An error occurred when trying to submit the suggestion.'
             });
             return;

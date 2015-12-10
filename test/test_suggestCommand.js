@@ -1,10 +1,11 @@
 
-var init = require('../commands/suggestCommand');
+var mockery = require('mockery');
 
 
 describe('suggestCommand', function() {
     describe('init', function() {
         it('should return an error if no username is set', function() {
+            var init = require('../commands/suggestCommand');
             init.should.be.Function();
 
             // Make sure the GITHUB_USER variable is not set.
@@ -21,6 +22,7 @@ describe('suggestCommand', function() {
         });
 
         it('should return an error if no password is set', function() {
+            var init = require('../commands/suggestCommand');
             init.should.be.Function();
 
             // Make sure the GITHUB_PASSWORD variable is not set.
@@ -40,6 +42,7 @@ describe('suggestCommand', function() {
         });
 
         it('should return a valid command object when auth is set', function() {
+            var init = require('../commands/suggestCommand');
             init.should.be.Function();
 
             // Set any string as the username and password. It doesn't matter
@@ -87,6 +90,87 @@ describe('suggestCommand', function() {
                 command.usage[i].description.should.be.String();
                 command.usage[i].description.should.not.be.length(0);
             }
+        });
+    });
+
+    
+    describe('execute', function() {
+        before(function() {
+            mockery.enable({ useCleanCache: true });
+            mockery.warnOnUnregistered(false);
+
+            var githubMock = {
+                createIssue: function(title, body, callback) {
+                    if (title === 'error') {
+                        callback({
+                            result: 404,
+                            error: 'Page not found'
+                        }, null);
+                    }
+                    else {
+                        callback(null, {
+                            title: title + '()',
+                            number: 42
+                        });
+                    }
+                }
+            };
+
+            mockery.registerMock('../third_party_apis/githubIssues', githubMock);
+        });
+
+        after(function() {
+            mockery.disable();
+        });
+
+
+        it('should display confirmation if creating the issue succeeds', function(done) {
+            var init = require('../commands/suggestCommand');
+            var command = init();
+
+            var arguments = {
+                name: 'mySuggestion',
+                description: 'Do something.'
+            };
+
+            var info = {};
+
+            command.func(arguments, info, function replyCallback(reply, chat) {
+                reply.should.be.Object();
+                reply.should.have.property('body');
+
+                // The message should contain the title of the issue, and the
+                // GitHub issue number.
+                reply.body.should.be.String();
+                reply.body.should.match(/mySuggestion/g);
+                reply.body.should.match(/42/g);
+
+                done();
+            });
+        });
+
+
+        it('should handle errors gracefully', function(done) {
+            var init = require('../commands/suggestCommand');
+            var command = init();
+
+            var arguments = {
+                name: 'error',
+                description: 'Do something.'
+            };
+
+            var info = {};
+
+            command.func(arguments, info, function replyCallback(reply, chat) {
+                reply.should.be.Object();
+                reply.should.have.property('body');
+
+                // The message should say that an error occurred.
+                reply.body.should.be.String();
+                reply.body.should.match(/error/g);
+
+                done();
+            });
         });
     });
 });
