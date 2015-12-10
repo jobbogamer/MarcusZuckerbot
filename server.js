@@ -9,15 +9,23 @@ var Firebase = require('firebase');
 // Local modules
 var messageHandler = require('./messageHandler');
 
+// Will store a copy of the facebook chat API once the bot logs in.
+var facebookAPI = null;
+var allData = null;
+
 
 
 // Web server to keep openshift quiet
 var http = require('http');
 var express = require('express');
+var bodyParser = require('body-parser');
 var app = express();
 
 app.set('port', process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 3002);
 app.set('ip', process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1");
+
+// Use body-parser to read requests to /notify.
+app.use(bodyParser.urlencoded({ extended: true }));
 
 http.createServer(app).listen(app.get('port') ,app.get('ip'), function () {
     console.log("✔ Express server listening at %s:%d ", app.get('ip'),app.get('port'));
@@ -25,6 +33,16 @@ http.createServer(app).listen(app.get('port') ,app.get('ip'), function () {
 
 app.get('/', function (req, res) {
     res.send('Hello World!');
+});
+
+app.post('/notify', function(req, res) {
+    console.log('Received notification of a deployment.');
+    
+    // Send an empty response.
+    res.send('');
+    res.end();
+
+    notifyAboutDeployment(req.body);
 });
 
 
@@ -60,6 +78,7 @@ var chatsDB = db.child('chats');
 
 // Start listening to incoming events.
 function startBot(api, chats) {
+    return;
     // Set a default value for chats in case it doesn't already exist.
     // Firebase won't save an empty object to the database.
     chats = chats || {};
@@ -120,6 +139,39 @@ function startBot(api, chats) {
 }
 
 
+// Send messages to subscribed conversations that a deployment is about to
+// occur.
+function notifyAboutDeployment(payload) {
+    var message = {
+        body: 'Zuckerbot is about to be restarted to deploy an update. This will ' +
+              'take a couple of minutes.'
+    };
+
+    // This may be a notification of failure.
+    var status = payload.status_message.toLowerCase();
+
+    if (status === 'broken' ||
+        status === 'failed' ||
+        status === 'still failing') {
+        message = {
+            body: 'Deployment failed. Zuckerbot will continue running.'
+        };
+    }    
+
+    // Loop through each chat and see if it's subscribed to notifications.
+    Object.keys(allData).forEach(function(key) {
+        // By default, do not notify.
+        var chatData = allData[key] || {
+            notifications: false
+        };
+
+        if (chatData.notifications) {
+            facebookAPI.sendMessage(message, key);
+        }
+    });
+}
+
+
 
 
 
@@ -152,6 +204,8 @@ db.once('value', function dataReceived(snapshot) {
         }
 
         console.log('Done.\n');
+        facebookAPI = api;
+        allData = data.chats;
         startBot(api, data.chats);
     });
 });

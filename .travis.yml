@@ -11,3 +11,10 @@ deploy:
     on:
         repo: jobbogamer/MarcusZuckerbot
     skip_cleanup: true
+notifications:
+    webhooks:
+        urls:
+            - http://zuckerbot.joshasch.com/notify
+        on_success: never
+        on_failure: always
+        on_start: always
