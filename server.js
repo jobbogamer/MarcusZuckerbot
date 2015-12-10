@@ -10,17 +10,23 @@ var Firebase = require('firebase');
 var messageHandler = require('./messageHandler');
 
 
+
 // Web server to keep openshift quiet
 var http = require('http');
+var express = require('express');
+var app = express();
 
-var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
-var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+app.set('port', process.env.OPENSHIFT_NODEJS_PORT || 8080);
+app.set('ip', process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1');
 
-http.createServer(function (req, res) {
-    console.log('Hi');
-    res.writeHead(200, {'Content-Type': 'text/plain'});
-    res.end("");
-}).listen(port, ipaddress);
+http.createServer(app).listen(app.get('port'), app.get('ip'), function(){
+    console.log('Express server listening on port ' + app.get('port'));
+});
+
+app.get('/', function (req, res) {
+    res.send('Hello World!');
+});
+
 
 
 

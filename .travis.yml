@@ -3,5 +3,11 @@ node_js:
     - '5.2'
     - '4.2'
 deploy:
-    provider: azure_web_apps
-    skip_cleanup: true
+    provider: openshift
+    user: josh.asch@gmail.com
+    password:
+        secure: FPzaCj+my3LUPd1fZb5qY0WA21qG59z5NuGLarclixa3nmWRCa9Yuf43FF5Ln6Iu+sMj4CuiGeH1r23u1FUQ1FmjKV6wYTXqT0BL+2Pu7sP/juj8pLsw0x0qIYTM355dGLZzjptrmVVb/PMZXPNalTosgvAnQrq3V67qjGToZmTeZIlCxZsuDyfM9cSUfnk4QXiqdN/+97IqFFMfftg+qCI3vLF2vZFkWs1PT1bMl4v3huSNjYjcQ2WIWeYi10WSo9Ry/nYNUWmShLOEse2oLuGI9zGOoXDFSTQJQxK8sx/MCBNHqzE3ID8WHGF/FOAQqX050F/o611AwT4cvihY8z4qHMT4rSk3o+RhutKUvs1RCPHbOlJTnpji36UlS5+zrgxLWzOY9Sd4+qxxRK1l3DRODo95unZ1ca9fgroU5ogJ9fk0RNadaaKdVHSPfOWeHf8dwvK0MbciEXwE+yy407eectAArM6A6xBqqO+hqziVaOxPS5lQVaDSvm3hvBIv7f77VnL0jz9t+X2kpXv8albBoURPfl7MUN6vPEO9H70icrpgJAszCGkenyAGm+jkyBucANlxHsUAivhQbFfv7b+U1cTNPm04o1N2icfdN2SOK0D82U3Qi7EOdddu76106Ih2d9vK1GZzN1i9fmy1TAH1wHXkClWIEsDg2D52Ovg=
+    app: MarcusZuckerbot
+    domain: jobbogamer
+    on:
+        repo: jobbogamer/MarcusZuckerbot
