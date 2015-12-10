@@ -85,7 +85,7 @@ function startBot(api, chats) {
 
     // Notify subscribed chats that Zuckerbot is running.
     var message = {
-        body: 'Zuckerbot has started, running v' + pkg.version + '.'
+        body: 'Zuckerbot is now running v' + pkg.version + '.'
     };
 
     Object.keys(chats).forEach(function(key) {
