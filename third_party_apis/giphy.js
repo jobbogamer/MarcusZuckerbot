@@ -11,7 +11,7 @@ var translate = function(searchTerm, callback) {
     };
 
     Giphy.translate(options, function giphyCallback(err, data, res) {
-        if (data.data.images != null) {
+        if (data.data != null && data.data.images != null) {
             callback(err, data.data.images.downsized.url);
         }
         else {

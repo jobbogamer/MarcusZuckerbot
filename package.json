@@ -29,6 +29,7 @@
   "homepage": "https://github.com/bsansouci/MarcusZuckerbot",
   "devDependencies": {
     "mocha": "^2.3.4",
+    "mockery": "^1.4.0",
     "should": "^8.0.0"
   }
 }
