@@ -149,15 +149,17 @@ function notifyAboutDeployment(payload) {
     };
 
     // This may be a notification of failure.
-    var status = payload.status_message.toLowerCase();
+    if (payload.status_message != null) {
+        var status = payload.status_message.toLowerCase();
 
-    if (status === 'broken' ||
-        status === 'failed' ||
-        status === 'still failing') {
-        message = {
-            body: 'Deployment failed. Zuckerbot will continue running.'
-        };
-    }    
+        if (status === 'broken' ||
+            status === 'failed' ||
+            status === 'still failing') {
+            message = {
+                body: 'Deployment failed. Zuckerbot will continue running.'
+            };
+        }
+    }  
 
     // Loop through each chat and see if it's subscribed to notifications.
     Object.keys(allData).forEach(function(key) {
