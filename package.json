@@ -18,7 +18,8 @@
     "firebase": "^2.3.2",
     "giphy": "0.0.4",
     "github": "^0.2.4",
-    "require-all": "^2.0.0"
+    "require-all": "^2.0.0",
+    "npmlog": "^2.0.0"
   },
   "bugs": {
     "url": "https://github.com/jobbogamer/MarcusZuckerbot/issues"
