@@ -11,3 +11,4 @@ deploy:
     domain: jobbogamer
     on:
         repo: jobbogamer/MarcusZuckerbot
+    skip_cleanup: true
