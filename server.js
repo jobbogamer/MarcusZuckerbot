@@ -150,6 +150,7 @@ function notifyAboutDeployment(payload) {
 
     // This may be a notification of failure.
     if (payload.status_message != null) {
+        console.log('Status message: ' + payload.status_message);
         var status = payload.status_message.toLowerCase();
 
         if (status === 'broken' ||
@@ -166,7 +167,10 @@ function notifyAboutDeployment(payload) {
                 body: 'Deployment successful. Zuckerbot is now running v' + version + '.'
             };
         }
-    }  
+    }
+    else {
+        console.log('Notification does not contain a status message.');
+    }
 
     // Loop through each chat and see if it's subscribed to notifications.
     Object.keys(allData).forEach(function(key) {
