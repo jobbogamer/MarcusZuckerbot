@@ -159,6 +159,13 @@ function notifyAboutDeployment(payload) {
                 body: 'Deployment failed. Zuckerbot will continue running.'
             };
         }
+
+        if (status === 'passed') {
+            var version = pkg.version;
+            message = {
+                body: 'Deployment successful. Zuckerbot is now running v' + version + '.'
+            };
+        }
     }  
 
     // Loop through each chat and see if it's subscribed to notifications.
