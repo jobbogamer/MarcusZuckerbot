@@ -8,10 +8,12 @@ var countMessages = function(arguments, info, replyCallback) {
                 body: 'An error occurred when counting the messages.'
             });
         }
-
-        replyCallback({
-            body: 'There are ' + conversations[0].messageCount + ' messages in the conversation.'
-        });
+        else {
+            replyCallback({
+                body: 'There are ' + conversations[0].messageCount +
+                      ' messages in the conversation.'
+            });
+        }
     });
 }
 
