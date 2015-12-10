@@ -79,10 +79,25 @@ var chatsDB = db.child('chats');
 
 // Start listening to incoming events.
 function startBot(api, chats) {
-    return;
     // Set a default value for chats in case it doesn't already exist.
     // Firebase won't save an empty object to the database.
     chats = chats || {};
+
+    // Notify subscribed chats that Zuckerbot is running.
+    var message = {
+        body: 'Zuckerbot has started. v' + pkg.version + ' is currently running.'
+    };
+
+    Object.keys(chats).forEach(function(key) {
+        // By default, do not notify.
+        var chatData = chats[key] || {
+            notifications: false
+        };
+
+        if (chatData.notifications) {
+            facebookAPI.sendMessage(message, key);
+        }
+    });
 
     var stopListening = api.listen(function receive(err, event) {
         if (err) {
@@ -158,13 +173,6 @@ function notifyAboutDeployment(payload) {
             status === 'still failing') {
             message = {
                 body: 'Deployment failed. Zuckerbot will continue running.'
-            };
-        }
-
-        if (status === 'passed') {
-            var version = pkg.version;
-            message = {
-                body: 'Deployment successful. Zuckerbot is now running v' + version + '.'
             };
         }
     }
