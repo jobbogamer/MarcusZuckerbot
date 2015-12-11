@@ -3,7 +3,11 @@
 var api = null;
 
 function send(text, character, threadID) {
-    api.sendMessage(text.charAt(character), threadID, function(err, res) {
+    var message = {
+        body: text.charAt(character)
+    };
+
+    api.sendMessage(message, threadID, function(err, res) {
         if (character < text.length - 1) {
             send(text, character + 1, threadID);
         }
