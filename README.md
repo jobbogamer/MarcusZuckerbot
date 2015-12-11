@@ -106,7 +106,21 @@ When Zuckerbot starts, it tries to load each file in the `commands` directory
 and import an initialisation function from it. It uses the return value of that
 function to load the command and make it available to users.
 
+You can get started developing a new plugin by running:
+
+```
+node createPlugin.js commandName
+```
+
+This will create a command file and a test suite file for your plugin. The
+default implementation from the template replies 'Hello, world!' whenever the
+plugin is called, and the default test suite defines a test which always fails,
+to remind you to implement some tests.
+
 ### Exports
+
+Your command file can contain as many functions as you like, and can `require`
+other modules if necessary.
 
 The file should export a single function, conventionally called `init()`, which
 takes no arguments and returns an object. This object should have three
@@ -114,9 +128,6 @@ properties, described below.
 
 The initialiser test generated in `test_initialisers.js` for each command will
 test that your exported function returns an object with the expected format.
-
-Your command file can contain as many functions as you like, and can `require`
-other modules if necessary.
 
 #### `name`
 
