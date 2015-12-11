@@ -21,8 +21,11 @@ var setProgress = function(arguments, info, replyCallback) {
             reply = 'Error: Argument 2 of setProgress() should be a number.';
         }
         else {
-            if (percentage < 0 || percentage > 100) {
-                reply = 'Error: Argument 2 of setProgress() should be between 0 and 100.';
+            if (percentage < 0) {
+                reply = 'The value should be greater than or equal to zero.';
+            }
+            else if (percentage > 100) {
+                reply = 'The value should be less than or equal to 100.';
             }
             else {
                 chatData.progress[arguments.name] = percentage;
