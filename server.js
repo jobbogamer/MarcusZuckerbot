@@ -14,6 +14,9 @@ var messageHandler = require('./messageHandler');
 var facebookAPI = null;
 var allData = null;
 
+// The old version of sendMessage that has been overriden.
+var sendMessageOld = null;
+
 
 
 // Web server to keep openshift quiet
@@ -83,30 +86,52 @@ var chatsDB = db.child('chats');
 
 // Functions
 
+// Override of the sendMessage function in the Facebook Chat API, which doesn't
+// actually send the message if dev mode is enabled.
+var sendMessageIfNotDev = function(message, threadID, callback) {
+    console.log('Sending message:');
+    if (message.body != null && message.body.length > 0) {
+        console.log('   ', message.body.replace(/\n/g, '\n    '));
+    }
+    if (message.attachment) {
+        console.log('    [Attachment]');
+    }
+
+    // Don't send the message if dev mode is enabled.
+    if (process.env.ZB_DEV_MODE) {
+        console.log('(Not sent)\n');
+        if (callback) {
+            callback(null, null);
+        }
+        return;
+    }
+
+    // Pass the message straight through to the actual API call.
+    sendMessageOld(message, threadID, callback);
+}
+
+
 // Start listening to incoming events.
 function startBot(api, chats) {
     // Set a default value for chats in case it doesn't already exist.
     // Firebase won't save an empty object to the database.
     chats = chats || {};
 
-    // Notify subscribed chats that Zuckerbot is running, as long as it is not
-    // running in dev mode.
-    if (!process.env.ZB_DEV_MODE) {
-        var message = {
-            body: 'Zuckerbot is now running v' + pkg.version + '.'
+    // Notify subscribed chats that Zuckerbot is running.
+    var message = {
+        body: 'Zuckerbot is now running v' + pkg.version + '.'
+    };
+
+    Object.keys(chats).forEach(function(key) {
+        // By default, do not notify.
+        var chatData = chats[key] || {
+            notifications: false
         };
 
-        Object.keys(chats).forEach(function(key) {
-            // By default, do not notify.
-            var chatData = chats[key] || {
-                notifications: false
-            };
-
-            if (chatData.notifications) {
-                facebookAPI.sendMessage(message, key);
-            }
-        });
-    }
+        if (chatData.notifications) {
+            facebookAPI.sendMessage(message, key);
+        }
+    });
 
     var stopListening = api.listen(function receive(err, event) {
         if (err) {
@@ -134,19 +159,8 @@ function startBot(api, chats) {
             var callback = function(message, chat) {
                 // If the messageHandler sent back a reply, send it to the chat.
                 if (message) {
-                    console.log('Sending reply:');
-                    if (message.body.length > 0) {
-                        console.log('   ', message.body.replace(/\n/g, '\n    '));
-                    }
-                    if (message.attachment) {
-                        console.log('    [Attachment]');
-                    }
-
-                    // Send the reply, but only if the bot is not running in
-                    // dev mode.
-                    if (!process.env.ZB_DEV_MODE) {
-                        api.sendMessage(message, event.threadID);
-                    }
+                    // Send the reply.
+                    api.sendMessage(message, event.threadID);
                 }
                 else {
                     console.log('No reply required.')
@@ -199,11 +213,6 @@ function notifyAboutDeployment(payload) {
         console.log('Notification does not contain a status message.\n');
     }
 
-    // Notifications should not be sent when the bot is in dev mode.
-    if (process.env.ZB_DEV_MODE) {
-        return;
-    }
-
     // Loop through each chat and see if it's subscribed to notifications.
     Object.keys(allData).forEach(function(key) {
         // By default, do not notify.
@@ -248,6 +257,10 @@ db.once('value', function dataReceived(snapshot) {
         if (err) {
             return console.error(err);
         }
+
+        // Override the sendMessage function with a custom implementation.
+        sendMessageOld = api.sendMessage;
+        api.sendMessage = sendMessageIfNotDev;
 
         console.log('Done.\n');
         facebookAPI = api;
