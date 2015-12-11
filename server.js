@@ -173,6 +173,7 @@ function startBot(api, chats) {
 function notifyAboutDeployment(payload) {
     // Notifications should only be sent about the master branch.
     if (payload.branch !== 'master') {
+        console.log('Notification came from branch ' + payload.branch + '.\n');
         return;
     }
 
@@ -195,7 +196,12 @@ function notifyAboutDeployment(payload) {
         }
     }
     else {
-        console.log('Notification does not contain a status message.');
+        console.log('Notification does not contain a status message.\n');
+    }
+
+    // Notifications should not be sent when the bot is in dev mode.
+    if (process.env.ZB_DEV_MODE) {
+        return;
     }
 
     // Loop through each chat and see if it's subscribed to notifications.
