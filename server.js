@@ -5,6 +5,7 @@
 // npm modules
 var login = require('facebook-chat-api');
 var Firebase = require('firebase');
+var log = require('npmlog');
 
 // Local modules
 var messageHandler = require('./messageHandler');
@@ -53,6 +54,11 @@ app.post('/notify', function(req, res) {
 var pkg = require('./package.json');
 console.log('Zuckerbot v' + pkg.version + '\n');
 
+if (process.env.ZB_DEV_MODE) {
+    log.warn('Dev Mode is currently enabled.', 'Replies will not be sent in this mode.');
+    console.log('');
+}
+
 // Check that the environment variables are set.
 if (!process.env.FIREBASE) {
     return console.error('FIREBASE environment variable is not set.');
@@ -83,21 +89,24 @@ function startBot(api, chats) {
     // Firebase won't save an empty object to the database.
     chats = chats || {};
 
-    // Notify subscribed chats that Zuckerbot is running.
-    var message = {
-        body: 'Zuckerbot is now running v' + pkg.version + '.'
-    };
-
-    Object.keys(chats).forEach(function(key) {
-        // By default, do not notify.
-        var chatData = chats[key] || {
-            notifications: false
+    // Notify subscribed chats that Zuckerbot is running, as long as it is not
+    // running in dev mode.
+    if (!process.env.ZB_DEV_MODE) {
+        var message = {
+            body: 'Zuckerbot is now running v' + pkg.version + '.'
         };
 
-        if (chatData.notifications) {
-            facebookAPI.sendMessage(message, key);
-        }
-    });
+        Object.keys(chats).forEach(function(key) {
+            // By default, do not notify.
+            var chatData = chats[key] || {
+                notifications: false
+            };
+
+            if (chatData.notifications) {
+                facebookAPI.sendMessage(message, key);
+            }
+        });
+    }
 
     var stopListening = api.listen(function receive(err, event) {
         if (err) {
@@ -133,7 +142,11 @@ function startBot(api, chats) {
                         console.log('    [Attachment]');
                     }
 
-                    api.sendMessage(message, event.threadID);
+                    // Send the reply, but only if the bot is not running in
+                    // dev mode.
+                    if (!process.env.ZB_DEV_MODE) {
+                        api.sendMessage(message, event.threadID);
+                    }
                 }
                 else {
                     console.log('No reply required.')
