@@ -12,6 +12,8 @@ deploy:
         repo: jobbogamer/MarcusZuckerbot
     skip_cleanup: true
 notifications:
+    email:
+        on_success: never
     webhooks:
         urls:
             - http://zuckerbot.joshasch.com/notify
