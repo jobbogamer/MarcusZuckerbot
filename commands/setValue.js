@@ -20,7 +20,7 @@ var setValue = function(arguments, info, replyCallback) {
             reply = arguments.variable + ' has been set to ' + otherVariable + '.';
         }
         else {
-            reply = 'Error: Argument 2 of setValue() should be a number or an existing variable name.';
+            reply = arguments.value + ' is not defined.';
         }
     }
     else {
