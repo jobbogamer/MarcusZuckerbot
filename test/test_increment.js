@@ -57,6 +57,7 @@ describe('increment', function() {
                 reply.should.have.property('body');
                 reply.body.should.be.String();
                 reply.body.should.not.match(/4/g);
+                reply.body.should.match(/(not defined)|(not exist)/gi);
 
                 // The nuggets variable should stay the same.
                 chat.should.be.Object();

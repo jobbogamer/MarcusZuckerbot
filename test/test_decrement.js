@@ -56,6 +56,7 @@ describe('decrement', function() {
                 reply.should.be.Object();
                 reply.should.have.property('body');
                 reply.body.should.be.String();
+                reply.body.should.match(/(not defined)|(not exist)/gi);
                 reply.body.should.not.match(/2/g);
 
                 // The nuggets variable should stay the same.

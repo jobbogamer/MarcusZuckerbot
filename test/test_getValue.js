@@ -48,7 +48,7 @@ describe('getValue', function() {
                 reply.should.be.Object();
                 reply.should.have.property('body');
                 reply.body.should.be.String();
-                reply.body.should.match(/(undefined)|(not defined)|(not exist)/gi);
+                reply.body.should.match(/(not defined)|(not exist)/gi);
 
                 done();
             });
