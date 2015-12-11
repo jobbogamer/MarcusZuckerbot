@@ -4,7 +4,7 @@
 var helpers = require('../helpers');
 
 
-var updateProgress = function(arguments, info, replyCallback) {
+var setProgress = function(arguments, info, replyCallback) {
     var reply = '';
     var argc = Object.keys(arguments).length;
     var chatData = info.chatData;
@@ -18,11 +18,11 @@ var updateProgress = function(arguments, info, replyCallback) {
         var percentage = parseFloat(arguments.percentage);
 
         if (isNaN(percentage)) {
-            reply = 'Error: Argument 2 of updateProgress() should be a number.';
+            reply = 'Error: Argument 2 of setProgress() should be a number.';
         }
         else {
             if (percentage < 0 || percentage > 100) {
-                reply = 'Error: Argument 2 of updateProgress() should be between 0 and 100.';
+                reply = 'Error: Argument 2 of setProgress() should be between 0 and 100.';
             }
             else {
                 chatData.progress[arguments.name] = percentage;
@@ -44,19 +44,19 @@ var updateProgress = function(arguments, info, replyCallback) {
         var y = parseFloat(arguments.y);
 
         if (isNaN(x)) {
-            reply = 'Error: Argument 2 of updateProgress() should be a number.';
+            reply = 'Error: Argument 2 of setProgress() should be a number.';
         }
         else if (isNaN(y)) {
-            reply = 'Error: Argument 3 of updateProgress() should be a number.';
+            reply = 'Error: Argument 3 of setProgress() should be a number.';
         }
         else if (x < 0) {
-            reply = 'Error: Argument 2 of updateProgress() should be greater than or equal to 0.';
+            reply = 'Error: Argument 2 of setProgress() should be greater than or equal to 0.';
         }
         else if (y <= 0) {
-            reply = 'Error: Argument 3 of updateProgress() should be greater than 0.';
+            reply = 'Error: Argument 3 of setProgress() should be greater than 0.';
         }
         else if (x > y) {
-            reply = 'Error: Argument 2 of updateProgress() should be less than or equal to ' +
+            reply = 'Error: Argument 2 of setProgress() should be less than or equal to ' +
                     'argument 3.';
         }
 
@@ -84,13 +84,13 @@ var updateProgress = function(arguments, info, replyCallback) {
 var usage = [
     {
         arguments: ['name', 'percentage'],
-        description: 'Update the progress of the named task to the given percentage, ' +
+        description: 'Set the progress of the named task to the given percentage, ' +
                      'and display a progress bar. percentage must be a number between ' + 
                      '0 and 100 inclusive.'
     },
     {
         arguments: ['name', 'x', 'y'],
-        description: 'Update the progress of the named task by calculating x÷y as a percentage, ' +
+        description: 'Set the progress of the named task by calculating x÷y as a percentage, ' +
                      'and display a progress bar. x must be greater than or equal to zero, ' +
                      'and y must be greater than zero. x must be less than or equal to y.'
     }
@@ -99,8 +99,8 @@ var usage = [
 
 module.exports = function init() {
     return {
-        name: 'updateProgress',
-        func: updateProgress,
+        name: 'setProgress',
+        func: setProgress,
         usage: usage
     }
 };
