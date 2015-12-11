@@ -158,6 +158,11 @@ function startBot(api, chats) {
 // Send messages to subscribed conversations that a deployment is about to
 // occur.
 function notifyAboutDeployment(payload) {
+    // Notifications should only be sent about the master branch.
+    if (payload.branch !== 'master') {
+        return;
+    }
+
     var message = {
         body: 'Zuckerbot is about to be restarted to deploy an update. This will ' +
               'take a couple of minutes.'
