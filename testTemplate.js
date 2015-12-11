@@ -17,11 +17,13 @@ describe('COMMAND_NAME', function() {
                 reply.should.have.property('body');
                 reply.body.should.be.String();
 
+                // ******** REPLACE THIS WITH YOUR OWN TESTS ********
                 var assertion = new should.Assertion('COMMAND_NAME');
                 assertion.params = {
                     operator: 'to be implemented'
                 };
                 assertion.fail();
+                // **************************************************
 
                 done();
             });
