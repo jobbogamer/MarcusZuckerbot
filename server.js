@@ -73,6 +73,11 @@ if (!process.env.FB_PASSWORD) {
     return console.error('FB_PASSWORD environment variable is not set.');
 }
 
+// Load the command plugins.
+console.log('Loading command plugins...');
+messageHandler.loadPlugins();
+console.log('Done.\n');
+
 // Connect to the Firebase database.
 console.log('Connecting to Firebase...');
 var db = new Firebase(process.env.FIREBASE);
