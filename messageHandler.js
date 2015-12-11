@@ -212,6 +212,7 @@ var handle = function(message, chatData, facebookAPI, reply) {
         // Execute the command.
         command.func(namedArguments, info, function(message, chatData) {
             reply(message, chatData);
+            endTypingIndicator();
         });
 
         return;
