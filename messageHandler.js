@@ -4,43 +4,42 @@
 var githubIssues = require('./third_party_apis/githubIssues');
 var log = require('npmlog');
 
+var commands = {};
 
 // Build an 'API' of commands by importing all modules in the commands
 // directory. The resulting object will map each module's exports to the
 // name of the file.
-console.log('Loading command plugins...');
-var commandInitialisers = require('require-all')(__dirname + '/commands');
+var loadPlugins = function() {
+    var commandInitialisers = require('require-all')(__dirname + '/commands');
 
-var commands = {};
-for (var key in commandInitialisers) {
-    var command = commandInitialisers[key]();
-    
-    // If the command initialiser returned an error, or did not return a
-    // command, log it to the console.
-    if (!command) {
-        log.error(key, 'No command object returned.');
-    }
-    else if (command.error) {
-        log.error(key, command.error);
-    }
-    else if (!command.name) {
-        log.error(key, 'Command object has no name field.');
-    }
-    else if (!command.func) {
-        log.error(key, 'Command object has no func field.');
-    }
-    else if (!command.usage) {
-        log.error(key, 'Command object has no usage field.');
-    }
+    for (var key in commandInitialisers) {
+        var command = commandInitialisers[key]();
+        
+        // If the command initialiser returned an error, or did not return a
+        // command, log it to the console.
+        if (!command) {
+            log.error(key, 'No command object returned.');
+        }
+        else if (command.error) {
+            log.error(key, command.error);
+        }
+        else if (!command.name) {
+            log.error(key, 'Command object has no name field.');
+        }
+        else if (!command.func) {
+            log.error(key, 'Command object has no func field.');
+        }
+        else if (!command.usage) {
+            log.error(key, 'Command object has no usage field.');
+        }
 
-    // A command was returned and it has the required fields.
-    else {
-        commands[command.name.toLowerCase()] = command;
-        console.log(command.name);
+        // A command was returned and it has the required fields.
+        else {
+            commands[command.name.toLowerCase()] = command;
+            console.log(command.name);
+        }
     }
 }
-console.log('Done.\n');
-
 
 
 
@@ -229,5 +228,8 @@ var handle = function(message, chatData, facebookAPI, reply) {
 }
 
 
-// Only export the handle function, everything else is private.
-module.exports.handle = handle;
+
+module.exports = {
+    loadPlugins: loadPlugins,
+    handle: handle
+};

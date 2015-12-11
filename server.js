@@ -5,6 +5,7 @@
 // npm modules
 var login = require('facebook-chat-api');
 var Firebase = require('firebase');
+var log = require('npmlog');
 
 // Local modules
 var messageHandler = require('./messageHandler');
@@ -12,6 +13,9 @@ var messageHandler = require('./messageHandler');
 // Will store a copy of the facebook chat API once the bot logs in.
 var facebookAPI = null;
 var allData = null;
+
+// The old version of sendMessage that has been overriden.
+var sendMessageOld = null;
 
 
 
@@ -53,6 +57,11 @@ app.post('/notify', function(req, res) {
 var pkg = require('./package.json');
 console.log('Zuckerbot v' + pkg.version + '\n');
 
+if (process.env.ZB_DEV_MODE) {
+    log.warn('Dev Mode is currently enabled.', 'Replies will not be sent in this mode.');
+    console.log('');
+}
+
 // Check that the environment variables are set.
 if (!process.env.FIREBASE) {
     return console.error('FIREBASE environment variable is not set.');
@@ -63,6 +72,11 @@ if (!process.env.FB_EMAIL) {
 if (!process.env.FB_PASSWORD) {
     return console.error('FB_PASSWORD environment variable is not set.');
 }
+
+// Load the command plugins.
+console.log('Loading command plugins...');
+messageHandler.loadPlugins();
+console.log('Done.\n');
 
 // Connect to the Firebase database.
 console.log('Connecting to Firebase...');
@@ -76,6 +90,31 @@ var chatsDB = db.child('chats');
 
 
 // Functions
+
+// Override of the sendMessage function in the Facebook Chat API, which doesn't
+// actually send the message if dev mode is enabled.
+var sendMessageIfNotDev = function(message, threadID, callback) {
+    console.log('Sending message:');
+    if (message.body != null && message.body.length > 0) {
+        console.log('   ', message.body.replace(/\n/g, '\n    '));
+    }
+    if (message.attachment) {
+        console.log('    [Attachment]');
+    }
+
+    // Don't send the message if dev mode is enabled.
+    if (process.env.ZB_DEV_MODE) {
+        console.log('(Not sent)\n');
+        if (callback) {
+            callback(null, null);
+        }
+        return;
+    }
+
+    // Pass the message straight through to the actual API call.
+    sendMessageOld(message, threadID, callback);
+}
+
 
 // Start listening to incoming events.
 function startBot(api, chats) {
@@ -125,14 +164,7 @@ function startBot(api, chats) {
             var callback = function(message, chat) {
                 // If the messageHandler sent back a reply, send it to the chat.
                 if (message) {
-                    console.log('Sending reply:');
-                    if (message.body.length > 0) {
-                        console.log('   ', message.body.replace(/\n/g, '\n    '));
-                    }
-                    if (message.attachment) {
-                        console.log('    [Attachment]');
-                    }
-
+                    // Send the reply.
                     api.sendMessage(message, event.threadID);
                 }
                 else {
@@ -158,6 +190,12 @@ function startBot(api, chats) {
 // Send messages to subscribed conversations that a deployment is about to
 // occur.
 function notifyAboutDeployment(payload) {
+    // Notifications should only be sent about the master branch.
+    if (payload.branch !== 'master') {
+        console.log('Notification came from branch ' + payload.branch + '.\n');
+        return;
+    }
+
     var message = {
         body: 'Zuckerbot is about to be restarted to deploy an update. This will ' +
               'take a couple of minutes.'
@@ -177,7 +215,7 @@ function notifyAboutDeployment(payload) {
         }
     }
     else {
-        console.log('Notification does not contain a status message.');
+        console.log('Notification does not contain a status message.\n');
     }
 
     // Loop through each chat and see if it's subscribed to notifications.
@@ -224,6 +262,10 @@ db.once('value', function dataReceived(snapshot) {
         if (err) {
             return console.error(err);
         }
+
+        // Override the sendMessage function with a custom implementation.
+        sendMessageOld = api.sendMessage;
+        api.sendMessage = sendMessageIfNotDev;
 
         console.log('Done.\n');
         facebookAPI = api;
