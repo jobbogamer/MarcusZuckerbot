@@ -160,11 +160,15 @@ var commandName = function(arguments, info, replyCallback) {
   ```
 
 - `info` contains various pieces of information about the current conversation
-  and other information available to Zuckerbot. To see what is passed into this
-  object, see [`messageHandler.handle()`][handle].
-
-  An important property of this object is the `chatData` property, which
-  contains the data stored in the database for the current conversation.
+  and other information available to Zuckerbot. This object contains:
+  - `threadID` - The Facebook conversation ID for the current conversation.
+  - `sender` - The full name of the Facebook user who invoked the command.
+  - `attachments` - Any attachments which were sent with the command
+    invocation, such as images.
+  - `chatData` - Contains data from the database related to the current
+    conversation.
+  - `facebookAPI` - A copy of the facebook-chat-api object, so your command
+    can perform actions on the conversation.
 
 - `replyCallback` is a callback function which should be called when your
   command finishes executing. It takes two arguments:
