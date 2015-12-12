@@ -104,7 +104,7 @@ function parse(message) {
     var commandStart = message.toLowerCase().indexOf('zb.') + 3;
     var commandEnd = message.indexOf('(');
     var commandLength = commandEnd - commandStart;
-    var commandName = message.substr(commandStart, commandLength).toLowerCase();
+    var commandName = message.substr(commandStart, commandLength);
 
     // Create a regular expression which can match arguments. String arguments
     // must be enclosed in quotes, but numerical arguments do not.
@@ -123,8 +123,9 @@ function parse(message) {
     }
 
     return {
-        command: commandName,
-        arguments: match
+        command: commandName.toLowerCase(),
+        arguments: match,
+        originalCommand: commandName
     };
 }
 
@@ -212,6 +213,7 @@ var handle = function(message, chatData, facebookAPI, reply) {
         // Execute the command.
         command.func(namedArguments, info, function(message, chatData) {
             reply(message, chatData);
+            endTypingIndicator();
         });
 
         return;
@@ -222,7 +224,7 @@ var handle = function(message, chatData, facebookAPI, reply) {
         console.log('No matching command exists.');
         
         reply({
-            body: 'No command matching \'' + name + '\'.'
+            body: 'No command matching \'' + parsed.originalCommand + '\'.'
         });
     }
 }

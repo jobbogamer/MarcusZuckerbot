@@ -40,7 +40,13 @@ var addThousandsSeparators = function(number) {
 }
 
 
+var randBetween = function(low, high) {
+    return Math.floor(Math.random() * (high - low) + low);
+}
+
+
 module.exports = {
     drawProgressBar: drawProgressBar,
-    addThousandsSeparators: addThousandsSeparators
+    addThousandsSeparators: addThousandsSeparators,
+    randBetween: randBetween
 };

@@ -101,6 +101,9 @@ var sendMessageIfNotDev = function(message, threadID, callback) {
     if (message.attachment) {
         console.log('    [Attachment]');
     }
+    if (message.sticker) {
+        console.log('    [Sticker]');
+    }
 
     // Don't send the message if dev mode is enabled.
     if (process.env.ZB_DEV_MODE) {
