@@ -6,10 +6,10 @@
 var githubIssues = require('../third_party_apis/githubIssues');
 
 
-var suggestCommand = function(arguments, info, replyCallback) {
+var suggestFeature = function(arguments, info, replyCallback) {
     var title = arguments.name + '()';
     var body = arguments.description + '\n\n' + 'Suggested by ' + info.sender + '.';
-    var labels = ['command'];
+    var labels = ['feature'];
 
     githubIssues.createIssue(title, body, labels, function(err, res) {
         if (err) {
@@ -32,7 +32,7 @@ var suggestCommand = function(arguments, info, replyCallback) {
 var usage = [
     {
         arguments: ['name', 'description'],
-        description: 'Open a GitHub issue in the Zuckerbot repo suggesting a new command with ' + 
+        description: 'Open a GitHub issue in the Zuckerbot repo suggesting a new feature with ' + 
                      'the given name and description.'
     }
 ];
@@ -52,8 +52,8 @@ module.exports = function init() {
     }
 
     return {
-        name: 'suggestCommand',
-        func: suggestCommand,
+        name: 'suggestFeature',
+        func: suggestFeature,
         usage: usage
     };
 }

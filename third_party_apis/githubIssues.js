@@ -5,10 +5,9 @@ var GitHub = require('github');
 
 var user = 'jobbogamer';
 var repo = 'MarcusZuckerbot';
-var labels = ['command'];
 
 
-var createIssue = function(title, body, callback) {
+var createIssue = function(title, body, labels, callback) {
     var github = new GitHub({
         version: "3.0.0",
         protocol: "https",
