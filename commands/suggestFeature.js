@@ -7,7 +7,7 @@ var githubIssues = require('../third_party_apis/githubIssues');
 
 
 var suggestFeature = function(arguments, info, replyCallback) {
-    var title = arguments.name + '()';
+    var title = arguments.name;
     var body = arguments.description + '\n\n' + 'Suggested by ' + info.sender + '.';
     var labels = ['feature'];
 
@@ -24,7 +24,7 @@ var suggestFeature = function(arguments, info, replyCallback) {
         var number = res.number;
 
         replyCallback({
-            body: 'Command \'' + name + '\' has been suggested as issue #' + number + '.'
+            body: '\'' + name + '\' has been suggested as issue #' + number + '.'
         });
     });
 }
