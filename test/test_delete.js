@@ -1,10 +1,10 @@
 
-var init = require('../commands/deleteVariable');
+var init = require('../commands/delete');
 var should = require('should');
 var command = init();
 
 
-describe('deleteVariable', function() {
+describe('delete', function() {
     describe('execute', function() {
         it('should delete a variable when it exists', function(done) {
             var arguments = {
