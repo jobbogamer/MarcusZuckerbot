@@ -193,6 +193,9 @@ function startBot(api, chats) {
 // Send messages to subscribed conversations that a deployment is about to
 // occur.
 function notifyAboutDeployment(payload) {
+    // Temporary, log the payload to see what travis sends.
+    console.log(payload);
+
     // Notifications should only be sent about the master branch.
     if (payload.branch !== 'master') {
         console.log('Notification came from branch ' + payload.branch + '.\n');
