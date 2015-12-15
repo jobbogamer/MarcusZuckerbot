@@ -27,3 +27,7 @@ build/Release
 node_modules
 
 run.sh
+
+*.sublime-project
+
+*.sublime-workspace

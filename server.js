@@ -29,6 +29,7 @@ app.set('port', process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 3002);
 app.set('ip', process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1");
 
 // Use body-parser to read requests to /notify.
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 http.createServer(app).listen(app.get('port') ,app.get('ip'), function () {
@@ -37,6 +38,17 @@ http.createServer(app).listen(app.get('port') ,app.get('ip'), function () {
 
 app.get('/', function (req, res) {
     res.send('Hello World!');
+});
+
+app.post('/send', function(req, res) {
+    console.log('Received a request to send a message.');
+
+    // Send an empty response.
+    res.send('');
+    res.end();
+
+    // Pass off the request to get sent.
+    sendPostedMessage(req.body);
 });
 
 app.post('/notify', function(req, res) {
@@ -193,6 +205,9 @@ function startBot(api, chats) {
 // Send messages to subscribed conversations that a deployment is about to
 // occur.
 function notifyAboutDeployment(payload) {
+    // Temporary, log the payload to see what travis sends.
+    console.log(payload);
+
     // Notifications should only be sent about the master branch.
     if (payload.branch !== 'master') {
         console.log('Notification came from branch ' + payload.branch + '.\n');
@@ -231,6 +246,41 @@ function notifyAboutDeployment(payload) {
         if (chatData.notifications) {
             facebookAPI.sendMessage(message, key);
         }
+    });
+}
+
+
+function sendPostedMessage(payload) {
+    console.log(payload);
+
+    if (payload.thread_ids == null) {
+        console.log('Payload does not contain thread_ids.\n');
+        return;
+    }
+
+    if (payload.body == null) {
+        console.log('Payload does not contain body.\n');
+        return;
+    }
+
+    console.log('Thread IDs:' + '\n    ' + payload.thread_ids.join(', '));
+    console.log('Message:' + '\n    ' + payload.body);
+    if (payload.attachment) {
+        console.log('    [Attachment]');
+    }
+    if (payload.sticker) {
+        console.log('    [Sticker]');
+    }
+    console.log('');
+
+    var message = {
+        body: payload.body,
+        attachment: payload.attachment,
+        sticker: payload.sticker
+    }
+
+    payload.thread_ids.forEach(function (threadID) {
+        facebookAPI.sendMessage(message, threadID);
     });
 }
 

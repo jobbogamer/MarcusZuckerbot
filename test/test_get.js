@@ -1,8 +1,8 @@
 
-var init = require('../commands/getValue');
+var init = require('../commands/get');
 var command = init();
 
-describe('getValue', function() {
+describe('get', function() {
     describe('execute', function() {
         it('should display the value of a variable that exists', function(done) {
             var arguments = {

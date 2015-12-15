@@ -1,8 +1,8 @@
 
-var init = require('../commands/setValue');
+var init = require('../commands/set');
 var command = init();
 
-describe('setValue', function() {
+describe('set', function() {
     describe('execute', function() {
         it('should create new variables if they are not defined', function(done) {
             var arguments = {

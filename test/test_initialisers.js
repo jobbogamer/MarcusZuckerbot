@@ -8,7 +8,8 @@ var initialisers = require('require-all')(__dirname + '/../commands');
 // Exclude commands which have a prerequesite in the init function.
 var excluded = [
     'sendGIF',
-    'suggestCommand'
+    'suggestCommand',
+    'suggestFeature'
 ];
 
 

@@ -149,8 +149,8 @@ var handle = function(message, chatData, facebookAPI, reply) {
     // Whitespace before and after the text should be ignored.
     var body = message.body.trim();
 
-    // Ignore any messages which don't start with 'zb.' as they aren't commands.
-    if (body.toLowerCase().indexOf('zb.') !== 0 ||
+    // Ignore any messages which don't contain 'zb.' as they aren't commands.
+    if (body.toLowerCase().indexOf('zb.') === -1 ||
         body.indexOf('(') === -1 || body.indexOf(')') === -1) {
         console.log('Message does not contain a command.');
         reply(null);

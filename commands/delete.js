@@ -1,6 +1,6 @@
 // Delete a variable from the conversation.
 
-var deleteVariable = function(arguments, info, replyCallback) {
+var _delete = function(arguments, info, replyCallback) {
     var reply = '';
     var chatData = info.chatData;
     
@@ -34,8 +34,8 @@ var usage = [
 
 module.exports = function init() {
     return {
-        name: 'deleteVariable',
-        func: deleteVariable,
+        name: 'delete',
+        func: _delete,
         usage: usage
     }
 };

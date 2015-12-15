@@ -1,6 +1,6 @@
 // Set the value of a local variable in the conversation and display its value.
 
-var setValue = function(arguments, info, replyCallback) {
+var set = function(arguments, info, replyCallback) {
     var chatData = info.chatData;
 
     // Default to an empty object if no variables exist yet.
@@ -45,8 +45,8 @@ var usage = [
 
 module.exports = function init() {
     return {
-        name: 'setValue',
-        func: setValue,
+        name: 'set',
+        func: set,
         usage: usage
     }
 };

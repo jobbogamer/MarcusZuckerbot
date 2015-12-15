@@ -1,6 +1,6 @@
 // Display the value of a variable.
 
-var getValue = function(arguments, info, replyCallback) {
+var get = function(arguments, info, replyCallback) {
     var reply = '';
 
     var value = info.chatData.variables[arguments.variable];
@@ -26,8 +26,8 @@ var usage = [
 
 module.exports = function init() {
     return {
-        name: 'getValue',
-        func: getValue,
+        name: 'get',
+        func: get,
         usage: usage
     }
 };
