@@ -76,6 +76,25 @@ To see what arguments a command takes, pass its name to `help()`:
 zb.help('commandName')
 ```
 
+### `/send` Endpoint
+
+Starting with v1.0.3, Zuckerbot can send arbitrary messages to any conversation
+by sending a POST request to the `/send` endpoint. The request should use
+`application/json` encoding, and must contain the following body:
+
+```
+{
+    "thread_ids": ["123456", "16854912"],
+    "body": "This is a message"
+}
+```
+
+where `thread_ids` is an array of Facebook thread IDs as strings, and `body` is
+the body of the message to be sent.
+
+Any valid request sent to `/send` will be acted upon immediately. The request
+will return no response.
+
 ***
 
 ## Deploy
