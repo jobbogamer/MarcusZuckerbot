@@ -4,7 +4,7 @@ var api = null;
 
 function send(text, character, threadID) {
     var message = {
-        body: text.charAt(character)
+        body: text[character]
     };
 
     api.sendMessage(message, threadID, function(err, res) {
@@ -16,7 +16,21 @@ function send(text, character, threadID) {
 
 var split = function(arguments, info, replyCallback) {
     api = info.facebookAPI;
-    send(arguments.text.replace(/\s/g, ''), 0, info.threadID);
+
+    // Remove whitespace from the text, because facebook won't send a message
+    // which only contains whitespace.
+    var text = arguments.text.replace(/\s/g, '');
+
+    // To treat emoji as one character, a for...of loop must be used. Since a
+    // loop will not work due to sendMessage being async, each character needs
+    // to be extracted before starting the recursive call.
+    var characters = [];
+    for (character of text) {
+        characters.push(character);
+    }
+
+    send(characters, 0, info.threadID);
+    replyCallback(null);
 }
 
 var usage = [
