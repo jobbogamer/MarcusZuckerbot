@@ -19,11 +19,14 @@ var diagonalise = function(arguments, info, replyCallback) {
                 reply = 'The text is too long to diagonalise.';
             }
             else {
-                for (var i = 0; i < text.length; i++) {
-                    var character = text.charAt(i);
-                    for (var j = 0; j < i; j++) {
+
+                var indent = 0;
+
+                for (var character of text) {
+                    for (var j = 0; j < indent; j++) {
                         reply += '   ';
                     }
+                    indent++;
 
                     if (character === 'I') {
                         reply += ' ';
@@ -59,12 +62,14 @@ var diagonalise = function(arguments, info, replyCallback) {
                 }
 
                 // Add each character of the word.
-                for (var j = 0; j < word.length; j++) {
-                    var character = word.charAt(j);
+                var indent = 0;
+
+                for (var character of word) {
                     // Indent.
-                    for (var k = 0; k < length + j; k++) {
+                    for (var k = 0; k < length + indent; k++) {
                         reply += '   ';
                     }
+                    indent++;
 
                     if (character === 'I') {
                         reply += ' ';
