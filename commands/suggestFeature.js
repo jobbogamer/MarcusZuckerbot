@@ -20,7 +20,7 @@ var suggestFeature = function(arguments, info, replyCallback) {
         }
 
         var url = res.html_url;
-        var name = res.title.substr(0, res.title.length - 2);
+        var name = res.title;
         var number = res.number;
 
         replyCallback({

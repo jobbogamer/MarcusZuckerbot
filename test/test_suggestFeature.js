@@ -109,7 +109,7 @@ describe('suggestFeature', function() {
                     }
                     else {
                         callback(null, {
-                            title: title + '()',
+                            title: title,
                             number: 42
                         });
                     }
