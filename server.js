@@ -164,7 +164,14 @@ function startBot(api, chats) {
                 console.log('   ', event.body);
             }
             if (event.attachments && event.attachments.length > 0) {
-                console.log('    [Attachment]');
+                event.attachments.forEach(function(attachment) {
+                    if (attachment.type === 'sticker') {
+                        console.log('    [Sticker ' + attachment.stickerID + ']');
+                    }
+                    else {
+                        console.log('    [Attachment]');
+                    }
+                });                
             }
 
             // Mark the message as read.
