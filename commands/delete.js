@@ -10,7 +10,7 @@ var _delete = function(arguments, info, replyCallback) {
 
     var variable = chatData.variables[arguments.variable];
     var progressVariable = chatData.progress[arguments.variable];
-    var type = arguments.type.toLowerCase();
+    var type = (arguments.type) ? arguments.type.toLowerCase() : null;
 
     // If both a variable and a progress variable exist, don't guess which one
     // to delete, but ask for clarification instead.
