@@ -1,9 +1,9 @@
 
-var init = require('../commands/showVariables');
+var init = require('../commands/listVariables');
 var should = require('should');
 var command = init();
 
-describe('showVariables', function() {
+describe('listVariables', function() {
     describe('execute', function() {
         it('should list all variables', function(done) {
             var info = {

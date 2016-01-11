@@ -2,7 +2,7 @@
 
 var helpers = require('../helpers');
 
-var showVariables = function(arguments, info, replyCallback) {
+var listVariables = function(arguments, info, replyCallback) {
     var reply = '';
 
     // Default to an empty object in case no variables are defined.
@@ -52,8 +52,8 @@ var usage = [
 
 module.exports = function init() {
     return {
-        name: 'showVariables',
-        func: showVariables,
+        name: 'listVariables',
+        func: listVariables,
         usage: usage
     }
 }
