@@ -180,7 +180,7 @@ var handle = function(message, chatData, facebookAPI, reply) {
             console.log('Wrong number of arguments given.');
             var error = 'Error: ' + command.name + ' takes ' +
                         stringifyAlternativesList(argumentLengths) + ' ' +
-                        (argumentLengths[0] == 1 ? 'argument' : 'arguments') +
+                        ((argumentLengths[0] === 1 && argumentLengths.length === 1) ? 'argument' : 'arguments') +
                         ' (' + arguments.length + ' given).';
             reply({
                 body: error
