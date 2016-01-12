@@ -5,18 +5,17 @@ deploy:
     provider: openshift
     user: josh.asch@gmail.com
     password:
-        secure: FPzaCj+my3LUPd1fZb5qY0WA21qG59z5NuGLarclixa3nmWRCa9Yuf43FF5Ln6Iu+sMj4CuiGeH1r23u1FUQ1FmjKV6wYTXqT0BL+2Pu7sP/juj8pLsw0x0qIYTM355dGLZzjptrmVVb/PMZXPNalTosgvAnQrq3V67qjGToZmTeZIlCxZsuDyfM9cSUfnk4QXiqdN/+97IqFFMfftg+qCI3vLF2vZFkWs1PT1bMl4v3huSNjYjcQ2WIWeYi10WSo9Ry/nYNUWmShLOEse2oLuGI9zGOoXDFSTQJQxK8sx/MCBNHqzE3ID8WHGF/FOAQqX050F/o611AwT4cvihY8z4qHMT4rSk3o+RhutKUvs1RCPHbOlJTnpji36UlS5+zrgxLWzOY9Sd4+qxxRK1l3DRODo95unZ1ca9fgroU5ogJ9fk0RNadaaKdVHSPfOWeHf8dwvK0MbciEXwE+yy407eectAArM6A6xBqqO+hqziVaOxPS5lQVaDSvm3hvBIv7f77VnL0jz9t+X2kpXv8albBoURPfl7MUN6vPEO9H70icrpgJAszCGkenyAGm+jkyBucANlxHsUAivhQbFfv7b+U1cTNPm04o1N2icfdN2SOK0D82U3Qi7EOdddu76106Ih2d9vK1GZzN1i9fmy1TAH1wHXkClWIEsDg2D52Ovg=
-    app: MarcusZuckerbot
+        secure: ZNkvxUuQ801BUyAKtW8Qh5ruNd0mhLxfy+ac30SmP/J2NhwMdZ5PJobaSjMVxjjHmTYeuXsSFJ7xgtGc8J8jtkVHrF3PnZf2Juf1Sv3kzXCZhhaM+d6RshupcpEkmUHg6rMTXudd83CB+THEvMiMq9T3+9NR+u33OZbw+mJwZKS6HKGOn05KxB+1yxDCiT1ScDs/zbzJbbz3xUHgAvrLALdXFvuJqnhevJLUebJzPhOBb0GjVBfsnFLaa/Emx82Q1GT4mYBeAQdPt/lH2ozny7mSOdFlFGEnw5IFqudRxmbfdbxCdl9uK6L3z7qfBATlZVYwcsMz446OX8SCOxhgqugqWveNeklbk8nNE0ZA+yJbl9kWi5i34jabaezMuJ/3u8XlgxoX3mESol7xBp+QmoQ5BK1ICX3Evbh2Gt6gJGxM2Fu6HU83hSsVNWbhOiNJrDkDoBUITeOByTc1ruOFdAmxBSgxKz2Jo1VavXmmJAbLe39TOz1Fxpq0GtZof3vhovrtpe6ubdFs8+bT8LArvp7pnRYhRaiH0wgrBEmTWXvc+DpDl0jravtpFXSpef/UWrux7lRN29Z4pdxs33E36s0zgwzOfrItZPeq5CdfG7XugLEZ2dI6OPgHirEVdpXDU7cNiuZoDEBjVnW5pakLIgRhTj2wRWzIThsmmkJQNFw=
+    app: zuckerbot
     domain: jobbogamer
     on:
         repo: jobbogamer/MarcusZuckerbot
-    skip_cleanup: true
 notifications:
     email:
         on_success: never
     webhooks:
         urls:
-            - http://zuckerbot.joshasch.com/notify
+            - http://zuckerbot-joboogamer.rhcloud.com/notify
         on_success: never
         on_failure: always
         on_start: always
