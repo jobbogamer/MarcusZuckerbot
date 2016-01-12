@@ -1,6 +1,6 @@
 {
   "name": "marcuszuckerbot",
-  "version": "1.0.4-beta",
+  "version": "1.0.4",
   "description": "Chatbot for Facebook chat which uses an easily extensible plugin system.",
   "main": "server.js",
   "scripts": {
