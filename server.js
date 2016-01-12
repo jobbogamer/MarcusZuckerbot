@@ -53,13 +53,13 @@ app.post('/send', function(req, res) {
 
 app.post('/notify', function(req, res) {
     console.log('Received a deployment notification.');
-    
+
     // Send an empty response.
     res.send('');
     res.end();
 
     // Notify any conversations about the deployment status.
-    notifyAboutDeployment(req.body);
+    notifyAboutDeployment(req.body.payload);
 });
 
 
@@ -171,7 +171,7 @@ function startBot(api, chats) {
                     else {
                         console.log('    [Attachment]');
                     }
-                });                
+                });
             }
 
             // Mark the message as read.
