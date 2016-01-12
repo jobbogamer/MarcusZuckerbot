@@ -45,8 +45,17 @@ var randBetween = function(low, high) {
 }
 
 
+var round = function(number) {
+    // Strangely, adding the rounded number to nothing removes any trailing
+    // zeroes.
+    var displayValue = + number.toFixed(3);
+    return displayValue;
+}
+
+
 module.exports = {
     drawProgressBar: drawProgressBar,
     addThousandsSeparators: addThousandsSeparators,
-    randBetween: randBetween
+    randBetween: randBetween,
+    round: round
 };

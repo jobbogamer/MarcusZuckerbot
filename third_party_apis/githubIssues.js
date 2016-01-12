@@ -8,6 +8,16 @@ var repo = 'MarcusZuckerbot';
 
 
 var createIssue = function(title, body, labels, callback) {
+    // Don't create any issues in dev mode.
+    if (process.env.ZB_DEV_MODE) {
+        callback({
+            error: 'Dev mode is enabled'
+        }, null);
+
+        return;
+    }
+
+
     var github = new GitHub({
         version: "3.0.0",
         protocol: "https",

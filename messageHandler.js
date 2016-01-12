@@ -1,4 +1,4 @@
-// Handles received messages and calls the appropriate command functions to 
+// Handles received messages and calls the appropriate command functions to
 // generate replies.
 
 var githubIssues = require('./third_party_apis/githubIssues');
@@ -14,7 +14,7 @@ var loadPlugins = function() {
 
     for (var key in commandInitialisers) {
         var command = commandInitialisers[key]();
-        
+
         // If the command initialiser returned an error, or did not return a
         // command, log it to the console.
         if (!command) {
@@ -108,11 +108,11 @@ function parse(message) {
 
     // Create a regular expression which can match arguments. String arguments
     // must be enclosed in quotes, but numerical arguments do not.
-    var argRegex = /['‘](.*?)['’]|(-?[0-9.]+)|(true)|(false)/g;
+    var argRegex = /['‘](.*?)['’]|["“](.*?)["”]|(-?[0-9.]+)|(true)|(false)/g;
 
     // Match any arguments passed in.
     var argStart = commandEnd + 1;
-    var argEnd = message.indexOf(')');
+    var argEnd = message.lastIndexOf(')');
     var argLength = argEnd - argStart;
     var match = message.substr(argStart, argLength).match(argRegex) || [];
 
@@ -175,12 +175,12 @@ var handle = function(message, chatData, facebookAPI, reply) {
         });
 
         // Check that the right number of arguments have been given.
-        var matchedUsageIndex = argumentLengths.indexOf(arguments.length);            
+        var matchedUsageIndex = argumentLengths.indexOf(arguments.length);
         if (matchedUsageIndex == -1) {
             console.log('Wrong number of arguments given.');
             var error = 'Error: ' + command.name + ' takes ' +
                         stringifyAlternativesList(argumentLengths) + ' ' +
-                        (argumentLengths[0] == 1 ? 'argument' : 'arguments') +
+                        ((argumentLengths[0] === 1 && argumentLengths.length === 1) ? 'argument' : 'arguments') +
                         ' (' + arguments.length + ' given).';
             reply({
                 body: error
@@ -196,7 +196,7 @@ var handle = function(message, chatData, facebookAPI, reply) {
             namedArguments[matchedUsage.arguments[index]] = arguments[index];
         }
         console.log('Arguments:\n   ', namedArguments);
-        
+
 
         // Data to pass to the command function.
         var info = {
@@ -222,7 +222,7 @@ var handle = function(message, chatData, facebookAPI, reply) {
     // A command wasn't matched.
     else {
         console.log('No matching command exists.');
-        
+
         reply({
             body: 'No command matching \'' + parsed.originalCommand + '\'.'
         });
