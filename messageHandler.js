@@ -108,7 +108,7 @@ function parse(message) {
 
     // Create a regular expression which can match arguments. String arguments
     // must be enclosed in quotes, but numerical arguments do not.
-    var argRegex = /['‘](.*?)['’]|(-?[0-9.]+)|(true)|(false)/g;
+    var argRegex = /['‘](.*?)['’]|["“](.*?)["”]|(-?[0-9.]+)|(true)|(false)/g;
 
     // Match any arguments passed in.
     var argStart = commandEnd + 1;
