@@ -12,20 +12,30 @@ var _delete = function(arguments, info, replyCallback) {
     var progressVariable = chatData.progress[arguments.variable];
     var type = (arguments.type) ? arguments.type.toLowerCase() : null;
 
+    // Reject incorrect type arugments. Valid ones are "variable", "progress",
+    // and "both".
+    if (type != null && type !== 'variable' && type !== 'progress' && type != 'both') {
+        reply = 'Error: type must be one of \'variable\', \'progress\', or \'both\'.';
+    }
     // If both a variable and a progress variable exist, don't guess which one
     // to delete, but ask for clarification instead.
-    if (variable != null && progressVariable != null && type == null) {
+    else if (variable != null && progressVariable != null && type == null) {
         reply = 'Error: Command is ambiguous; ' + arguments.variable + ' exists ' +
                 'as both a variable and a progress variable.\n' +
                 'Please use delete(\'' + arguments.variable + '\', \'TYPE\') instead.';
     }
-    else if (variable != null && (type == null || type === 'variable')) {
+    else if (variable != null && (type == null || type === 'variable' || (type === 'both' && progressVariable == null))) {
         chatData.variables[arguments.variable] = null;
         reply = arguments.variable + ' has been deleted.';
     }
-    else if (progressVariable != null && (type == null || type === 'progress')) {
+    else if (progressVariable != null && (type == null || type === 'progress' || (type === 'both' && variable == null))) {
         chatData.progress[arguments.variable] = null;
         reply = 'Progress of ' + arguments.variable + ' has been deleted.';
+    }
+    else if (variable != null && progressVariable != null && type === 'both') {
+        chatData.variables[arguments.variable] = null;
+        chatData.progress[arguments.variable] = null;
+        reply = arguments.variable + ' and progress of ' + arguments.variable + ' have been deleted.';
     }
     else {
         reply = arguments.variable + ' is not defined.';
