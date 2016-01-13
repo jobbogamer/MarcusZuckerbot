@@ -16,8 +16,8 @@ var _delete = function(arguments, info, replyCallback) {
     // to delete, but ask for clarification instead.
     if (variable != null && progressVariable != null && type == null) {
         reply = 'Error: Command is ambiguous; ' + arguments.variable + ' exists ' +
-                'as both a variable and a progress variable. Please use ' +
-                'delete(\'' + arguments.variable + '\', \'TYPE\') instead.';
+                'as both a variable and a progress variable.\n' +
+                'Please use delete(\'' + arguments.variable + '\', \'TYPE\') instead.';
     }
     else if (variable != null && (type == null || type === 'variable')) {
         chatData.variables[arguments.variable] = null;
