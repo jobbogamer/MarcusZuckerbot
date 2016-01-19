@@ -161,7 +161,7 @@ var usage = [
     },
     {
         arguments: ['name', 'value'],
-        description: 'Update the value of the specified progress, or no progress ' +
+        description: 'Update the value of the specified progress, or if no progress ' +
                      'exists with that name, create a new one with the target set ' +
                      'to 100, so that the given value is interpreted as a percentage.'
     },
