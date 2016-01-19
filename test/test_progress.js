@@ -333,11 +333,6 @@ describe('progress', function() {
                 reply.body.should.match(/nuggets/gi);
                 reply.body.should.match(/not ((defined)|(exist))/gi);
 
-                // There should not be an image attached.
-                if (reply.attachment) {
-                    should(reply.attachment).be.null();
-                }
-
                 done();
             });
         });

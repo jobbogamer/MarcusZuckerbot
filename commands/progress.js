@@ -18,12 +18,6 @@ function displayProgress(name, oldValue, chatData, replyCallback) {
     var percentage = (progress.current / progress.target) * 100;
     var displayPercentage = helpers.round(percentage);
 
-    // Set the old value to the same as the current value, if none is passed in,
-    // so that there is no delta bar on the graph.
-    if (oldValue == null) {
-        oldValue = progress.current;
-    }
-
     var reply = 'Progress of ' + name + ': ' + progress.current + '/' + progress.target + ' (' + displayPercentage + '%)\n\n' +
                 helpers.drawProgressBar(percentage);
 
