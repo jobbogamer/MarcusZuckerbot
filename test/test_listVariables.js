@@ -55,11 +55,18 @@ describe('listVariables', function() {
                 chatData: {
                     variables: {},
                     progress: {
-                        'nuggets': 8,
-                        'sausage': 4,
-                        'biscuits': 11.526666  // Check numbers are rounded;
-                                               // if they are not, 11.526 won't
-                                               // match 11.527 in the regex.
+                        nuggets: {
+                            current: 8,
+                            target: 100
+                        },
+                        sausage:  {
+                            current: 4,
+                            target: 150
+                        },
+                        biscuits: {
+                            current: 11.527,
+                            target: 100
+                        }
                     }
                 }
             };
@@ -69,9 +76,9 @@ describe('listVariables', function() {
                 reply.should.be.Object();
                 reply.should.have.property('body');
                 reply.body.should.be.String();
-                reply.body.should.match(/nuggets\s*(:|=)\s*8/gi);
-                reply.body.should.match(/sausage\s*(:|=)\s*4/gi);
-                reply.body.should.match(/biscuits\s*(:|=)\s*11.527/gi);
+                reply.body.should.match(/nuggets\s*(:|=)\s*8\/100/gi);
+                reply.body.should.match(/sausage\s*(:|=)\s*4\/150/gi);
+                reply.body.should.match(/biscuits\s*(:|=)\s*11.527\/100/gi);
 
                 done();
             });
@@ -82,11 +89,17 @@ describe('listVariables', function() {
             var info = {
                 chatData: {
                     variables: {
-                        'biscuits': 11
+                        biscuits: 11
                     },
                     progress: {
-                        'nuggets': 8,
-                        'sausage': 4
+                        nuggets: {
+                            current: 8,
+                            target: 100
+                        },
+                        sausage: {
+                            current: 4,
+                            target: 150
+                        }
                     }
                 }
             };
@@ -96,8 +109,8 @@ describe('listVariables', function() {
                 reply.should.be.Object();
                 reply.should.have.property('body');
                 reply.body.should.be.String();
-                reply.body.should.match(/nuggets\s*(:|=)\s*8/gi);
-                reply.body.should.match(/sausage\s*(:|=)\s*4/gi);
+                reply.body.should.match(/nuggets\s*(:|=)\s*8\/100/gi);
+                reply.body.should.match(/sausage\s*(:|=)\s*4\/150/gi);
                 reply.body.should.match(/biscuits\s*(:|=)\s*11/gi);
 
                 done();
