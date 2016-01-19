@@ -12,10 +12,13 @@ var messageHandler = require('./messageHandler');
 
 // Will store a copy of the facebook chat API once the bot logs in.
 var facebookAPI = null;
-var allData = null;
+var chatsData = null;
 
 // The old version of sendMessage that has been overriden.
 var sendMessageOld = null;
+
+// The previous version of Zuckerbot.
+var previousVersion = null;
 
 
 
@@ -53,13 +56,13 @@ app.post('/send', function(req, res) {
 
 app.post('/notify', function(req, res) {
     console.log('Received a deployment notification.');
-    
+
     // Send an empty response.
     res.send('');
     res.end();
 
     // Notify any conversations about the deployment status.
-    notifyAboutDeployment(req.body);
+    notifyAboutDeployment(req.body.payload);
 });
 
 
@@ -137,13 +140,26 @@ function startBot(api, chats) {
     // Firebase won't save an empty object to the database.
     chats = chats || {};
 
-    // Notify subscribed chats that Zuckerbot is running.
+    // Notify subscribed chats that Zuckerbot is running. If a different version
+    // is running, modify the text slightly.
+    var body = '';
+    if (pkg.version !== previousVersion) {
+        body = 'Zuckerbot has been updated to v' + pkg.version + '.';
+
+        // Store the new version of the bot, as long as dev mode is not enabled.
+        if (!process.env.ZB_DEV_MODE) {
+            db.child('version').set(pkg.version);
+        }
+    }
+    else {
+        body = 'Zuckerbot has been restarted.';
+    }
     var message = {
-        body: 'Zuckerbot is now running v' + pkg.version + '.'
+        body: body
     };
 
     Object.keys(chats).forEach(function(key) {
-        // By default, do not notify.
+        // By default, do not notify each chat.
         var chatData = chats[key] || {
             notifications: false
         };
@@ -171,7 +187,7 @@ function startBot(api, chats) {
                     else {
                         console.log('    [Attachment]');
                     }
-                });                
+                });
             }
 
             // Mark the message as read.
@@ -244,9 +260,9 @@ function notifyAboutDeployment(payload) {
     }
 
     // Loop through each chat and see if it's subscribed to notifications.
-    Object.keys(allData).forEach(function(key) {
+    Object.keys(chatsData).forEach(function(key) {
         // By default, do not notify.
-        var chatData = allData[key] || {
+        var chatData = chatsData[key] || {
             notifications: false
         };
 
@@ -327,9 +343,12 @@ db.once('value', function dataReceived(snapshot) {
         sendMessageOld = api.sendMessage;
         api.sendMessage = sendMessageIfNotDev;
 
+        // Read the previous version of the bot.
+        previousVersion = data.version;
+
         console.log('Done.\n');
         facebookAPI = api;
-        allData = data.chats;
+        chatsData = data.chats;
         startBot(api, data.chats);
     });
 });

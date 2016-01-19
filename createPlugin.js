@@ -8,6 +8,7 @@ var log = require('npmlog')
 
 if (process.argv.length < 3) {
     log.error('createPlugin', 'a plugin name must be supplied');
+    process.exit(1);
 }
 
 var commandName = process.argv[2];

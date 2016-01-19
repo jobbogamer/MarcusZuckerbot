@@ -260,5 +260,90 @@ describe('delete', function() {
                 done();
             });
         });
+
+
+        it('should delete both when asked', function(done) {
+            var arguments = {
+                variable: 'nuggets',
+                type: 'both'
+            };
+
+            // Use a chatData object where there is a 'nuggets' variable in both
+            // the variables list and the progress list.
+            var info = {
+                chatData: {
+                    variables: {
+                        'nuggets': 3
+                    },
+                    progress: {
+                        'nuggets': 42.42
+                    }
+                }
+            };
+
+            command.func(arguments, info, function replyCallback(reply, chat) {
+                // The reply should display confirmation.
+                reply.should.be.Object();
+                reply.should.have.property('body');
+                reply.body.should.be.String();
+                reply.body.should.match(/deleted/g);
+
+                // The progress variable should no longer be present.
+                chat.should.be.Object();
+                chat.should.have.property('progress');
+                should(chat.progress.nuggets).be.null();
+
+                // The regular variable should also have been deleted.
+                chat.should.have.property('variables');
+                should(chat.variables.nuggets).be.null();
+
+                done();
+            });
+        });
+
+
+        it('should reject incorrect type arguments', function(done) {
+            var arguments = {
+                variable: 'nuggets',
+                type: 'aaaaaaaaa'
+            };
+
+            // Use a chatData object where there is a 'nuggets' variable in both
+            // the variables list and the progress list.
+            var info = {
+                chatData: {
+                    variables: {
+                        'nuggets': 3
+                    },
+                    progress: {
+                        'nuggets': 42.42
+                    }
+                }
+            };
+
+            command.func(arguments, info, function replyCallback(reply, chat) {
+                // The reply should display confirmation.
+                reply.should.be.Object();
+                reply.should.have.property('body');
+                reply.body.should.be.String();
+                reply.body.should.not.match(/deleted/g);
+                reply.body.should.match(/variable/g);
+                reply.body.should.match(/progress/g);
+                reply.body.should.match(/both/g);
+
+                // The progress variable should not have been deleted.
+                chat.should.be.Object();
+                chat.should.have.property('progress');
+                chat.progress.should.have.property('nuggets');
+                chat.progress.nuggets.should.eql(42.42);
+
+                // The regular variable should not have been deleted.
+                chat.should.have.property('variables');
+                chat.variables.should.have.property('nuggets');
+                chat.variables.nuggets.should.eql(3);
+
+                done();
+            });
+        });
     });
 });

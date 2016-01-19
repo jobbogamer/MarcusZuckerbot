@@ -24,7 +24,8 @@ var listVariables = function(arguments, info, replyCallback) {
     var keys = Object.keys(progressVariables);
     keys.forEach(function(key) {
         if (progressVariables[key] != null) {
-            progressList += key + ' = ' + helpers.round(progressVariables[key]) + '\n';
+            var progress = progressVariables[key];
+            progressList += key + ' = ' + progress.current + '/' + progress.target + '\n';
         }
     });
 
