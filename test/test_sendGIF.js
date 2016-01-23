@@ -1,13 +1,72 @@
 
 var mockery = require('mockery');
+var should = require('should');
+
+process.env.GIPHY_API_KEY = 'abcdef123';
+
+var init = require('../commands/sendGIF');
+var command = init();
+
+
+// Mock of giphy.js which always returns a valid URL.
+var giphyMockWorks = {
+    translate: function(searchTerm, callback) {
+        callback(null, 'http://i.giphy.com/JIX9t2j0ZTN9S.gif');
+    }
+};
+
+// Mock of giphy.js which doesn't return an error, but also doesn't return a
+// result URL.
+var giphyMockNoResults = {
+    translate: function(searchTerm, callback) {
+        callback(null, null);
+    }
+};
+
+// Mock of giphy.js which always returns an error.
+var giphyMockErrors = {
+    translate: function(searchTerm, callback) {
+        callback('Something went wrong.', null);
+    }
+};
+
+// Mock of giphy.js which returns a valid URL which uses HTTPS.
+var giphyMockHTTPS = {
+    translate: function(searchTerm, callback) {
+        callback(null, 'https://i.giphy.com/JIX9t2j0ZTN9S.gif')
+    }
+};
+
+
+function useMock(mock) {
+    mockery.deregisterAll();
+    mockery.resetCache();
+    mockery.registerMock('../third_party_apis/giphy', mock);
+
+    init = require('../commands/sendGIF');
+    command = init();
+}
 
 
 describe('sendGIF', function() {
+    before('enable Mockery', function() {
+        mockery.enable({
+            useCleanCache: true
+        });
+        mockery.warnOnUnregistered(false);
+    });
+
+    after('disable Mockery', function() {
+        mockery.disable();
+    });
+
+    beforeEach('set API key', function() {
+        process.env.GIPHY_API_KEY = 'abcdef123';
+    });
+
+
     describe('init', function() {
         it('should return an error if no API key is set', function() {
-            var init = require('../commands/sendGIF');
-            init.should.be.Function();
-
             // Make sure the GIPHY_API_KEY variable is not set.
             if (process.env.GIPHY_API_KEY) {
                 delete process.env.GIPHY_API_KEY;
@@ -21,14 +80,9 @@ describe('sendGIF', function() {
             result.error.should.not.have.length(0);
         });
 
+
         it('should return a valid command object when an API key is set', function() {
-            var init = require('../commands/sendGIF');
-            init.should.be.Function();
-
-            // Set any string as the 'API key'. It doesn't matter what is used.
-            process.env.GIPHY_API_KEY = 'abcdef123';
-
-            var command = init();
+            command = init();
 
             // Check the name property is a non-empty string.
             command.should.have.property('name');
@@ -71,59 +125,23 @@ describe('sendGIF', function() {
         });
     });
 
+
     describe('execute', function() {
-        // Allow longer than usual for the test.
+        // Allow longer than usual for the tests because they access the web.
         this.timeout(10000);
         this.slow(5000);
 
-        before(function() {
-            mockery.enable({ useCleanCache: true });
-            mockery.warnOnUnregistered(false);
-
-            var giphyMock = {
-                translate: function(searchTerm, callback) {
-                    // If searching for 'cat', return a valid result.
-                    if (searchTerm === 'cat') {
-                        callback(null, 'http://i.giphy.com/JIX9t2j0ZTN9S.gif');
-                    }
-                    // If searching for 'error', return an error object.
-                    else if (searchTerm === 'error') {
-                        callback({
-                            result: 404,
-                            message: 'Page not found'
-                        }, null)
-                    }
-                    // For any other search term, pretend no results were found.
-                    else {
-                        callback(null, null);
-                    }
-                }
-            }
-
-            mockery.registerMock('../third_party_apis/giphy', giphyMock);
-        });
-
-        after(function() {
-            mockery.disable();
-        });
-
-
         it('should return an attachment when finding a GIF', function(done) {
-            var init = require('../commands/sendGIF');
-            var command = init();
+            useMock(giphyMockWorks);
 
-            // Pass an argument with a phrase that will always find a GIF.
             var arguments = {
                 searchTerm: 'cat'
             };
 
-            // The chatData is not modified so no need to pass anything in.
-            var info = {};
-
-            command.func(arguments, info, function replyCallback(reply, chat) {
+            command.func(arguments, {}, function replyCallback(reply, chat) {
                 // The reply should have an empty body but contain an attachment.
                 reply.should.be.Object();
-                
+
                 reply.should.have.property('body');
                 reply.body.should.be.String();
                 reply.body.should.have.length(0);
@@ -137,21 +155,16 @@ describe('sendGIF', function() {
 
 
         it('should return a message when no GIF is found', function(done) {
-            var init = require('../commands/sendGIF');
-            var command = init();
+            useMock(giphyMockNoResults);
 
-            // Pass an argument with a phrase that will never find a GIF.
             var arguments = {
                 searchTerm: 'notfound'
             };
 
-            // The chatData is not modified so no need to pass anything in.
-            var info = {};
-
-            command.func(arguments, info, function replyCallback(reply, chat) {
+            command.func(arguments, {}, function replyCallback(reply, chat) {
                 // The reply should have a body and no attachment.
                 reply.should.be.Object();
-                
+
                 reply.should.have.property('body');
                 reply.body.should.be.String();
                 reply.body.should.not.have.length(0);
@@ -164,22 +177,16 @@ describe('sendGIF', function() {
 
 
         it('should handle errors gracefully', function(done) {
-            var init = require('../commands/sendGIF');
-            var command = init();
+            useMock(giphyMockErrors);
 
-            // Pass an argument with a phrase that will trigger an error in the
-            // mock.
             var arguments = {
                 searchTerm: 'error'
             };
 
-            // The chatData is not modified so no need to pass anything in.
-            var info = {};
-
-            command.func(arguments, info, function replyCallback(reply, chat) {
+            command.func(arguments, {}, function replyCallback(reply, chat) {
                 // The reply should have a body and no attachment.
                 reply.should.be.Object();
-                
+
                 reply.should.have.property('body');
                 reply.body.should.be.String();
 
@@ -187,6 +194,29 @@ describe('sendGIF', function() {
                 reply.body.should.match(/error/gi);
 
                 reply.should.not.have.property('attachment');
+
+                done();
+            });
+        });
+
+
+        it('should cope with HTTPS result URLs', function(done) {
+            useMock(giphyMockHTTPS);
+
+            var arguments = {
+                searchTerm: 'cat'
+            };
+
+            command.func(arguments, {}, function replyCallback(reply, chat) {
+                // The reply should have an empty body but contain an attachment.
+                reply.should.be.Object();
+
+                reply.should.have.property('body');
+                reply.body.should.be.String();
+                reply.body.should.have.length(0);
+
+                reply.should.have.property('attachment');
+                reply.attachment.should.be.Object();
 
                 done();
             });
