@@ -21,6 +21,7 @@
     "giphy": "0.0.4",
     "github": "^0.2.4",
     "npmlog": "^2.0.0",
+    "request": "^2.67.0",
     "require-all": "^2.0.0"
   },
   "bugs": {
