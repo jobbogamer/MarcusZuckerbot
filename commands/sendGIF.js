@@ -3,6 +3,7 @@
 
 var giphy = require('../third_party_apis/giphy');
 var http = require('http');
+var https = require('https');
 
 
 var sendGIF = function(arguments, info, replyCallback) {
@@ -15,14 +16,23 @@ var sendGIF = function(arguments, info, replyCallback) {
         }
 
         if (url) {
-            // To send a GIF as a message, it has to be sent as an attachment, which
-            // means it has to be passed as a stream.
-            http.get(url, function(res) {
-                replyCallback({
-                    body: '',
-                    attachment: res
+            // Use the correct http/https module based on the URL.
+            if (url.indexOf('https') !== -1) {
+                https.get(url, function(res) {
+                    replyCallback({
+                        body: '',
+                        attachment: res
+                    });
                 });
-            });
+            }
+            else {
+                http.get(url, function(res) {
+                    replyCallback({
+                        body: '',
+                        attachment: res
+                    });
+                });
+            }
         }
         else {
             replyCallback({
