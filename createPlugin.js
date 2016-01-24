@@ -15,8 +15,8 @@ var commandName = process.argv[2];
 var filename = './commands/' + commandName + '.js';
 var testFilename = './test/' + 'test_' + commandName + '.js';
 
-var pluginContents = fs.readFileSync('./pluginTemplate.js', 'utf8');
-var testContents = fs.readFileSync('./testTemplate.js', 'utf8');
+var pluginContents = fs.readFileSync('./templates/pluginTemplate.js', 'utf8');
+var testContents = fs.readFileSync('./templates/testTemplate.js', 'utf8');
 
 pluginContents = pluginContents.replace(/COMMAND_NAME/g, commandName);
 testContents = testContents.replace(/COMMAND_NAME/g, commandName);
