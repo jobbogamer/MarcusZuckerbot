@@ -140,34 +140,36 @@ function startBot(api, chats) {
     // Firebase won't save an empty object to the database.
     chats = chats || {};
 
-    // Notify subscribed chats that Zuckerbot is running. If a different version
-    // is running, modify the text slightly.
-    var body = '';
-    if (pkg.version !== previousVersion) {
-        body = 'Zuckerbot has been updated to v' + pkg.version + '.';
+    if (!process.env.ZB_NO_NOTIFY) {
+        // Notify subscribed chats that Zuckerbot is running. If a different version
+        // is running, modify the text slightly.
+        var body = '';
+        if (pkg.version !== previousVersion) {
+            body = 'Zuckerbot has been updated to v' + pkg.version + '.';
 
-        // Store the new version of the bot, as long as dev mode is not enabled.
-        if (!process.env.ZB_DEV_MODE) {
-            db.child('version').set(pkg.version);
+            // Store the new version of the bot, as long as dev mode is not enabled.
+            if (!process.env.ZB_DEV_MODE) {
+                db.child('version').set(pkg.version);
+            }
         }
-    }
-    else {
-        body = 'Zuckerbot has been restarted.';
-    }
-    var message = {
-        body: body
-    };
-
-    Object.keys(chats).forEach(function(key) {
-        // By default, do not notify each chat.
-        var chatData = chats[key] || {
-            notifications: false
+        else {
+            body = 'Zuckerbot has been restarted.';
+        }
+        var message = {
+            body: body
         };
 
-        if (chatData.notifications) {
-            facebookAPI.sendMessage(message, key);
-        }
-    });
+        Object.keys(chats).forEach(function(key) {
+            // By default, do not notify each chat.
+            var chatData = chats[key] || {
+                notifications: false
+            };
+
+            if (chatData.notifications) {
+                facebookAPI.sendMessage(message, key);
+            }
+        });
+    }
 
     var stopListening = api.listen(function receive(err, event) {
         if (err) {
