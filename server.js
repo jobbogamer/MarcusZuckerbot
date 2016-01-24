@@ -54,17 +54,6 @@ app.post('/send', function(req, res) {
     sendPostedMessage(req.body);
 });
 
-app.post('/notify', function(req, res) {
-    console.log('Received a deployment notification.');
-
-    // Send an empty response.
-    res.send('');
-    res.end();
-
-    // Notify any conversations about the deployment status.
-    notifyAboutDeployment(req.body.payload);
-});
-
 
 
 
@@ -224,54 +213,6 @@ function startBot(api, chats) {
         }
     });
     console.log('Zuckerbot is now listening for messages.\n');
-}
-
-
-// Send messages to subscribed conversations that a deployment is about to
-// occur.
-function notifyAboutDeployment(payload) {
-    // Temporary, log the payload to see what travis sends.
-    console.log(payload);
-
-    // Notifications should only be sent about the master branch.
-    if (payload.branch !== 'master') {
-        console.log('Notification came from branch ' + payload.branch + '.\n');
-        return;
-    }
-
-    var message = {
-        body: 'Zuckerbot is about to be restarted to deploy an update. This will ' +
-              'take a couple of minutes.'
-    };
-
-    // This may be a notification of failure.
-    if (payload.status_message != null) {
-        console.log('Status message: ' + payload.status_message);
-        var status = payload.status_message.toLowerCase();
-
-        if (status === 'broken' ||
-            status === 'failed' ||
-            status === 'still failing') {
-            message = {
-                body: 'Deployment failed. Zuckerbot will continue running.'
-            };
-        }
-    }
-    else {
-        console.log('Notification does not contain a status message.\n');
-    }
-
-    // Loop through each chat and see if it's subscribed to notifications.
-    Object.keys(chatsData).forEach(function(key) {
-        // By default, do not notify.
-        var chatData = chatsData[key] || {
-            notifications: false
-        };
-
-        if (chatData.notifications) {
-            facebookAPI.sendMessage(message, key);
-        }
-    });
 }
 
 
