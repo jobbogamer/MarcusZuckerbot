@@ -185,6 +185,7 @@ function startBot(api, chats) {
                     }
                 });
             }
+            console.log('');
 
             // Mark the message as read.
             api.markAsRead(event.threadID);
@@ -202,15 +203,13 @@ function startBot(api, chats) {
                     api.sendMessage(message, event.threadID);
                 }
                 else {
-                    console.log('No reply required.')
+                    console.log('No reply required.\n')
                 }
 
                 if (chat) {
                     chats[event.threadID] = chat;
                     chatsDB.set(chats);
                 }
-
-                console.log('Finished processing message.', '\n');
             }
 
             // Send the received message to the message handler.

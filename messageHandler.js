@@ -73,7 +73,7 @@ var loadRegexPlugins = function() {
         // A command was returned and it has the required fields.
         else {
             regexCommands.push(command);
-            console.log(key);
+            console.log(command.name);
         }
     }
 }
@@ -186,6 +186,42 @@ var handle = function(message, chatData, facebookAPI, reply) {
     // Whitespace before and after the text should be ignored.
     var body = message.body.trim();
 
+    // Compile a set of data to pass to the command function.
+    var info = {
+        threadID: message.threadID,
+        sender: message.senderName,
+        attachments: message.attachments,
+        chatData: chatData,
+        facebookAPI: facebookAPI
+    };
+
+    // Test the message against all the loaded regex plugins to see if any
+    // of those match instead. All matching regex commands will be executed.
+    for (var i = 0; i < regexCommands.length; i++) {
+        var command = regexCommands[i];
+        var matched = false;
+
+        var regex = RegExp(command.pattern);
+
+        var matches = body.match(regex);
+        if (matches && matches.length > 0) {
+            console.log('Matched regex command ' + command.name + '.');
+            matched = true;
+
+            // Send typing indicator to show that the message is being processed.
+            var endTypingIndicator = facebookAPI.sendTypingIndicator(message.threadID, function(err, end){});
+
+            command.func(matches, info, function(message, chatData) {
+                reply(message, chatData);
+                endTypingIndicator();
+            });
+        }
+
+        if (!matched) {
+            console.log('Message does not match any regex commands.');
+        }
+    }
+
     // Ignore any messages which don't contain 'zb.' as they aren't commands.
     if (body.toLowerCase().indexOf('zb.') === -1 ||
         body.indexOf('(') === -1 || body.indexOf(')') === -1) {
@@ -233,16 +269,6 @@ var handle = function(message, chatData, facebookAPI, reply) {
             namedArguments[matchedUsage.arguments[index]] = arguments[index];
         }
         console.log('Arguments:\n   ', namedArguments);
-
-
-        // Data to pass to the command function.
-        var info = {
-            threadID: message.threadID,
-            sender: message.senderName,
-            attachments: message.attachments,
-            chatData: chatData,
-            facebookAPI: facebookAPI
-        };
 
         // Send typing indicator to show that the message is being processed.
         var endTypingIndicator = facebookAPI.sendTypingIndicator(message.threadID, function(err, end){});
