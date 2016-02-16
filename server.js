@@ -111,7 +111,7 @@ var sendMessageIfNotDev = function(message, threadID, callback) {
         console.log('    [Attachment]');
     }
     if (message.sticker) {
-        console.log('    [Sticker]');
+        console.log('    [Sticker ' + message.sticker + ']');
     }
 
     // Don't send the message if dev mode is enabled.
