@@ -21,10 +21,20 @@ var suite = function(name, initialiser) {
                 initialiser.should.be.Function();
                 var command = initialiser();
 
-                // Check the pattern property is a non-empty string.
+                // Check the name property is a non-empty string.
+                command.should.have.property('name');
+                command.name.should.be.String();
+                command.name.should.not.be.length(0);
+
+                // Check the pattern property is a regex.
                 command.should.have.property('pattern');
-                command.pattern.should.be.String();
-                command.pattern.should.not.be.length(0);
+                if (!(command.pattern instanceof RegExp)) {
+                    var assertion = new should.Assertion(command.pattern);
+                    assertion.params = {
+                        operator: 'to be a RegExp object'
+                    };
+                    assertion.fail()
+                }
 
                 // Perform a basic sanity check on the pattern string to check
                 // that it resembles a valid regular expression.
@@ -38,13 +48,6 @@ var suite = function(name, initialiser) {
                     };
                     assertion.fail()
                 }
-
-                // Check that the flags property is either empty, or contains
-                // nothing other than g and i.
-                command.should.have.property('flags');
-                command.flags.should.be.String();
-                command.flags.length.should.be.belowOrEqual(2);
-                command.flags.should.match(/^[gi]{0,2}$/);
 
                 // Check the func property is actually a function.
                 command.should.have.property('func');
