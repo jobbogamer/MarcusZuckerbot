@@ -197,9 +197,9 @@ var handle = function(message, chatData, facebookAPI, reply) {
 
     // Test the message against all the loaded regex plugins to see if any
     // of those match instead. All matching regex commands will be executed.
+    var matched = false;
     for (var i = 0; i < regexCommands.length; i++) {
         var command = regexCommands[i];
-        var matched = false;
 
         var regex = RegExp(command.pattern);
 
@@ -216,10 +216,9 @@ var handle = function(message, chatData, facebookAPI, reply) {
                 endTypingIndicator();
             });
         }
-
-        if (!matched) {
-            console.log('Message does not match any regex commands.');
-        }
+    }
+    if (!matched) {
+        console.log('Message does not match any regex commands.');
     }
 
     // Ignore any messages which don't contain 'zb.' as they aren't commands.
