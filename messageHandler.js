@@ -5,6 +5,7 @@ var githubIssues = require('./third_party_apis/githubIssues');
 var log = require('npmlog');
 
 var commands = {};
+var regexCommands = [];
 
 // Build an 'API' of commands by importing all modules in the commands
 // directory. The resulting object will map each module's exports to the
@@ -37,6 +38,42 @@ var loadPlugins = function() {
         else {
             commands[command.name.toLowerCase()] = command;
             console.log(command.name);
+        }
+    }
+}
+
+
+// Build a second list containing regex commands by importing the modules in
+// the regexCommands directory. Since regex plugins are not called by name,
+// they can be stored in a simple array.
+var loadRegexPlugins = function() {
+    var initialisers = require('require-all')(__dirname + '/regexCommands');
+
+    for (var key in initialisers) {
+        var init = initialisers[key];
+
+        // Call the initialiser function for the command.
+        var command = init();
+
+        // If the command initialiser returned an error, or did not return a
+        // command, log it to the console.
+        if (!command) {
+            log.error(key, 'No command object returned.');
+        }
+        else if (command.error) {
+            log.error(key, command.error);
+        }
+        else if (!command.pattern) {
+            log.error(key, 'Command object has no pattern field.');
+        }
+        else if (!command.func) {
+            log.error(key, 'Command object has no func field.');
+        }
+
+        // A command was returned and it has the required fields.
+        else {
+            regexCommands.push(command);
+            console.log(key);
         }
     }
 }
@@ -233,5 +270,6 @@ var handle = function(message, chatData, facebookAPI, reply) {
 
 module.exports = {
     loadPlugins: loadPlugins,
+    loadRegexPlugins: loadRegexPlugins,
     handle: handle
 };

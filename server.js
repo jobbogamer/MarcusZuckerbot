@@ -82,6 +82,11 @@ console.log('Loading command plugins...');
 messageHandler.loadPlugins();
 console.log('Done.\n');
 
+// Load the regex commands.
+console.log('Loading regex plugins...');
+messageHandler.loadRegexPlugins();
+console.log('Done.\n');
+
 // Connect to the Firebase database.
 console.log('Connecting to Firebase...');
 var db = new Firebase(process.env.FIREBASE);
