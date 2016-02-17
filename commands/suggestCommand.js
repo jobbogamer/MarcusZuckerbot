@@ -13,6 +13,9 @@ var suggestCommand = function(arguments, info, replyCallback) {
 
     githubIssues.createIssue(title, body, labels, function(err, res) {
         if (err) {
+            console.log('Error submitting GitHub issue:');
+            console.log(err);
+
             replyCallback({
                 body: 'An error occurred when trying to submit the suggestion.'
             });
@@ -32,7 +35,7 @@ var suggestCommand = function(arguments, info, replyCallback) {
 var usage = [
     {
         arguments: ['name', 'description'],
-        description: 'Open a GitHub issue in the Zuckerbot repo suggesting a new command with ' + 
+        description: 'Open a GitHub issue in the Zuckerbot repo suggesting a new command with ' +
                      'the given name and description.'
     }
 ];
