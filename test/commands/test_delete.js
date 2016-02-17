@@ -1,5 +1,5 @@
 
-var init = require('../commands/delete');
+var init = require('../../commands/delete');
 var should = require('should');
 var command = init();
 

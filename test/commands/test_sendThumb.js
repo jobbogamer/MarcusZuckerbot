@@ -1,5 +1,5 @@
 
-var init = require('../commands/sendThumb');
+var init = require('../../commands/sendThumb');
 var should = require('should');
 
 

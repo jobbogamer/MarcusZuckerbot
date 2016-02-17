@@ -1,5 +1,5 @@
 
-var init = require('../commands/get');
+var init = require('../../commands/get');
 var command = init();
 
 describe('get', function() {

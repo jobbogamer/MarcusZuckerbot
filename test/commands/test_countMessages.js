@@ -1,5 +1,5 @@
 
-var init = require('../commands/countMessages');
+var init = require('../../commands/countMessages');
 
 var error = false;
 
@@ -12,7 +12,7 @@ describe('countMessages', function() {
             var facebookApiMock = {
                 getThreadList: function(start, end, callback) {
                     callback(null, [{
-                        messageCount: 42                            
+                        messageCount: 42
                     }]);
                 }
             };
@@ -43,7 +43,7 @@ describe('countMessages', function() {
             var facebookApiMock = {
                 getThreadList: function(start, end, callback) {
                     callback(null, [{
-                        messageCount: 4242424                            
+                        messageCount: 4242424
                     }]);
                 }
             };

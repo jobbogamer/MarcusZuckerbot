@@ -1,5 +1,5 @@
 
-var init = require('../regexCommands/noKisses');
+var init = require('../../regexCommands/noKisses');
 var should = require('should');
 
 describe('noKisses', function() {

@@ -1,6 +1,6 @@
 
 var should = require('should');
-var init = require('../commands/split');
+var init = require('../../commands/split');
 var command = init();
 
 

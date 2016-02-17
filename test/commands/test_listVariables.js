@@ -1,5 +1,5 @@
 
-var init = require('../commands/listVariables');
+var init = require('../../commands/listVariables');
 var should = require('should');
 var command = init();
 
