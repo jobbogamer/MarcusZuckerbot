@@ -154,7 +154,8 @@ function parse(message) {
     var match = message.substr(argStart, argLength).match(argRegex) || [];
 
     for (var i = 0; i < match.length; i++) {
-        if (match[i].indexOf('\'') !== -1 || match[i].indexOf('‘') !== -1) {
+        if (match[i].indexOf('\'') !== -1 || match[i].indexOf('‘') !== -1 ||
+            match[i].indexOf('"') !== -1 || match[i].indexOf('“') !== -1) {
             match[i] = match[i].substr(1, match[i].length - 2);
         }
     }
