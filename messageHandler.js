@@ -240,19 +240,50 @@ var handle = function(message, chatData, facebookAPI, reply) {
         console.log('Matched command ' + command.name + '.');
 
         // List all the numbers of arguments that the command takes by
-        // looking in the usage for the command.
+        // looking in the usage for the command. If the command has a
+        // usage that takes a variable number of arguments, store it as
+        // a negative value so that it's marked as variable, but the
+        // fixed arguments are still counted.
         var argumentLengths = [];
+        var variable = false;
         command.usage.map(function (usage) {
-            argumentLengths.push(usage.arguments.length);
+            if (usage.arguments[usage.arguments.length - 1] === '...') {
+                argumentLengths.push(0 - (usage.arguments.length - 1));
+                variable = true;
+            }
+            else {
+                argumentLengths.push(usage.arguments.length);
+            }
         });
 
         // Check that the right number of arguments have been given.
         var matchedUsageIndex = argumentLengths.indexOf(arguments.length);
-        if (matchedUsageIndex == -1) {
+
+        if (variable) {
+            for (var i = 0; i < argumentLengths.length; i++) {
+                if (arguments.length >= (0 - argumentLengths[i])) {
+                    matchedUsageIndex = i;
+                    break;
+                }
+            }
+        }
+
+        if (matchedUsageIndex === -1) {
             console.log('Wrong number of arguments given.');
+            var argumentCounts = [];
+            argumentLengths.map(function (length) {
+                if (length >= 0) {
+                    argumentCounts.push(length.toString());
+                }
+                else {
+                    argumentCounts.push((0 - length).toString() + '+');
+                }
+            });
+
+
             var error = 'Error: ' + command.name + ' takes ' +
-                        stringifyAlternativesList(argumentLengths) + ' ' +
-                        ((argumentLengths[0] === 1 && argumentLengths.length === 1) ? 'argument' : 'arguments') +
+                        stringifyAlternativesList(argumentCounts) + ' ' +
+                        ((argumentCounts[0] === '1' && argumentCounts.length === 1) ? 'argument' : 'arguments') +
                         ' (' + arguments.length + ' given).';
             reply({
                 body: error
@@ -265,7 +296,17 @@ var handle = function(message, chatData, facebookAPI, reply) {
         var namedArguments = {};
         var matchedUsage = command.usage[matchedUsageIndex];
         for (var index in arguments) {
-            namedArguments[matchedUsage.arguments[index]] = arguments[index];
+            if (matchedUsage.arguments[index] !== '...') {
+                namedArguments[matchedUsage.arguments[index]] = arguments[index];
+            }
+            else {
+                // Store the rest of the arguments in 'others' because they
+                // haven't been given explicit names.
+                namedArguments.others = arguments.slice(index);
+
+                // The ... argument should always be at the end.
+                break;
+            }
         }
         console.log('Arguments:\n   ', namedArguments);
 
