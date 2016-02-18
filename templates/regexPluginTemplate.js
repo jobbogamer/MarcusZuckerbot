@@ -1,6 +1,6 @@
 // Describe your plugin here.
 
-var COMMAND_NAME = function(arguments, info, replyCallback) {
+var COMMAND_NAME = function(matches, info, replyCallback) {
     var chatData = info.chatData;
     var reply = 'Hello, world!';
 
