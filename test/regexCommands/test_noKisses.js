@@ -7,31 +7,26 @@ describe('noKisses', function() {
 		var command = init();
 		var regex = new RegExp(command.pattern);
 
-		it('should match messages ending with a kiss', function(done) {
+		it('should match messages ending with a kiss', function() {
 			var matches = 'hello x'.match(regex);
-			matches.should.not.have.length(0);
-
-			done();
+			should.exist(matches);
+			matches.should.have.length(1);
 		});
 
 
-		it ('should not match messages which do not contain a kiss', function(done) {
+		it ('should not match messages which do not contain a kiss', function() {
 			var matches = 'hello there'.match(regex);
 			if (matches) {
 				matches.should.have.length(0);
 			}
-
-			done();
 		});
 
 
-		it('should not match messages that happen to contain the letter x', function(done) {
+		it('should not match messages that happen to contain the letter x', function() {
 			var matches = 'I had an x ray'.match(regex);
 			if (matches) {
 				matches.should.have.length(0);
 			}
-
-			done();
 		});
 	});
 
