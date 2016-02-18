@@ -5,7 +5,30 @@ var should = require('should');
 
 describe('COMMAND_NAME', function() {
     describe('match', function() {
-        // Test that the regex only matches expected messages
+        // Test that the regex only matches expected messages.
+        var command = init();
+        var regex = new RegExp(command.pattern);
+
+        // ******** REGEX MATCH TESTS GO HERE ********
+
+        it('should match foobar', function() {
+            var matches = null;
+
+            matches = 'foobar'.match(regex);
+            should.exist(matches);
+            matches.should.have.length(1);
+        });
+
+
+        it('should find all instances of foobar', function() {
+            var matches = null;
+
+            matches = 'foobar baz foobar baz'.match(regex);
+            should.exist(matches);
+            matches.should.have.length(2);
+        });
+
+        // *******************************************
     });
 
 
