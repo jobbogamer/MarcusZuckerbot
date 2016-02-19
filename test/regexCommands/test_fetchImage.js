@@ -211,6 +211,28 @@ describe('fetchImage', function() {
         });
 
 
+        it('should not send an image when an attachment is present', function(done) {
+            var command = init();
+
+            var matches = ['http://i.giphy.com/this_image_doesnt_exist.gif'];
+
+            var info = {
+                attachments: [
+                    {
+                        type: 'image',
+                        'url': 'http://i.giphy.com/this_image_doesnt_exist.gif'
+                    }
+                ]
+            }
+
+            command.func(matches, info, function replyCallback(reply, chat) {
+                should.not.exist(reply);               
+
+                done();
+            });
+        });
+
+
         it('should handle errors gracefully', function(done) {
             var command = init();
 
