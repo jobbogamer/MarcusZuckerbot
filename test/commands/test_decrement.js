@@ -1,5 +1,5 @@
 
-var init = require('../commands/decrement');
+var init = require('../../commands/decrement');
 var command = init();
 
 

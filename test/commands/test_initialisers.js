@@ -3,7 +3,7 @@
 var should = require('should');
 
 // Import all the initialiser functions from the commands.
-var initialisers = require('require-all')(__dirname + '/../commands');
+var initialisers = require('require-all')(__dirname + '/../../commands');
 
 // Exclude commands which have a prerequesite in the init function.
 var excluded = [

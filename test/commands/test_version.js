@@ -1,5 +1,5 @@
 
-var init = require('../commands/version');
+var init = require('../../commands/version');
 var should = require('should');
 
 
@@ -19,7 +19,7 @@ describe('version', function() {
 
                 // Load the current version from package.json and check that
                 // the message contains that version.
-                var pkg = require('../package.json');
+                var pkg = require('../../package.json');
                 var regex = new RegExp(pkg.version, 'gi');
 
                 reply.body.should.match(regex);

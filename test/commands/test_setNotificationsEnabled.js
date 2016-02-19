@@ -1,5 +1,5 @@
 
-var init = require('../commands/setNotificationsEnabled');
+var init = require('../../commands/setNotificationsEnabled');
 var command = init();
 
 describe('setNotificationsEnabled', function() {
@@ -77,7 +77,7 @@ describe('setNotificationsEnabled', function() {
             });
         });
 
-        
+
         it('should not fail if notifications are already turned on', function(done) {
             // Set the 'setting' argument to true.
             var arguments = {

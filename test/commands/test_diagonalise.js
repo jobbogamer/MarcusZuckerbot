@@ -1,5 +1,5 @@
 
-var init = require('../commands/diagonalise');
+var init = require('../../commands/diagonalise');
 var command = init();
 
 

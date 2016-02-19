@@ -1,22 +1,22 @@
 
-var init = require('../commands/subtract');
+var init = require('../../commands/add');
 var command = init();
 var should = require('should');
 
 
 
-describe('subtract', function() {
+describe('add', function() {
     describe('execute', function() {
-        it('should subtract from a variable when it exists', function(done) {
+        it('should add to a variable when it exists', function(done) {
             var arguments = {
                 variable: 'nuggets',
-                value: 3
+                value: 5
             };
 
             var info = {
                 chatData: {
                     variables: {
-                        nuggets: 5
+                        nuggets: 3
                     }
                 }
             };
@@ -26,13 +26,13 @@ describe('subtract', function() {
                 reply.should.be.Object();
                 reply.should.have.property('body');
                 reply.body.should.be.String();
-                reply.body.should.match(/2/g);
+                reply.body.should.match(/8/g);
 
                 // The variable should have increased.
                 chat.should.be.Object();
                 chat.should.have.property('variables');
                 chat.variables.should.have.property('nuggets');
-                chat.variables.nuggets.should.eql(2);
+                chat.variables.nuggets.should.eql(8);
 
                 done();
             });
@@ -48,8 +48,8 @@ describe('subtract', function() {
             var info = {
                 chatData: {
                     variables: {
-                        nuggets: 6,
-                        sausages: 4
+                        nuggets: 3,
+                        sausages: 6
                     }
                 }
             };
@@ -59,13 +59,13 @@ describe('subtract', function() {
                 reply.should.be.Object();
                 reply.should.have.property('body');
                 reply.body.should.be.String();
-                reply.body.should.match(/2/g);
+                reply.body.should.match(/9/g);
 
                 // The variable should have increased.
                 chat.should.be.Object();
                 chat.should.have.property('variables');
                 chat.variables.should.have.property('nuggets');
-                chat.variables.nuggets.should.eql(2);
+                chat.variables.nuggets.should.eql(9);
 
                 done();
             });
@@ -76,13 +76,13 @@ describe('subtract', function() {
             // Use a variable which is not defined.
             var arguments = {
                 variable: 'sausages',
-                value: 3
+                value: 5
             };
 
             var info = {
                 chatData: {
                     variables: {
-                        nuggets: 5
+                        nuggets: 3
                     }
                 }
             };
@@ -99,7 +99,7 @@ describe('subtract', function() {
                 chat.should.be.Object();
                 chat.should.have.property('variables');
                 chat.variables.should.have.property('nuggets');
-                chat.variables.nuggets.should.eql(5);
+                chat.variables.nuggets.should.eql(3);
 
                 done();
             });

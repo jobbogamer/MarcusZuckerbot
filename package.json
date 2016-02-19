@@ -1,10 +1,10 @@
 {
   "name": "marcuszuckerbot",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "description": "Chatbot for Facebook chat which uses an easily extensible plugin system.",
   "main": "server.js",
   "scripts": {
-    "test": "mocha",
+    "test": "mocha --recursive",
     "start": "node server.js"
   },
   "author": "Josh Asch",
@@ -15,12 +15,15 @@
   },
   "dependencies": {
     "body-parser": "^1.14.1",
+    "dateformat": "^1.0.12",
     "express": "^4.13.3",
     "facebook-chat-api": "^1.0.3",
     "firebase": "^2.3.2",
     "giphy": "0.0.4",
     "github": "^0.2.4",
+    "html-entities": "^1.2.0",
     "npmlog": "^2.0.0",
+    "readability-api": "^0.4.0",
     "request": "^2.67.0",
     "require-all": "^2.0.0"
   },

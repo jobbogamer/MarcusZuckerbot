@@ -1,5 +1,5 @@
 
-var init = require('../commands/set');
+var init = require('../../commands/set');
 var command = init();
 
 describe('set', function() {

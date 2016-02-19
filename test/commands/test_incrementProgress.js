@@ -1,5 +1,5 @@
 
-var init = require('../commands/incrementProgress');
+var init = require('../../commands/incrementProgress');
 var should = require('should');
 
 var command = init();

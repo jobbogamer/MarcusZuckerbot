@@ -233,6 +233,28 @@ An example `usage` array is as follows:
 ]
 ```
 
+Starting with v1.1.0, commands can have an arbitrary number of arguments.
+Specify all required arguments first, then end the list with `'...'`. The
+message handler will check that the required arguments are present, and allow
+any number of optional arguments (including zero).
+
+An example command using optional arguments would be as shown below. In this
+example, the command requires at least two arguments, but can have any number
+greater than or equal to two.
+
+```
+[
+    {
+        arguments: ['num1', 'num2', '...'],
+        description: 'Sum all the given numbers'
+    }
+]
+```
+
+When using arguments in this way, the optional arguments cannot be given a name
+when being passed to your command function. All optional arguments will be
+passed in a single array, `arguments.others`.
+
 ### Failing initialisation
 
 If your command has a prerequisite, such as requiring an environment variable to
@@ -273,6 +295,44 @@ module.exports = function init() {
 }
 ```
 
+### Regular Expression commands
+
+v1.1.0 of Zuckerbot introduced a new type of plugin, the regex command. These
+commands act similarly to regular commands, but instead of being invoked using
+the `zb.` syntax, they are triggered whenever a message is received which
+matches a certain regular expression.
+
+Regex commands are stored in the `regexCommands` directory instead of the usual
+`commands` directory.
+
+The object returned from `init()` is slightly different for regex commands;
+instead of `usage`, a new property called `pattern` should be returned. This
+property should contain the regular expression object to match messages
+against.
+
+An example object is shown below:
+
+```
+{
+    name: 'helloWorld',
+    func: helloWorld,
+    pattern: /hello,? world!/gi
+}
+```
+
+The usual semantics apply – the `pattern` should be a valid RegExp object.
+
+When the command is executed, it will be passed an array called `matches`
+instead of `arguments`. This is an array of every string in the message that
+matches `pattern`.
+
+To create a new regex command, run
+
+```
+node createRegexPlugin commandName
+```
+
+
 ***
 
 ## Test
@@ -296,6 +356,10 @@ an environment variable.
 
 If you disable the automatic test, it is recommended that you define your own
 test. See `test_sendGIF.js` for an example.
+
+There is a separate directory for regex command tests. There is a second
+initialiser test file, `test_regexInitialisers.js`, in that directory, which
+acts in the same way.
 
 [mocha]: http://mochajs.org
 [should]: https://github.com/shouldjs/should.js

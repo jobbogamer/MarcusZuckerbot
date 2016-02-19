@@ -5,7 +5,7 @@ var mockery = require('mockery');
 describe('suggestCommand', function() {
     describe('init', function() {
         it('should return an error if no username is set', function() {
-            var init = require('../commands/suggestCommand');
+            var init = require('../../commands/suggestCommand');
             init.should.be.Function();
 
             // Make sure the GITHUB_USER variable is not set.
@@ -22,7 +22,7 @@ describe('suggestCommand', function() {
         });
 
         it('should return an error if no password is set', function() {
-            var init = require('../commands/suggestCommand');
+            var init = require('../../commands/suggestCommand');
             init.should.be.Function();
 
             // Make sure the GITHUB_PASSWORD variable is not set.
@@ -42,7 +42,7 @@ describe('suggestCommand', function() {
         });
 
         it('should return a valid command object when auth is set', function() {
-            var init = require('../commands/suggestCommand');
+            var init = require('../../commands/suggestCommand');
             init.should.be.Function();
 
             // Set any string as the username and password. It doesn't matter
@@ -93,7 +93,7 @@ describe('suggestCommand', function() {
         });
     });
 
-    
+
     describe('execute', function() {
         before(function() {
             mockery.enable({ useCleanCache: true });
@@ -125,7 +125,7 @@ describe('suggestCommand', function() {
 
 
         it('should display confirmation if creating the issue succeeds', function(done) {
-            var init = require('../commands/suggestCommand');
+            var init = require('../../commands/suggestCommand');
             var command = init();
 
             var arguments = {
@@ -151,7 +151,7 @@ describe('suggestCommand', function() {
 
 
         it('should handle errors gracefully', function(done) {
-            var init = require('../commands/suggestCommand');
+            var init = require('../../commands/suggestCommand');
             var command = init();
 
             var arguments = {

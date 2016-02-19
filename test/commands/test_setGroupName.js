@@ -1,5 +1,5 @@
 
-var init = require('../commands/setGroupName');
+var init = require('../../commands/setGroupName');
 var should = require('should');
 
 // The title and threadID which the command sets will be stored here by the
@@ -45,7 +45,7 @@ describe('setGroupName', function() {
             });
         });
 
-        
+
         it('should cope with errors', function(done) {
             var command = init();
 

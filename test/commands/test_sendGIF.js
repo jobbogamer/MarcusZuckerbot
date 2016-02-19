@@ -4,7 +4,7 @@ var should = require('should');
 
 process.env.GIPHY_API_KEY = 'abcdef123';
 
-var init = require('../commands/sendGIF');
+var init = require('../../commands/sendGIF');
 var command = init();
 
 
@@ -43,7 +43,7 @@ function useMock(mock) {
     mockery.resetCache();
     mockery.registerMock('../third_party_apis/giphy', mock);
 
-    init = require('../commands/sendGIF');
+    init = require('../../commands/sendGIF');
     command = init();
 }
 

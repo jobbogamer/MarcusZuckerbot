@@ -1,6 +1,6 @@
 
 var should = require('should');
-var init = require('../commands/progress');
+var init = require('../../commands/progress');
 
 var command = init();
 

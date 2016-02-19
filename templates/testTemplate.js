@@ -1,5 +1,5 @@
 
-var init = require('../commands/COMMAND_NAME');
+var init = require('../../commands/COMMAND_NAME');
 var should = require('should');
 
 
