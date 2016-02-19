@@ -1,12 +1,9 @@
 
 var readability = require('readability-api');
-var Entities = require('html-entities').AllHtmlEntities;
 
 readability.configure({
 	parser_token: process.env.READABILITY_API_KEY
 });
-
-var entities = new Entities();
 
 
 // Get details, such as title, excerpt, author, and date published, of a URL,
@@ -26,11 +23,11 @@ function getDetails(url, callback) {
 				}
 				else {
 					var details = {
-						title: entities.decode(parsed.title),
-						excerpt: entities.decode(parsed.excerpt),
-						author: entities.decode(parsed.author),
-						wordCount: parsed.word_count,
-						date: parsed.date_published,
+						title: parsed.title || '',
+						excerpt: parsed.excerpt || '',
+						author: parsed.author || '',
+						wordCount: parsed.word_count || 0,
+						date: parsed.date_published || '',
 						confidence: confidence
 					};
 
