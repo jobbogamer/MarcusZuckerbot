@@ -45,10 +45,15 @@ var randBetween = function(low, high) {
 }
 
 
-var round = function(number) {
+var round = function(number, places) {
+    // If no places argument is given, default to 3.
+    if (places == null) {
+        places = 3;
+    }
+
     // Strangely, adding the rounded number to nothing removes any trailing
     // zeroes.
-    var displayValue = + number.toFixed(3);
+    var displayValue = + number.toFixed(places);
     return displayValue;
 }
 
