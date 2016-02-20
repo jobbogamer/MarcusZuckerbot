@@ -3,6 +3,7 @@
 var readability = require('../third_party_apis/readability');
 var dateformat = require('dateformat');
 var Entities = require('html-entities').AllHtmlEntities;
+var helpers = require('../helpers');
 
 
 var entities = new Entities();
@@ -64,7 +65,7 @@ var linkInfo = function(matches, info, replyCallback) {
                         entities.decode(details.title) + '\n\n' +
                         entities.decode(details.excerpt) + '\n\n' +
                         byline +
-                        '~' + details.wordCount + ' words';
+                        '~' + helpers.addThousandsSeparators(details.wordCount) + ' words';
 
             var message = {
                 body: reply
