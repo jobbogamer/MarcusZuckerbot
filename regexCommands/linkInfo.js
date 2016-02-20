@@ -61,11 +61,19 @@ var linkInfo = function(matches, info, replyCallback) {
                 byline = authorString + dateString + '\n';
             }
 
+            var wordCountString = '';
+            if (authorString.length > 0) {
+                // Only show a word count if there's an author name. This is
+                // a bit of a hacky way to only show word counts on actual
+                // articles.
+                wordCountString = '~' + helpers.addThousandsSeparators(details.wordCount) + ' words';
+            }            
+
             var reply = '' +
                         entities.decode(details.title) + '\n\n' +
                         entities.decode(details.excerpt) + '\n\n' +
                         byline +
-                        '~' + helpers.addThousandsSeparators(details.wordCount) + ' words';
+                        wordCountString;
 
             var message = {
                 body: reply

@@ -360,9 +360,10 @@ describe('linkInfo', function() {
                 reply.body.should.match(new RegExp(mockData.excerpt));
                 reply.body.should.not.match(/By/gi);
                 reply.body.should.not.match(new RegExp(mockData.author));
-                reply.body.should.match(new RegExp(mockData.wordCount));
-                reply.body.should.match(/words/gi);
-                reply.body.should.not.match(/19 Feb 2016/gi);
+                
+                // Don't show word count because there's no author name.
+                reply.body.should.not.match(new RegExp(mockData.wordCount));
+                reply.body.should.not.match(/words/gi);
 
                 done();
             });
