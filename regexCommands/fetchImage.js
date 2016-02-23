@@ -5,66 +5,57 @@ var https = require('https')
 
 var fetchImage = function(matches, info, replyCallback) {
     // Facebook will sometimes fetch the image and attach it automatically.
-    if (info.attachments && info.attachments.length > 0) {
+    // However, if there are fewer attachments than URLs, attach the ones
+    // at the end of the list of matches. (From experimentation, it seems
+    // only one will be sent, and it will always be the first one.)
+    var imagesToSkip = 0;
+    if (info.attachments) {
+        for (var i = 0; i < info.attachments.length; i++) {
+            if (info.attachments[i].type === 'image' ||
+                info.attachments[i].type === 'photo' ||
+                info.attachments[i].type === 'animated_image') {
+                imagesToSkip++;
+            }
+        }
+    }
+
+    // If all images are skipped, send no reply.
+    if (imagesToSkip >= matches.length) {
         replyCallback(null);
         return;
     }
 
-    // Loop over all the URLs that were found.
-    matches.forEach(function(url) {
-        // Use the correct http/https module based on the URL. Open the image
-        // as a stream and attach it to a blank message.
-        if (url.indexOf('https') !== -1) {
-            https.get(url, function(res) {
-                if (res.statusCode != 200) {
-                    if (res.statusCode == 404) {
-                        replyCallback({
-                            body: "Looks like that image doesn't exist."
-                        })
-                    }
-                    else {
-                        replyCallback({
-                            body: 'An error occurred when fetching the image. (' +
-                                  res.statusCode + ')'
-                        });
-                        return;
-                    }   
-                }
+    for (var i = imagesToSkip; i < matches.length; i++) {
+        var url = matches[i];
 
-                replyCallback({
-                    body: '',
-                    attachment: res
-                });
-            }).on('error', function(err) {
-                replyCallback(null);
-            });
-        }
-        else {
-            http.get(url, function(res) {
-                if (res.statusCode != 200) {
-                    if (res.statusCode == 404) {
-                        replyCallback({
-                            body: "Looks like that image doesn't exist."
-                        })
-                    }
-                    else {
-                        replyCallback({
-                            body: 'An error occurred when fetching the image. (' +
-                                  res.statusCode + ')'
-                        });
-                        return;
-                    }   
-                }
+        // Use the correct http/https module based on the URL.
+        var protocol = (url.indexOf('https') !== -1) ? https : http;
 
-                replyCallback({
-                    body: '',
-                    attachment: res
-                });
-            }).on('error', function(err) {
-                replyCallback(null);
+        // Open the image as a stream and attach it to a blank message.
+        protocol.get(url, function(res) {
+            if (res.statusCode != 200) {
+                if (res.statusCode == 404) {
+                    replyCallback({
+                        body: "Looks like that image doesn't exist."
+                    });
+                }
+                else {
+                    replyCallback({
+                        body: 'An error occurred when fetching the image. (' +
+                              res.statusCode + ')'
+                    });
+                }
+                return;
+            }
+
+            replyCallback({
+                body: '',
+                attachment: res
             });
-        }
-    });
+        }).on('error', function(err) {
+            replyCallback(null);
+        });
+    }
 }
 
 

@@ -211,22 +211,120 @@ describe('fetchImage', function() {
         });
 
 
-        it('should not send an image when an attachment is present', function(done) {
+        it('should fetch multiple images', function(done) {
             var command = init();
 
-            var matches = ['http://i.giphy.com/this_image_doesnt_exist.gif'];
+            var matches = [
+                'https://i.giphy.com/JIX9t2j0ZTN9S.gif',
+                'http://i.giphy.com/freTElrZl4zaU.gif'
+            ];
+
+            var messagesReceived = 0;
+
+            command.func(matches, {}, function replyCallback(reply, chat) {
+                reply.should.be.Object();
+                if (reply.body) {
+                    reply.body.should.be.String();
+                    reply.body.should.have.length(0);
+                }
+
+                // There should be an image attached to the message.
+                reply.should.have.property('attachment');
+                reply.attachment.should.be.Object();
+
+                // Expect to receive two messages, because two images were
+                // matched.
+                messagesReceived++;
+                if (messagesReceived == 2) {
+                    done();
+                }
+            });
+        });
+
+
+        it('should not send an image when facebook attaches it', function(done) {
+            var command = init();
+
+            var matches = ['https://i.giphy.com/JIX9t2j0ZTN9S.gif'];
 
             var info = {
                 attachments: [
                     {
                         type: 'image',
-                        'url': 'http://i.giphy.com/this_image_doesnt_exist.gif'
+                        'url': 'https://i.giphy.com/JIX9t2j0ZTN9S.gif'
                     }
                 ]
             }
 
             command.func(matches, info, function replyCallback(reply, chat) {
                 should.not.exist(reply);               
+
+                done();
+            });
+        });
+
+
+        it('should send images even when the first one is attached', function(done) {
+            var command = init();
+
+            var matches = [
+                'https://i.giphy.com/JIX9t2j0ZTN9S.gif',
+                'http://i.giphy.com/freTElrZl4zaU.gif'
+            ];
+
+            var info = {
+                attachments: [
+                    {
+                        type: 'image',
+                        'url': 'https://i.giphy.com/JIX9t2j0ZTN9S.gif'
+                    }
+                ]
+            }
+
+            command.func(matches, info, function replyCallback(reply, chat) {
+                reply.should.be.Object();
+                if (reply.body) {
+                    reply.body.should.be.String();
+                    reply.body.should.have.length(0);
+                }
+
+                // There should be an image attached to the message. Facebook
+                // will only attach the first image to the message, so fetchImage
+                // should fetch the second one.
+                reply.should.have.property('attachment');
+                reply.attachment.should.be.Object();
+                
+                done();
+            });
+        });
+
+
+        it('should only skip images when images are attached', function(done) {
+            var command = init();
+
+            var matches = ['https://i.giphy.com/JIX9t2j0ZTN9S.gif'];
+
+            var info = {
+                attachments: [
+                    {
+                        type: 'link',
+                        'url': 'https://google.com'
+                    }
+                ]
+            }
+
+            command.func(matches, info, function replyCallback(reply, chat) {
+                reply.should.be.Object();
+                if (reply.body) {
+                    reply.body.should.be.String();
+                    reply.body.should.have.length(0);
+                }
+
+                // There should be an image attached to the message. The
+                // attachment was a link, which fetchImage should realise, and
+                // still attach the image from the matched URL.
+                reply.should.have.property('attachment');
+                reply.attachment.should.be.Object();
 
                 done();
             });

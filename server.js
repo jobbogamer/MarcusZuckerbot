@@ -14,8 +14,9 @@ var messageHandler = require('./messageHandler');
 var facebookAPI = null;
 var chatsData = null;
 
-// The old version of sendMessage that has been overriden.
+// The old version of facebook api functions that have been overriden.
 var sendMessageOld = null;
+var sendTypingIndicatorOld = null;
 
 // The previous version of Zuckerbot.
 var previousVersion = null;
@@ -125,6 +126,23 @@ var sendMessageIfNotDev = function(message, threadID, callback) {
 
     // Pass the message straight through to the actual API call.
     sendMessageOld(message, threadID, callback);
+}
+
+
+// Override of the sendTypingIndicator function in the facebook chat api. This
+// version doesn't do anything if ZB_DISABLE_TYPING_INDICATOR is set.
+var sendTypingIndicatorIfNotDisabled = function(threadID, callback) {
+    if (process.env.ZB_DISABLE_TYPING_INDICATOR) {
+        if (callback) {
+            callback(null, null);
+        }
+
+        // Return a function which does nothing when called.
+        return function() {};
+    }
+
+    // Pass the call through to the real function.
+    return sendTypingIndicatorOld(threadID, callback);
 }
 
 
@@ -289,6 +307,10 @@ db.once('value', function dataReceived(snapshot) {
         // Override the sendMessage function with a custom implementation.
         sendMessageOld = api.sendMessage;
         api.sendMessage = sendMessageIfNotDev;
+
+        // Override sendTypingIndicator too.
+        sendTypingIndicatorOld = api.sendTypingIndicator;
+        api.sendTypingIndicator = sendTypingIndicatorIfNotDisabled;
 
         // Read the previous version of the bot.
         previousVersion = data.version;
