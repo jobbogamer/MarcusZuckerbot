@@ -299,6 +299,38 @@ describe('fetchImage', function() {
         });
 
 
+        it('should only skip images when images are attached', function(done) {
+            var command = init();
+
+            var matches = ['https://i.giphy.com/JIX9t2j0ZTN9S.gif'];
+
+            var info = {
+                attachments: [
+                    {
+                        type: 'link',
+                        'url': 'https://google.com'
+                    }
+                ]
+            }
+
+            command.func(matches, info, function replyCallback(reply, chat) {
+                reply.should.be.Object();
+                if (reply.body) {
+                    reply.body.should.be.String();
+                    reply.body.should.have.length(0);
+                }
+
+                // There should be an image attached to the message. The
+                // attachment was a link, which fetchImage should realise, and
+                // still attach the image from the matched URL.
+                reply.should.have.property('attachment');
+                reply.attachment.should.be.Object();
+
+                done();
+            });
+        });
+
+
         it('should handle errors gracefully', function(done) {
             var command = init();
 

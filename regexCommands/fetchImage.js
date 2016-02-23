@@ -10,13 +10,19 @@ var fetchImage = function(matches, info, replyCallback) {
     // only one will be sent, and it will always be the first one.)
     var imagesToSkip = 0;
     if (info.attachments) {
-        if (info.attachments.length >= matches.length) {
-            replyCallback(null);
-            return;
+        for (var i = 0; i < info.attachments.length; i++) {
+            if (info.attachments[i].type === 'image' ||
+                info.attachments[i].type === 'photo' ||
+                info.attachments[i].type === 'animated_image') {
+                imagesToSkip++;
+            }
         }
-        else {
-            imagesToSkip = matches.length - info.attachments.length;
-        }
+    }
+
+    // If all images are skipped, send no reply.
+    if (imagesToSkip >= matches.length) {
+        replyCallback(null);
+        return;
     }
 
     for (var i = imagesToSkip; i < matches.length; i++) {
@@ -31,15 +37,15 @@ var fetchImage = function(matches, info, replyCallback) {
                 if (res.statusCode == 404) {
                     replyCallback({
                         body: "Looks like that image doesn't exist."
-                    })
+                    });
                 }
                 else {
                     replyCallback({
                         body: 'An error occurred when fetching the image. (' +
                               res.statusCode + ')'
                     });
-                    return;
-                }   
+                }
+                return;
             }
 
             replyCallback({
