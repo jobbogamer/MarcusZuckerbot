@@ -122,6 +122,31 @@ describe('fetchImage', function() {
         });
 
 
+        it('should not match gifv URLs', function() {
+            var matches = null;
+
+            matches = 'http://imgur.com/abcdef.gifv'.match(regex);
+            if (matches) {
+                matches.should.have.length(0);
+            }
+
+            matches = 'https://imgur.com/xyz123.gifv'.match(regex);
+            if (matches) {
+                matches.should.have.length(0);
+            }
+
+            matches = 'http://www.imgur.com/abcdef.gifv?reverse=1'.match(regex);
+            if (matches) {
+                matches.should.have.length(0);
+            }
+
+            matches = 'https://concrete.builders/portfolio/skyscraper.gifv'.match(regex);
+            if (matches) {
+                matches.should.have.length(0);
+            }
+        });
+
+
         it('should not match non-image URLs', function() {
             var matches = null;
 
