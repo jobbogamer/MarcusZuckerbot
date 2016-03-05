@@ -14,7 +14,7 @@ var noKisses = function(matches, info, replyCallback) {
 module.exports = function init() {
     return {
     	name: 'noKisses',
-        pattern: /\sx$/gi,  // String that ends a space and then a letter x.
+        pattern: /^(?!.*OS X$).*\sx$/gi,  // String that ends a space and then a letter x.
         func: noKisses
     }
 };
