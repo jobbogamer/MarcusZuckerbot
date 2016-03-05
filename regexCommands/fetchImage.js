@@ -20,7 +20,7 @@ var fetchImage = function(matches, info, replyCallback) {
     }
 
     for (var i = imagesToSkip; i < matches.length; i++) {
-        var url = matches[i];
+        var url = matches[i][0];
 
         // Use the correct http/https module based on the URL.
         var protocol = (url.indexOf('https') !== -1) ? https : http;

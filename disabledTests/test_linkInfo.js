@@ -326,7 +326,7 @@ describe('linkInfo', function() {
         it('should display info about a link', function(done) {
             useMock(readabilityMockWorks);
 
-            var matches = ['http://google.com'];
+            var matches = [['http://google.com']];
 
             command.func(matches, {}, function replyCallback(reply, chat) {
                 reply.should.be.Object();
@@ -349,7 +349,7 @@ describe('linkInfo', function() {
         it('should display info about a link when data is missing', function(done) {
             useMock(readabilityMockMissingData);
 
-            var matches = ['http://google.com'];
+            var matches = [['http://google.com']];
 
             command.func(matches, {}, function replyCallback(reply, chat) {
                 reply.should.be.Object();
@@ -373,7 +373,7 @@ describe('linkInfo', function() {
         it('should handle errors gracefully', function(done) {
             useMock(readabilityMockErrors);
 
-            var matches = ['http://google.com'];
+            var matches = [['http://google.com']];
 
             command.func(matches, {}, function replyCallback(reply, chat) {
                 reply.should.be.Object();
