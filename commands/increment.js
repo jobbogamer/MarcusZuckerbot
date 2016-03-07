@@ -27,7 +27,7 @@ var increment = function(arguments, info, replyCallback) {
 var usage = [
     {
         arguments: ['variable'],
-        description: 'Add one to the given variable and display its new value.'
+        description: 'Add one to the given variable.'
     }
 ];
 

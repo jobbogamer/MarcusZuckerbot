@@ -38,7 +38,8 @@ var set = function(arguments, info, replyCallback) {
 var usage = [
     {
         arguments: ['variable', 'value'],
-        description: 'Set the value of the given variable, and display confirmation.'
+        description: 'Set the value of the given variable, or create a new variable ' +
+                      'with that name if it doesn\'t already exist.'
     }
 ];
 

@@ -34,7 +34,7 @@ var setNotificationsEnabled = function(arguments, info, replyCallback) {
 var usage = [
     {
         arguments: ['setting'],
-        description: 'Turn deployment notifications on or off. Set setting to true ' + 
+        description: 'Turn deployment notifications on or off. Set \'setting\' to true ' + 
                      'to turn them on, or false to turn them off.'
     }
 ];

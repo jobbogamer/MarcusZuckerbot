@@ -27,7 +27,7 @@ var decrement = function(arguments, info, replyCallback) {
 var usage = [
     {
         arguments: ['variable'],
-        description: 'Subtract one from the given variable and display its new value.'
+        description: 'Subtract one from the given variable.'
     }
 ];
 
