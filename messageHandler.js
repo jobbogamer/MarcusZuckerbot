@@ -204,8 +204,13 @@ var handle = function(message, chatData, facebookAPI, reply) {
 
         var regex = RegExp(command.pattern);
 
-        var matches = body.match(regex);
-        if (matches && matches.length > 0) {
+        var matches = [];
+        var currentMatch = null;
+        while (currentMatch = regex.exec(body)) {
+            matches.push(currentMatch);
+        }
+
+        if (matches.length > 0) {
             console.log('Matched regex command ' + command.name + '.');
             matched = true;
 
@@ -285,8 +290,7 @@ var handle = function(message, chatData, facebookAPI, reply) {
             var error = 'Error: ' + command.name + ' takes ' +
                         stringifyAlternativesList(argumentCounts) + ' ' +
                         ((argumentCounts[0] === '1' && argumentCounts.length === 1) ? 'argument' : 'arguments') +
-                        ' (' + arguments.length + ' given).' +
-                        '\n\n' +
+                        ' (' + arguments.length + ' given). ' +
                         'Try zb.help(\'' + command.name + '\').';
             reply({
                 body: error

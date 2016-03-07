@@ -28,6 +28,14 @@ describe('noKisses', function() {
 				matches.should.have.length(0);
 			}
 		});
+
+
+		it('should not match messages discussing operating systems', function() {
+			var matches = 'My Mac runs OS X'.match(regex);
+			if (matches) {
+				matches.should.have.length(0);
+			}
+		});
 	});
 
 

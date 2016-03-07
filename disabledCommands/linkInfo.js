@@ -21,7 +21,9 @@ var linkInfo = function(matches, info, replyCallback) {
     */
     
     // Loop over all the URLs that were found.
-    matches.forEach(function(url) {
+    matches.forEach(function(match) {
+        var url = match[0];
+
         // Get information about the link from the readability API.
         readability.getDetails(url, function(err, details) {
             if (err) {

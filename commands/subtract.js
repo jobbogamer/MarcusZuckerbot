@@ -44,7 +44,7 @@ var subtract = function(arguments, info, replyCallback) {
 var usage = [
     {
         arguments: ['variable', 'value'],
-        description: 'Subtract a value from the given variable and display the new value.'
+        description: 'Subtract a value from the given variable.'
     }
 ];
 

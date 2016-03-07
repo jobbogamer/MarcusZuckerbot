@@ -122,6 +122,31 @@ describe('fetchImage', function() {
         });
 
 
+        it('should not match gifv URLs', function() {
+            var matches = null;
+
+            matches = 'http://imgur.com/abcdef.gifv'.match(regex);
+            if (matches) {
+                matches.should.have.length(0);
+            }
+
+            matches = 'https://imgur.com/xyz123.gifv'.match(regex);
+            if (matches) {
+                matches.should.have.length(0);
+            }
+
+            matches = 'http://www.imgur.com/abcdef.gifv?reverse=1'.match(regex);
+            if (matches) {
+                matches.should.have.length(0);
+            }
+
+            matches = 'https://concrete.builders/portfolio/skyscraper.gifv'.match(regex);
+            if (matches) {
+                matches.should.have.length(0);
+            }
+        });
+
+
         it('should not match non-image URLs', function() {
             var matches = null;
 
@@ -172,7 +197,7 @@ describe('fetchImage', function() {
         it('should fetch an image', function(done) {
             var command = init();
 
-            var matches = ['http://i.giphy.com/JIX9t2j0ZTN9S.gif'];
+            var matches = [['http://i.giphy.com/JIX9t2j0ZTN9S.gif']];
 
             command.func(matches, {}, function replyCallback(reply, chat) {
                 reply.should.be.Object();
@@ -193,7 +218,7 @@ describe('fetchImage', function() {
         it('should fetch an image using https', function(done) {
             var command = init();
 
-            var matches = ['https://i.giphy.com/JIX9t2j0ZTN9S.gif'];
+            var matches = [['https://i.giphy.com/JIX9t2j0ZTN9S.gif']];
 
             command.func(matches, {}, function replyCallback(reply, chat) {
                 reply.should.be.Object();
@@ -215,8 +240,8 @@ describe('fetchImage', function() {
             var command = init();
 
             var matches = [
-                'https://i.giphy.com/JIX9t2j0ZTN9S.gif',
-                'http://i.giphy.com/freTElrZl4zaU.gif'
+                ['https://i.giphy.com/JIX9t2j0ZTN9S.gif'],
+                ['http://i.giphy.com/freTElrZl4zaU.gif']
             ];
 
             var messagesReceived = 0;
@@ -245,7 +270,7 @@ describe('fetchImage', function() {
         it('should not send an image when facebook attaches it', function(done) {
             var command = init();
 
-            var matches = ['https://i.giphy.com/JIX9t2j0ZTN9S.gif'];
+            var matches = [['https://i.giphy.com/JIX9t2j0ZTN9S.gif']];
 
             var info = {
                 attachments: [
@@ -268,8 +293,8 @@ describe('fetchImage', function() {
             var command = init();
 
             var matches = [
-                'https://i.giphy.com/JIX9t2j0ZTN9S.gif',
-                'http://i.giphy.com/freTElrZl4zaU.gif'
+                ['https://i.giphy.com/JIX9t2j0ZTN9S.gif'],
+                ['http://i.giphy.com/freTElrZl4zaU.gif']
             ];
 
             var info = {
@@ -302,7 +327,7 @@ describe('fetchImage', function() {
         it('should handle errors gracefully', function(done) {
             var command = init();
 
-            var matches = ['http://i.giphy.com/this_image_doesnt_exist.gif'];
+            var matches = [['http://i.giphy.com/this_image_doesnt_exist.gif']];
 
             command.func(matches, {}, function replyCallback(reply, chat) {
                 reply.should.be.Object();

@@ -20,7 +20,7 @@ var fetchImage = function(matches, info, replyCallback) {
     }
 
     for (var i = imagesToSkip; i < matches.length; i++) {
-        var url = matches[i];
+        var url = matches[i][0];
 
         // Use the correct http/https module based on the URL.
         var protocol = (url.indexOf('https') !== -1) ? https : http;
@@ -57,6 +57,6 @@ module.exports = function init() {
     return {
         name: 'fetchImage',
         func: fetchImage,
-        pattern: /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,40}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*\.(jpg|jpeg|png|gif)[-a-zA-Z0-9@:%_\+.~#?&//=]*)/g
+        pattern: /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,40}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*(\.jpg|\.jpeg|\.png|(\.gif(?!v)))[-a-zA-Z0-9@:%_\+.~#?&//=]*)/g
     }
 };

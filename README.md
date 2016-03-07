@@ -323,8 +323,20 @@ An example object is shown below:
 The usual semantics apply – the `pattern` should be a valid RegExp object.
 
 When the command is executed, it will be passed an array called `matches`
-instead of `arguments`. This is an array of every string in the message that
-matches `pattern`.
+instead of `arguments`. This array is built by repeatedly calling `exec()`
+on the regex set as `pattern`. Each element is a match of the regex, which
+itself is an array where the first element is the entire matched string, and
+the remaining elements are the captured groups from the match.
+
+For example, matching the regex `/(\d) \+ (\d)/` against the message
+`1 + 3, 2 + 4` would result in the following array:
+
+```
+[
+    ["1 + 3", "1", "3"],
+    ["2 + 4", "2", "4"]
+]
+```
 
 To create a new regex command, run
 

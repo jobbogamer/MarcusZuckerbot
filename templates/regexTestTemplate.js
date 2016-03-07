@@ -12,18 +12,14 @@ describe('COMMAND_NAME', function() {
         // ******** REGEX MATCH TESTS GO HERE ********
 
         it('should match foobar', function() {
-            var matches = null;
-
-            matches = 'foobar'.match(regex);
+            var matches = 'foobar'.match(regex);
             should.exist(matches);
             matches.should.have.length(1);
         });
 
 
         it('should find all instances of foobar', function() {
-            var matches = null;
-
-            matches = 'foobar baz foobar baz'.match(regex);
+            var matches = 'foobar baz foobar baz'.match(regex);
             should.exist(matches);
             matches.should.have.length(2);
         });

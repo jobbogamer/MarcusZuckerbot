@@ -44,7 +44,7 @@ var add = function(arguments, info, replyCallback) {
 var usage = [
     {
         arguments: ['variable', 'value'],
-        description: 'Add a value to the given variable and display the new value.'
+        description: 'Add a value to the given variable.'
     }
 ];
 
