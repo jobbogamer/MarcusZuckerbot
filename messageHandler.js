@@ -290,8 +290,7 @@ var handle = function(message, chatData, facebookAPI, reply) {
             var error = 'Error: ' + command.name + ' takes ' +
                         stringifyAlternativesList(argumentCounts) + ' ' +
                         ((argumentCounts[0] === '1' && argumentCounts.length === 1) ? 'argument' : 'arguments') +
-                        ' (' + arguments.length + ' given).' +
-                        '\n\n' +
+                        ' (' + arguments.length + ' given). ' +
                         'Try zb.help(\'' + command.name + '\').';
             reply({
                 body: error
