@@ -11,17 +11,19 @@ var operators = function(matches, info, replyCallback) {
         // value from chatData.
         var variable = match[1];
         var value = chatData.variables[variable];
-        
-        if (value == null) {
-            reply += variable + ' is not defined.\n';
-            return;
-        }
 
         // Get the operator from either capture group 2 or 3.
         var operator = (match[2] != null) ? match[2] : match[3];
 
         // Get the operand from capture group 4 and convert it to a number.
         var operand = parseFloat(match[4]);
+
+        // Check that the variable exists, but only if the operator is not '='
+        // because using = should allow new variables to be created.
+        if (operator !== '=' && value == null) {
+            reply += variable + ' is not defined.\n';
+            return;
+        }
 
         // Apply the operator to the variable.
         var newValue = null;
@@ -66,6 +68,6 @@ module.exports = function init() {
     return {
         name: 'operators',
         func: operators,
-        pattern: /zb.([a-z_][a-z0-9_]*)(?:(\+\+|--)|\s(\+=|-=|=)\s(-?\d+))/gi
+        pattern: /zb.([a-z_][a-z0-9_]*)(?:(\+\+|--)|\s(\+=|-=|=)\s(-?\d+(?:\.\d+)?))/gi
     }
 };

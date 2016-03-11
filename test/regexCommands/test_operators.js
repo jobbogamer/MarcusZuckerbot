@@ -164,6 +164,31 @@ describe('operators', function() {
         });
 
 
+        it('should match decimals', function() {
+            var string = 'zb.nuggets = 27.83';
+            var matches = [];
+            var currentMatches = [];
+
+            // Try to repeatedly match the regex, putting each array of captured
+            // groups into the matches array.
+            while (currentMatches = regex.exec(string)) {
+                matches.push(currentMatches);
+            }
+
+            matches.should.have.length(1);
+
+            // Check that the match has the correct captured groups.
+            var match = matches[0];
+            match.should.have.length(5);
+            match[1].should.eql('nuggets');
+            if (match[2]) {
+                match[2].should.have.length(0);
+            }
+            match[3].should.eql('=');
+            match[4].should.eql('27.83');
+        });
+
+
         it('should not match addition with no spaces', function() {
             var string = 'zb.nuggets+=3';
             var matches = [];
@@ -437,11 +462,50 @@ describe('operators', function() {
                 reply.body.should.match(/nuggets/gi);
                 reply.body.should.match(/11/gi);
 
-                // The variable should have been incremented.
+                // The variable should have been set.
                 chat.should.be.Object();
                 chat.should.have.property('variables');
                 chat.variables.should.have.property('nuggets');
                 chat.variables.nuggets.should.eql(11);
+
+                done();
+            });
+        });
+
+
+        it('should create a new variable', function(done) {
+            var command = init();
+
+            var matches = [
+                ['zb.nuggets = 11', 'nuggets', null, '=', '11']
+            ];
+
+            var info = {
+                chatData: {
+                    variables: {
+                        sausages: 3
+                    }
+                }
+            };
+
+            command.func(matches, info, function replyCallback(reply, chat) {
+                reply.should.be.Object();
+                reply.should.have.property('body');
+                reply.body.should.be.String();
+
+                // The reply should state the new value of the variable.
+                reply.body.should.match(/nuggets/gi);
+                reply.body.should.match(/11/gi);
+
+                // The variable should have been created.
+                chat.should.be.Object();
+                chat.should.have.property('variables');
+                chat.variables.should.have.property('nuggets');
+                chat.variables.nuggets.should.eql(11);
+
+                // The sausages variable should not have been edited.
+                chat.variables.should.have.property('nuggets');
+                chat.variables.sausages.should.eql(3);
 
                 done();
             });
