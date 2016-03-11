@@ -473,6 +473,82 @@ describe('operators', function() {
         });
 
 
+        it('should be clever with decimal operands', function(done) {
+            var command = init();
+
+            var matches = [
+                ['zb.nuggets += 2.87', 'nuggets', null, '+=', '2.87']
+            ];
+
+            var info = {
+                chatData: {
+                    variables: {
+                        nuggets: 12
+                    }
+                }
+            };
+
+            command.func(matches, info, function replyCallback(reply, chat) {
+                reply.should.be.Object();
+                reply.should.have.property('body');
+                reply.body.should.be.String();
+
+                // The reply should state the new value of the variable. Note
+                // that \b is used to make sure that only '14.87' is shown.
+                // Because of floating point, 14.87 is actually equal to
+                // 14.870000000000001 and no one wants to see that.
+                reply.body.should.match(/nuggets/gi);
+                reply.body.should.match(/14\.87\b/gi);
+
+                // The variable should have been set.
+                chat.should.be.Object();
+                chat.should.have.property('variables');
+                chat.variables.should.have.property('nuggets');
+                chat.variables.nuggets.should.eql(12 + 2.87);
+
+                done();
+            });
+        });
+
+
+        it('should be clever with decimal variables', function(done) {
+            var command = init();
+
+            var matches = [
+                ['zb.nuggets += 2.1', 'nuggets', null, '+=', '2.1']
+            ];
+
+            var info = {
+                chatData: {
+                    variables: {
+                        nuggets: 14.7787
+                    }
+                }
+            };
+
+            command.func(matches, info, function replyCallback(reply, chat) {
+                reply.should.be.Object();
+                reply.should.have.property('body');
+                reply.body.should.be.String();
+
+                // The reply should state the new value of the variable. Note
+                // that \b is used to make sure that only '14.87' is shown.
+                // Because of floating point, 14.87 is actually equal to
+                // 14.870000000000001 and no one wants to see that.
+                reply.body.should.match(/nuggets/gi);
+                reply.body.should.match(/16\.8787\b/gi);
+
+                // The variable should have been set.
+                chat.should.be.Object();
+                chat.should.have.property('variables');
+                chat.variables.should.have.property('nuggets');
+                chat.variables.nuggets.should.eql(14.7787 + 2.1);
+
+                done();
+            });
+        });
+
+
         it('should create a new variable', function(done) {
             var command = init();
 

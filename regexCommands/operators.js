@@ -1,5 +1,8 @@
 // Alternative syntax for zb.add() and zb.subtract().
 
+var helpers = require('../helpers');
+
+
 var operators = function(matches, info, replyCallback) {
     var reply = '';
 
@@ -49,11 +52,21 @@ var operators = function(matches, info, replyCallback) {
                 break;
         }
 
+        // Floating point means that sometimes decimals won't exactly equal
+        // what we expect. In that case, we need to choose a number of
+        // decimal places to round to. Luckily, since we only support
+        // addition and subtraction, the answer is easy:
+        // The answer can only have less than or equal to the largest number
+        // of decimal places in the two operands. So we just see what the
+        // largest number of decimal places is, and round to that number.
+        var maxDecimals = Math.max(helpers.countDecimalPlaces(value), helpers.countDecimalPlaces(operand));
+        var displayValue = helpers.round(newValue, maxDecimals);
+
         // Store the new value of the variable.
         chatData.variables[variable] = newValue;
 
         // Display the new value.
-        reply += variable + ' is now set to ' + newValue + '.\n';
+        reply += variable + ' is now set to ' + displayValue + '.\n';
     });
 
     var message = {
