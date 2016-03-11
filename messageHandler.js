@@ -79,62 +79,6 @@ var loadRegexPlugins = function() {
 }
 
 
-
-// The help command is a special case which must be handled here rather than in
-// its own file because it needs access to the API object.
-var help = function(arguments, info, replyCallback) {
-    var reply = '';
-
-    // If no arguments are given, list all available commands.
-    if (!arguments.command) {
-        reply = 'Available commands:';
-        for (var key in commands) {
-            var command = commands[key];
-            reply += '\n' + '• ' + command.name;
-        }
-    }
-
-    // If one argument is given, display usage help for the requested command.
-    else {
-        needle = arguments.command.toLowerCase();
-        command = commands[needle];
-
-        if (command) {
-            command.usage.map(function (usage) {
-                // commandName(arg1, arg2, ...)
-                reply += command.name + '(' + usage.arguments.join(', ') + ')';
-                reply += '\n' + usage.description + '\n\n';
-            });
-        }
-        else {
-            reply = 'No command matching \'' + arguments.command + '\'.';
-        }
-    }
-
-    replyCallback({
-        body: reply
-    });
-}
-
-var helpUsage = [
-    {
-        arguments: [],
-        description: 'Display a list of available commands.'
-    },
-    {
-        arguments: ['command'],
-        description: 'Display usage instructions for the given command.'
-    }
-];
-
-commands.help = {
-    name: 'help',
-    func: help,
-    usage: helpUsage
-};
-
-
-
 // Extract the command name and arguments from a message.
 function parse(message) {
     // Find the name of the command.
@@ -193,7 +137,8 @@ var handle = function(message, chatData, facebookAPI, reply) {
         sender: message.senderName,
         attachments: message.attachments,
         chatData: chatData,
-        facebookAPI: facebookAPI
+        facebookAPI: facebookAPI,
+        commands: commands
     };
 
     // Test the message against all the loaded regex plugins to see if any
