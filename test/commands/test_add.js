@@ -39,6 +39,74 @@ describe('add', function() {
         });
 
 
+        it('should be clever with decimal operands', function(done) {
+            var arguments = {
+                variable: 'nuggets',
+                value: 2.87
+            };
+
+            var info = {
+                chatData: {
+                    variables: {
+                        nuggets: 12
+                    }
+                }
+            };
+
+            command.func(arguments, info, function replyCallback(reply, chat) {
+                // The reply should display the new value of the variable. Note
+                // the use of \b to check that the output is rounded to the
+                // correct number of decimal places.
+                reply.should.be.Object();
+                reply.should.have.property('body');
+                reply.body.should.be.String();
+                reply.body.should.match(/14.87\b/g);
+
+                // The variable should have increased.
+                chat.should.be.Object();
+                chat.should.have.property('variables');
+                chat.variables.should.have.property('nuggets');
+                chat.variables.nuggets.should.eql(12 + 2.87);
+
+                done();
+            });
+        });
+
+
+        it('should be clever with decimal variables', function(done) {
+            var arguments = {
+                variable: 'nuggets',
+                value: 2.1
+            };
+
+            var info = {
+                chatData: {
+                    variables: {
+                        nuggets: 14.7787
+                    }
+                }
+            };
+
+            command.func(arguments, info, function replyCallback(reply, chat) {
+                // The reply should display the new value of the variable. Note
+                // the use of \b to check that the output is rounded to the
+                // correct number of decimal places.
+                reply.should.be.Object();
+                reply.should.have.property('body');
+                reply.body.should.be.String();
+                reply.body.should.match(/16.8787\b/g);
+
+                // The variable should have increased.
+                chat.should.be.Object();
+                chat.should.have.property('variables');
+                chat.variables.should.have.property('nuggets');
+                chat.variables.nuggets.should.eql(14.7787 + 2.1);
+
+                done();
+            });
+        });
+
+
         it('should use the value of another variable as the operand', function(done) {
             var arguments = {
                 variable: 'nuggets',
