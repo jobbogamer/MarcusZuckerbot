@@ -110,6 +110,8 @@ describe('setChatColour', function() {
                 'lilac':      '#D696BB',
                 'purple':     '#7646FF',
                 'lavender':   '#A695C7',
+                'black':      '#000000',
+                'grey':       '#808080',
             }
 
             Object.keys(colours).forEach(function (colourName) {

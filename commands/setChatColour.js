@@ -16,6 +16,8 @@ var availableColours = {
     'Lilac':      '#D696BB',
     'Purple':     '#7646FF',
     'Lavender':   '#A695C7',
+    'Black':      '#000000',
+    'Grey':       '#808080',
     'Default':    ''
 }
 
