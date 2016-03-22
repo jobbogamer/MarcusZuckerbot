@@ -39,7 +39,7 @@ var setChatColour = function(arguments, info, replyCallback) {
     });
 
     if (!matches && !newColour.match(/#?[0-9a-f]{6}/)) {
-        reply = 'The requested colour is invalid. Pass either a hex value (#000000),' +
+        reply = 'The requested colour is invalid. Pass either a hex value (#000000), ' +
                 'or one of the following:\n';
         Object.keys(availableColours).forEach(function(colourName) {
             reply += '• ' + colourName + '\n';
