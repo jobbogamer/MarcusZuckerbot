@@ -156,8 +156,15 @@ var handle = function(message, chatData, facebookAPI, reply) {
         }
 
         if (matches.length > 0) {
-            console.log('Matched regex command ' + command.name + '.');
             matched = true;
+
+            // If the command is disabled, skip it.
+            if (chatData.disabledCommands.indexOf(command.name.toLowerCase()) !== -1) {
+                console.log('Matched disabled regex command ' + command.name + '.');
+                continue;
+            }
+
+            console.log('Matched regex command ' + command.name + '.');
 
             // Send typing indicator to show that the message is being processed.
             var endTypingIndicator = facebookAPI.sendTypingIndicator(message.threadID, function(err, end){});
@@ -188,6 +195,12 @@ var handle = function(message, chatData, facebookAPI, reply) {
     // Find the command.
     var command = commands[name];
     if (command) {
+        // If the command is disabled, return early.
+        if (chatData.disabledCommands.indexOf(command.name.toLowerCase()) !== -1) {
+            console.log('Matched disabled command ' + command.name + '.');
+            return;
+        }
+
         console.log('Matched command ' + command.name + '.');
 
         // List all the numbers of arguments that the command takes by
