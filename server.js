@@ -215,6 +215,11 @@ function startBot(api, chats) {
                 disabledCommands: []
             };
 
+            // Ensure that the chatData object has all the expected properties.
+            chat.variables = chat.variables || {};
+            chat.progress = chat.progress || {};
+            chat.disabledCommands = chat.disabledCommands || [];
+
             var callback = function(message, chat) {
                 // If the messageHandler sent back a reply, send it to the chat.
                 if (message) {
