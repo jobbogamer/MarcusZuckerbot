@@ -3,14 +3,14 @@
 var helpers = require('../helpers');
 
 var countMessages = function(arguments, info, replyCallback) {
-    info.facebookAPI.getThreadList(0, 0, function(err, conversations) {
+    info.facebookAPI.getThreadInfo(info.threadID, function(err, threadInfo) {
         if (err) {
             replyCallback({
                 body: 'An error occurred when counting the messages.'
             });
         }
         else {
-            var count = conversations[0].messageCount;
+            var count = threadInfo.messageCount;
 
             replyCallback({
                 body: 'There are ' + helpers.addThousandsSeparators(count) +

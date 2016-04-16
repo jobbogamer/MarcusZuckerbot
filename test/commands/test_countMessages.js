@@ -10,10 +10,10 @@ describe('countMessages', function() {
             var command = init();
 
             var facebookApiMock = {
-                getThreadList: function(start, end, callback) {
-                    callback(null, [{
+                getThreadInfo: function(threadID, callback) {
+                    callback(null, {
                         messageCount: 42
-                    }]);
+                    });
                 }
             };
 
@@ -41,10 +41,10 @@ describe('countMessages', function() {
             var command = init();
 
             var facebookApiMock = {
-                getThreadList: function(start, end, callback) {
-                    callback(null, [{
+                getThreadInfo: function(threadID, callback) {
+                    callback(null, {
                         messageCount: 4242424
-                    }]);
+                    });
                 }
             };
 
@@ -72,7 +72,7 @@ describe('countMessages', function() {
             var command = init();
 
             var facebookApiMock = {
-                getThreadList: function(start, end, callback) {
+                getThreadInfo: function(threadID, callback) {
                     callback({
                         error: 2
                     }, null);
