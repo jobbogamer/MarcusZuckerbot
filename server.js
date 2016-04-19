@@ -190,7 +190,7 @@ function startBot(api, chats) {
 
         if (event.type === 'message') {
             console.log('Message received:');
-            if (event.body.length > 0) {
+            if (event.body && event.body.length > 0) {
                 console.log('   ', event.body);
             }
             if (event.attachments && event.attachments.length > 0) {
