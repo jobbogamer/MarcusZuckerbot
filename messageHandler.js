@@ -129,7 +129,7 @@ function stringifyAlternativesList(items) {
 // Handle a received message by calling the appropriate command function.
 var handle = function(message, chatData, facebookAPI, reply) {
     // Whitespace before and after the text should be ignored.
-    var body = message.body.trim();
+    var body = message.body ? message.body.trim() : '';
 
     // Compile a set of data to pass to the command function.
     var info = {
