@@ -25,7 +25,8 @@
     "npmlog": "^2.0.0",
     "readability-api": "^0.4.0",
     "request": "^2.67.0",
-    "require-all": "^2.0.0"
+    "require-all": "^2.0.0",
+    "twitter": "^1.2.5"
   },
   "bugs": {
     "url": "https://github.com/jobbogamer/MarcusZuckerbot/issues"
