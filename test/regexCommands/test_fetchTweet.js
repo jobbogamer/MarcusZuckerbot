@@ -540,7 +540,7 @@ describe('fetchTweet', function() {
                 else {
                     reply.should.be.Object();
                     reply.should.have.property('attachment');
-                    reply.attachmen.should.be.Object();
+                    reply.attachment.should.be.Object();
 
                     receivedImage = true;
                 }
