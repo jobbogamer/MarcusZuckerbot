@@ -7,7 +7,8 @@ var initialisers = require('require-all')(__dirname + '/../../regexCommands');
 
 // Exclude commands which have a prerequesite in the init function.
 var excluded = [
-    'linkInfo'
+    'linkInfo',
+    'fetchTweet'
 ];
 
 
